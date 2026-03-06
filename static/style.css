@@ -1,0 +1,13 @@
+main {
+    display: flex;
+    justify-content: center;
+}
+
+h1 {
+    text-align: center;
+}
+
+input {
+    width: 80vw;
+    background-color: #d9d9d9;
+}
