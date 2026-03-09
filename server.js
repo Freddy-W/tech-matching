@@ -1,8 +1,8 @@
-const express = require("express");
+const express = require('express');
 const app = express();
 const port = 2020;
 
-app.use(express.static("static"));
+app.use(express.static('static'));
 
 app.listen(port, () => {
     console.log(`Server draait op http://localhost:${port}`);
