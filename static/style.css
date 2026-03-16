@@ -1,4 +1,4 @@
-main > section {
+main section:nth-of-type(1) {
     display: flex;
     justify-content: center;
 }
@@ -14,4 +14,27 @@ input {
 
 button:nth-of-type(2) {
     background-color: hsl(187, 69%, 37%);
+}
+
+input[type="range"]{
+  width: 200px;
+  margin: 5px 0;
+}
+
+/* lijn */
+input[type="range"]::-webkit-slider-runnable-track{
+  height: 6px;
+  background: #ccc;
+  border-radius: 5px;
+}
+
+/* bolletje */
+input[type="range"]::-webkit-slider-thumb{
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #2ea3b0;
+  cursor: pointer;
+  margin-top: -5px;
 }
