@@ -1,32 +1,25 @@
 const express = require("express");
+require("dotenv").config();
 const app = express();
 const port = 2020;
 
-// const { MongoClient, ServerApiVersion } = require("mongodb");
-// require("dotenv").config();const { MongoClient, ServerApiVersion } = require("mongodb");
+const apiKey = process.env.API_KEY;
 
-app.set('view engine', 'ejs');
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
+console.log(process.env.API_KEY);
+
 app.use(express.static("static"));
 
 app.listen(port, () => {
     console.log(`Server draait op http://localhost:${port}`);
 });
 
-app.get('/', (req, res) => {
-    res.render('index');
-});
+app.use(express.static("public"));
 
-app.get('/test', (req, res) => {
-    res.send("De test is geslaagd, de URL /test is bereikbaar");
-});
-
-app.get('/events/:artist', async (req, res) => {
+app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = encodeURIComponent(req.params.artist);
 
-    const url = `https://rest.bandsintown.com/artists/${artist}/events?app_id=21a483ff79534f273cf4025645b28051`;
+    const url = `https://rest.bandsintown.com/artists/${artist}?app_id=${apiKey}`;
 
     try {
 
