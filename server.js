@@ -1,13 +1,14 @@
 const express = require("express");
 const mongoClient = require("mongodb");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv")
+const dotenv = require("dotenv").config();
 const bcrypt = require("bcryptjs");
 dotenv.config();
 const app = express();
 const port = 2020;
 app.use(express.static("static"));
 app.set('view engine', 'ejs');
+
 app.listen(port, () => {
     console.log(`Server draait op http://localhost:${port}`);
 });
@@ -15,15 +16,12 @@ app.listen(port, () => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/test', (req, res) => {
-    res.send("De test is geslaagd, de URL /test is bereikbaar");
-});
 
-app.get('/events/:artist', async (req, res) => {
+app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = encodeURIComponent(req.params.artist);
 
-    const url = `https://rest.bandsintown.com/artists/${artist}/events?app_id=21a483ff79534f273cf4025645b28051`;
+    const url = `https://rest.bandsintown.com/artists/${artist}?app_id=${apiKey}`;
 
     try {
 
