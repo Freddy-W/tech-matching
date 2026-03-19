@@ -1,9 +1,9 @@
 const express = require("express");
 const mongoClient = require("mongodb");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv").config();
-const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv");
 dotenv.config();
+const bcrypt = require("bcryptjs");
 const app = express();
 const port = 2020;
 app.use(express.static("static"));
