@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Concerten in de buurt</title>
+</head>
+<body>
+    <header>
+        <img src="#" alt="logo">
+        <a href="login.html">Log in</a>
+    </header>
+    <main>
+        <h1>Concerten in de buurt</h1>
+        <section>
+            <input id="artistInput" type="search" placeholder="zoek een concert...">
+            <button id="searchBtn" type="submit">
+                <img src="images/searchicon.svg" alt="searchicon">
+            </button>
+            <button>Filter</button>
+        </section>
+        <!-- Filtergedeelte -->
+        <section> 
+            <h2>Filters</h2>
+            <h3>Plaats</h3>
+                <input type="search" placeholder="zoek een plaats...">
+            <h3>Auto beschikbaar</h3>
+                <input type="checkbox" id="ja" name="keuze" value="ja">
+                <label for="ja">Ja</label>
+                <input type="checkbox" id="nee" name="keuze" value="nee">
+                <label for="nee">Nee</label>
+            <h3>Wil en mag je rijden?</h3>
+                <input type="checkbox" id="ja" name="keuze" value="ja">
+                <label for="ja">Ja</label>
+                <input type="checkbox" id="nee" name="keuze" value="nee">
+                <label for="nee">Nee</label>
+            <h3>Retour of enkele reis</h3>
+                <input type="checkbox" id="retour" name="keuze" value="Retour">
+                <label for="retour">Retour</label>
+                <input type="checkbox" id="heen" name="keuze" value="Heen">
+                <label for="heen">Heen</label>
+                <input type="checkbox" id="terug" name="keuze" value="Terug">
+                <label for="terug">Terug</label>
+            <h3>Leeftijd</h3>
+                <div class="wrapper">
+                    <div class="container">
+                        <div class="slider-track"></div>
+                        <input type="range" min="0" max="100" value="30" id="slider-1">
+                        <input type="range" min="0" max="100" value="70" id="slider-2">
+                    </div>
+                </div>
+            <h3>Prijs</h3>
+                <div id="results"></div>
+        </section>
+    </main>
+    <footer>
+    </footer>
+    <script src="/script.js"></script>
+</body>
+</html>
