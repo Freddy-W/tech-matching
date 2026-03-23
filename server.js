@@ -6,6 +6,7 @@ dotenv.config();
 const bcrypt = require("bcryptjs");
 const app = express();
 const port = 2020;
+const apiKey = process.env.APIKEY;
 app.use(express.static("static"));
 app.set('view engine', 'ejs');
 
