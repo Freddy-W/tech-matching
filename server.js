@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
 const bcrypt = require("bcryptjs");
+const session = require('express-session');
+
 const app = express();
 const port = 2020;
 const apiKey = process.env.APIKEY;
@@ -21,7 +23,21 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
-app.get("/artist/:artist", async (req, res) => {
+const MongoStore = require('connect-mongo').default;
+
+app.use(session({
+  secret: 'process.env.SESSIONKEY',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.dbPassword,
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24
+  }
+}));
+
+app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = req.params.artist;
 
@@ -76,21 +92,42 @@ app.get("/register", (req, res)=>{
     res.render('register.ejs');
 });
 
-app.get("/buddyzoeken", (req, res)=>{
-    res.render('buddyzoeken.ejs');
+function isLoggedIn(req, res, next) {
+  if (req.session.userId) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
+app.get("/accountinfo", isLoggedIn, (req, res)=>{
+  res.render('accountinfo.ejs');
 });
+
+app.get("/", (req, res)=>{
+    res.render('index.ejs');
+});
+
 
 mongoose.connect(process.env.dbPassword);
 
 const dataScheme = new mongoose.Schema({
+    voornaam: String,
+    achternaam: String,
+    adres: String,
+    telefoonnummer: String,
     email: String,
-    wachtwoord: String
+    wachtwoord: String,
 });
 
 const Data = mongoose.model("Data", dataScheme);
 app.post("/register", async (req, res) => {
   try {
     const loginData = {
+      voornaam: req.body.voornaam,
+      achternaam: req.body.achternaam,
+      adres: req.body.adres,
+      telefoonnummer: req.body.telefoonnummer,
       email: req.body.email,
       wachtwoord: req.body.wachtwoord
     };
@@ -102,7 +139,7 @@ app.post("/register", async (req, res) => {
     loginData.wachtwoord = hashedPassword;
 
     await Data.create(loginData);
-    res.send("Registration successful!");
+    res.render('index.ejs');
   } catch (err) {
     console.error(err);
     res.send("Error registering user");
@@ -122,7 +159,8 @@ app.post("/login", async (req, res) => {
     const match = await bcrypt.compare(loginData.wachtwoord, user.wachtwoord);
     if (!match) return res.send("Incorrect wachtwoord");
 
-    res.send("Login successful!");
+    req.session.userId = user._id;
+    res.redirect("/");
 
   } catch (error) {
     console.error(error);
