@@ -1,107 +1,49 @@
-main section:nth-of-type(1) {
-    display: flex;
-    justify-content: center;
-}
-
-h1 {
-    text-align: center;
-}
-
-input {
-    width: 80vw;
-    background-color: #d9d9d9;
-}
-
-button:nth-of-type(2) {
-    background-color: hsl(187, 69%, 37%);
-}
-
-body {
-    place-items: center; /* AANPASSEN */
-}
-
 .wrapper {
-    position: relative;
-    width: 95vmin; /* AANPASSEN */
-    padding: 50px 40px 20px 40px; /* AANPASSEN */
+    width: 90%;
+    max-width: 20em;
+    margin: auto;
 }
 
 .container {
     position: relative;
-    width: 100%;
-    height: 100%;
-    margin-top: 30px; /* AANPASSEN */
+    margin-top: 30px;
 }
 
-input[type="range"]{
-    -webkit-appearance: none;
-    -moz-appearance: none;
+/* sliders op elkaar */
+input[type="range"] {
     appearance: none;
-    width: 100%;
-    outline: none;
     position: absolute;
-    margin: auto;
-    top: 0;
-    bottom: 0;
-    background-color: transparant;
+    width: 100%;
     pointer-events: none;
+    background: none;
 }
 
+/* slider track */
 .slider-track {
     width: 100%;
-    height: 5px; /* AANPASSEN */
-    background-color: #d5d5d5; /* AANPASSEN */
-    position: absolute;
-    margin: auto;
-    top: 0;
-    bottom: 0;
+    height: .3em;
     border-radius: 5px;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
-    -webkit-appearance: none;
-    height: 5px; /* AANPASSEN */
-}
-
-input[type="range"]::-moz-range-track {
-    -moz-appearance: none;
-    height: 5px; /* AANPASSEN */
-}
-
-input[type="range"]::-ms-track {
-    appearance: none;
-    height: 5px; /* AANPASSEN */
-}
-
+/* bolletjes */
 input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 1.7em;
-    width: 1.7em;
-    background-color: hsl(187, 69%, 37%);
-    cursor: pointer;
-    border-radius: 10px;
-    pointer-events: auto;
-    margin-top: -9px; /* AANPASSEN */
-}
-
-input[type="range"]::-moz-range-thumb {
-    -webkit-appearance: none;
-    height: 1.7em;
-    width: 1.7em;
-    cursor: pointer;
-    border-radius: 50%;
-    background-color: black; /* AANPASSEN */
-}
-
-input[type="range"]::-ms-thumb {
     appearance: none;
-    height: 1.7em;
-    width: 1.7em;
-    cursor: pointer;
+    height: 1.5em;
+    width: 1.5em;
+    background: hsl(187,69%,37%);
     border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto;
+    margin-top: -1em;
 }
 
-input[type="range"]:active::-webkit-slider-thumb {
-    background-color: #ffffff; /* AANPASSEN */
-    border: 3px solid hsl(187, 69%, 37%);
+/* waarde onder slider */
+.values {
+    background: hsl(187,69%,37%);
+    width: 32%;
+    margin: 2em auto 0;
+    padding: 8px;
+    border-radius: .5em;
+    text-align: center;
+    color: hsl(0, 0%, 100%);
 }
