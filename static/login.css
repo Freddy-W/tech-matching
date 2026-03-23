@@ -1,0 +1,46 @@
+h2:not(:last-of-type) {
+    font-size: small;    
+    color: #97D8E4;
+}
+
+body {
+    background-color: #062b32;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+}
+
+body form {
+    display: flex;
+    justify-content: center;
+    flex-direction:column ;
+    align-items:center;
+}
+
+a, a:visited {
+    color: #97D8E4;
+}
+
+button {
+    color: white;
+    background-color: #1DA067;
+    border: none;
+    width: 10em;
+    border-radius: 10px;
+}
+
+label, h2 {
+    font-size: small;
+    font-weight: 400;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-self: center;
+}
+
+input {
+    width: 16em;
+    height: 2em;
+}

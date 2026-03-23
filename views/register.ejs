@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registreren</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
     <header>
@@ -15,11 +17,29 @@
                 <h2>E-mail</h2>
                 <input name="email" type="email" placeholder="user@email.com" required>
             </label>
+            <div>
+                <label>
+                    <h2>Voornaam</h2>
+                    <input name="voornaam" placeholder="Voornaam" required>
+                </label>
+                <label>
+                    <h2>Achternaam</h2>
+                    <input name="achternaam" placeholder="Achternaam" required>
+                </label>
+            </div>
+            <label>
+                <h2>Adres</h2>
+                <input name="adres" placeholder="Adres">
+            </label>
+            <label>
+                <h2>Telefoonnummer</h2>
+                <input name="telefoonnummer" type="tel" pattern="^\+?[0-9\s\-]{7,15}$" required placeholder="+31 6 12345678">
+            </label>
             <label>
                 <h2>Wachtwoord</h2> 
                 <input  name="wachtwoord" type="password" placeholder="wachtwoord" required>
             </label>
-            <a href="login">Ik heb al een account</a>
+            <a href="login"><h2>Ik heb al een account</h2></a>
             <button type="sumbit"><h2>Registreer</h2></button>
         </form>
         <footer>
