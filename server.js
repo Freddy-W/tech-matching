@@ -16,6 +16,9 @@ app.listen(port, () => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.get("/", (req, res) => {
+    res.render("index");
+});
 
 app.get("/artist/:artist", async (req, res) => {
 
@@ -55,6 +58,9 @@ app.get("/artist/:artist", async (req, res) => {
         res.json(formattedEvents);
 
     } catch (error) {
+
+        console.error(error);
+        res.status(500).json({ error: "API request mislukt" });
         console.error("SERVER ERROR:", error);
         res.status(500).json({ error: "Server fout" });
     }
@@ -67,6 +73,10 @@ app.get("/login", (req, res)=>{
 
 app.get("/register", (req, res)=>{
     res.render('register.ejs');
+});
+
+app.get("/buddyzoeken", (req, res)=>{
+    res.render('buddyzoeken.ejs');
 });
 
 mongoose.connect(process.env.dbPassword);
