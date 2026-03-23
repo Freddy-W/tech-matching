@@ -1,9 +1,11 @@
 const express = require("express");
 const mongoClient = require("mongodb");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv").config();
-const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv");
 dotenv.config();
+const bcrypt = require("bcryptjs");
+const session = require('express-session');
+
 const app = express();
 const port = 2020;
 app.use(express.static("static"));
@@ -16,6 +18,20 @@ app.listen(port, () => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
+const MongoStore = require('connect-mongo').default;
+
+app.use(session({
+  secret: 'process.env.SESSIONKEY',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.dbPassword,
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24
+  }
+}));
 
 app.get(`/artist/:artist`, async (req, res) => {
 
@@ -47,8 +63,16 @@ app.get("/register", (req, res)=>{
     res.render('register.ejs');
 });
 
-app.get("/accountinfo", (req, res)=>{
-    res.render('accountinfo.ejs');
+function isLoggedIn(req, res, next) {
+  if (req.session.userId) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
+app.get("/accountinfo", isLoggedIn, (req, res)=>{
+  res.render('accountinfo.ejs');
 });
 
 app.get("/", (req, res)=>{
@@ -65,7 +89,6 @@ const dataScheme = new mongoose.Schema({
     telefoonnummer: String,
     email: String,
     wachtwoord: String,
-
 });
 
 const Data = mongoose.model("Data", dataScheme);
@@ -106,9 +129,10 @@ app.post("/login", async (req, res) => {
 
     const match = await bcrypt.compare(loginData.wachtwoord, user.wachtwoord);
     if (!match) return res.send("Incorrect wachtwoord");
-    app.get("/", (req, res)=>{
-    res.render('index.ejs');
-    });
+
+    req.session.userId = user._id;
+    res.redirect("/");
+
   } catch (error) {
     console.error(error);
     res.send("Error logging in");
