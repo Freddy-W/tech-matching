@@ -17,3 +17,15 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
         <p>Upcoming events: ${data.upcoming_event_count}</p>`;
 
 });
+
+
+// CONCERT OPSLAAN NIET COMPLEET
+const addConcertBtn = document.getElementById("...");
+
+// function addConcert() {
+//     const ticketMUrl = 'https://app.ticketmaster.com/discovery/v2/';
+
+//     app.get(ticketMUrl/events/{id})
+// };
+
+addConcertBtn.addEventListener('click', addConcert());
