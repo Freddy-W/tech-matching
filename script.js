@@ -14,6 +14,7 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
 
     results.innerHTML = 
         `<h2>${data.name}</h2>
+      
         <p>Upcoming events: ${data.upcoming_event_count}</p>`;
 
 });
