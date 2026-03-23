@@ -37,7 +37,6 @@ app.get(`/artist/:artist`, async (req, res) => {
 
         console.error(error);
         res.status(500).json({ error: "API request mislukt" });
-
     }
 
 });
@@ -48,6 +47,10 @@ app.get("/login", (req, res)=>{
 
 app.get("/register", (req, res)=>{
     res.render('register.ejs');
+});
+
+app.get("/buddyzoeken", (req, res)=>{
+    res.render('buddyzoeken.ejs');
 });
 
 mongoose.connect(process.env.dbPassword);
