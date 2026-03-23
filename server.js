@@ -16,6 +16,9 @@ app.listen(port, () => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.get("/", (req, res) => {
+    res.render("index");
+});
 
 app.get(`/artist/:artist`, async (req, res) => {
 
