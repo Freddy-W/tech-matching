@@ -3,15 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/index.css">
     <title>Buddy zoeken</title>
 </head>
 <body>
     <header>
-        <% include(partials/header.ejs)
     </header>
     <main>
+        <h1>Zoek een buddy</h1>
+        <% if (listings.length === 0) { %> 
+        <p>Nog geen buddies beschikbaar, wees de eerste!</p>
+        <% } %>
+        <% listings.forEach(listing => { %>
+        <div class="listing">
+            <h2><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
+            <p><%= listing.auto %></p>
+        </div>
+        <% }) %>
         <!-- filtergedeelte -->
-        <section> 
+         <h1>Zoek een Buddy</h1>
+         <section>
+            <input id="zoekBuddy" type="search" placeholder="zoek een buddy...">
+            <button id="searchBtn" type="submit">
+                <img src="images/searchicon.svg" alt="searchicon">
+            </button>
+            <button id="filterbutton">Filter</button>
+        </section> 
+        <section id="filtergedeelte" class="hidden"> 
             <h2>Filters</h2>
             <h3>Plaats</h3>
             <input type="search" placeholder="zoek een plaats...">
@@ -53,6 +72,8 @@
         </section>
     </main>
     <footer>
+        <%- include('partials/menubalk')%>
     </footer>
+    <script src="/scripts/script2.js"></script>
 </body>
 </html>

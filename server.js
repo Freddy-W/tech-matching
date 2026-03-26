@@ -34,6 +34,49 @@ app.use(session({
   }
 }));
 
+app.get("/events", async (req, res) => {
+
+  //10 aankomende events in NL
+  const url = `https://app.ticketmaster.com/discovery/v2/events.json?size=10&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
+
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      console.log("DEFAULT EVENTS DATA:", JSON.stringify(data, null, 2));
+
+      if (data.fault) {
+          console.error("API ERROR:", data.fault);
+          return res.status(400).json({ error: "API key werkt niet of geen toegang" });
+      }
+
+      if (!data._embedded || !data._embedded.events) {
+          return res.json([]);
+      }
+
+      const events = data._embedded.events;
+
+      const formattedEvents = events.map(event => ({
+          artist: event.name,
+          date: event.dates?.start?.localDate || "Onbekend",
+          time: event.dates?.start?.localTime || "Onbekend",
+          venue: event._embedded?.venues?.[0]?.name || "Onbekend",
+          city: event._embedded?.venues?.[0]?.city?.name || "",
+          country: event._embedded?.venues?.[0]?.country?.name || "",
+          url: event.url,
+          image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url 
+           || event.images?.[0]?.url 
+           || ""
+      }));
+
+      res.json(formattedEvents);
+
+  } catch (error) {
+      console.error("SERVER ERROR:", error);
+      res.status(500).json({ error: "API request mislukt" });
+  }
+});
+
 app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = req.params.artist;
@@ -46,28 +89,17 @@ app.get(`/artist/:artist`, async (req, res) => {
 
         console.log("DATA:", JSON.stringify(data, null, 2));
 
-        //API fout afhandeling
         if (data.fault) {
             console.error("API ERROR:", data.fault);
             return res.status(400).json({ error: "API key werkt niet of geen toegang" });
         }
 
-        //bestaan de events?
         if (!data._embedded || !data._embedded.events) {
             return res.json([]);
         }
 
         const events = data._embedded.events;
         
-        const formattedEvents = events.map(event => ({
-            artist: event.name,
-            date: event.dates?.start?.localDate || "Onbekend",
-            time: event.dates?.start?.localTime || "Onbekend",
-            venue: event._embedded?.venues?.[0]?.name || "Onbekend",
-            city: event._embedded?.venues?.[0]?.city?.name || "",
-            country: event._embedded?.venues?.[0]?.country?.name || "",
-            url: event.url
-        }));
 
         res.json(formattedEvents);
 
@@ -101,26 +133,63 @@ app.get("/accountinfo", isLoggedIn, (req, res)=>{
   res.render('accountinfo.ejs');
 });
 
-app.get("/", (req, res)=>{
+app.get("/", (req, res)=> {
     res.render('index.ejs');
 });
 
+app.get("/buddyzoeken", (req, res)=> {
+    res.render('buddyzoeken.ejs');
+})
+
+app.get("/gekozen-concert", (req, res)=>{
+        const event = {
+        id: req.query.id,
+        artist: req.query.name,
+        date: req.query.date,
+        time: req.query.time,
+        venue: req.query.venue,
+        city: req.query.city,
+        country: req.query.country,
+        image: req.query.image
+        }
+        res.render('gekozen-concert.ejs', {event});
+});
+
+
+app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
+    res.render('auto-aanbieden.ejs');
+});
 
 mongoose.connect(process.env.dbPassword);
-
 const dataScheme = new mongoose.Schema({
+    userId: String,
     voornaam: String,
     achternaam: String,
     adres: String,
     telefoonnummer: String,
     email: String,
     wachtwoord: String,
+    leeftijd: String,
+    rijbewijs: String,
+    auto: String,
+    rijden: String,
 });
 
-const Data = mongoose.model("Data", dataScheme);
+const carListingSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+  auto: String,
+  hoeveel: Number,
+  rijden: String,
+  brandstof: String,
+});
+const userData = mongoose.model("userdata", dataScheme);
+const carListing = mongoose.model("CarListing", carListingSchema);
+
+//Registeren, checkt of het emailadres al bestaat, encrypt het wachtwoord en stuurt naar de DB
 app.post("/register", async (req, res) => {
   try {
-    const loginData = {
+    const registerData = {
+      userId: req.session.userId,
       voornaam: req.body.voornaam,
       achternaam: req.body.achternaam,
       adres: req.body.adres,
@@ -129,20 +198,21 @@ app.post("/register", async (req, res) => {
       wachtwoord: req.body.wachtwoord
     };
 
-    const existingUser = await Data.findOne({ email: loginData.email });
+    const existingUser = await userData.findOne({ email: registerData.email });
     if (existingUser) return res.send("Email is already registered!");
 
-    const hashedPassword = await bcrypt.hash(loginData.wachtwoord, 10);
-    loginData.wachtwoord = hashedPassword;
+    const hashedPassword = await bcrypt.hash(registerData.wachtwoord, 10);
+    registerData.wachtwoord = hashedPassword;
 
-    await Data.create(loginData);
-    res.render('index.ejs');
+    await userData.create(registerData);
+    res.redirect('/');
   } catch (err) {
     console.error(err);
     res.send("Error registering user");
   }
 });
 
+//login, checkt of het wachtwoord & email al bestaat en stuurt op basis daarvan door.
 app.post("/login", async (req, res) => {
   try {
     const loginData = {
@@ -150,7 +220,7 @@ app.post("/login", async (req, res) => {
         wachtwoord: req.body.wachtwoord
     };
 
-    const user = await Data.findOne({ email: loginData.email });
+    const user = await userData.findOne({ email: loginData.email });
     if (!user) return res.send("Email not registered");
 
     const match = await bcrypt.compare(loginData.wachtwoord, user.wachtwoord);
@@ -164,3 +234,50 @@ app.post("/login", async (req, res) => {
     res.send("Error logging in");
   }
 });
+
+// accountinfo werkend maken dmv sessions
+app.post("/accountinfo", async (req, res) =>  {
+    try {
+      const accountData = {
+      adres: req.body.adres,
+      leeftijd: req.body.leeftijd,
+      rijbewijs: req.body.rijbewijs,
+      auto: req.body.auto,
+      rijden: req.body.rijden,
+    };
+        // user sessionID vinden en dorosturen
+    await userData.findByIdAndUpdate(req.session.userId, accountData, { new: true });
+    res.redirect("/");
+  } catch (error) {
+    console.error(error)
+    res.send("Error")
+  }
+});
+
+app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
+  try {
+    const listingData = {
+      userId: req.session.userId, // Koppeling met user
+      auto: req.body.auto,
+      hoeveel: req.body.hoeveel,
+      rijden: req.body.rijden,
+      brandstof: req.body.brandstof,
+    };
+    await carListing.create(listingData);
+    res.redirect("/buddy-zoeken")
+  } catch (error) {
+    console.error(error);
+    res.send("Error bij opslaan listing");
+  }
+});
+
+app.get("/buddy-zoeken", async (req, res)=>{
+  try {
+    const listings = await carListing
+      .find()
+      .populate("userId", "voornaam"); // voegt de user info toe
+    res.render("buddy-zoeken.ejs", { listings });
+  } catch (error) {
+    console.error(error);
+    res.send("Error loading rides");
+}});

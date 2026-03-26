@@ -11,6 +11,20 @@
     <h1>Accountgegevens</h1>
     <form action="/accountinfo" method="POST">
             <label>
+                <h2>E-mail</h2>
+                <input name="email" type="email" placeholder="user@email.com" >
+            </label>
+            <div>
+                <label>
+                    <h2>Voornaam</h2>
+                    <input name="voornaam" placeholder="Voornaam">
+                </label>
+                <label>
+                    <h2>Achternaam</h2>
+                    <input name="achternaam" placeholder="Achternaam">
+                </label>
+            </div>
+            <label>
                 <h2>Adres</h2>
                 <input name="adres">
             </label>
@@ -21,27 +35,27 @@
             <label>
                 <h2>Heb je een rijbewijs?</h2> 
                 <div>
-                    <input class="radio"  id="rijbewijsyes" name="rijbewijs" value="yes" type="radio" required>
+                    <input class="radio"  id="rijbewijsyes" name="rijbewijs" value="yes" type="radio">
                     <label for="rijbewijsyes">Ja</label>
-                    <input class="radio" id="rijbewijsno" name="rijbewijs" value="no" type="radio" required>
+                    <input class="radio" id="rijbewijsno" name="rijbewijs" value="no" type="radio">
                     <label for="rijbewijsno">Nee</label>
                 </div>
             </label>
             <label>
                 <h2>Heb je een eigen auto?</h2>
                 <div>
-                    <input class="radio" id="autoyes" name="auto" value="yes" type="radio" required>
+                    <input class="radio" id="autoyes" name="auto" value="yes" type="radio">
                     <label for="autoyes">Ja</label>
-                    <input class="radio" id="autono" name="auto" value="no" type="radio" required>
+                    <input class="radio" id="autono" name="auto" value="no" type="radio">
                     <label for="autono">Nee</label>
                 </div>
             </label>
             <label>
                 <h2>Wil je rijden?</h2> 
                 <div>  
-                    <input class="radio" id="rijdenyes" name="rijden" value="yes" type="radio" required>
+                    <input class="radio" id="rijdenyes" name="rijden" value="yes" type="radio">
                     <label for="rijdenyes">Ja</label>
-                    <input class="radio" id="rijdenno" name="rijden" value="no" type="radio" required>
+                    <input class="radio" id="rijdenno" name="rijden" value="no" type="radio">
                     <label for="rijdenno">Nee</label>
                 </div>
             </label>

@@ -4,32 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Concert</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <header>
-        <% include(partials/header.ejs)%>
     </header>
     <main>
         <a href="index.html"><img src="Terugpijl"></a>
         <h1>Huidig Concert</h1>
         <div>
         <section>
-            <img src="artistImage">
-            <h3>The Beatles</h3>
-            <p>22 Mei 2026</p>
+            <img src="<%= event.image%>" alt="${event.artist}" style=" border-radius: 8px;">
+            <h2><%= event.artist %></h3>
+            <p><%= event.city %>, <%= event.country %></p>
+            <p><%= event.date %></p>
             <button></button>
         </section>
         <section>
-             <img src="images/ziggoDomeMap.png">
-             <p>Ziggo Dome, De Passage 100, 1101AX Amsterdam</p>
+             <p><%= event.venue %></p>
         </section>
-        <a>Zoek een auto</a>
-        <a>Bied auto aan</a>
+        <a href="buddy-zoeken">Zoek een auto</a>
+        <a href="auto-aanbieden">Bied auto aan</a>
         </div>
         
     </main>
     <footer>
-        <% include(partials/menubalk.ejs)%>
     </footer>
 </body>
 </html>
