@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Concerten in de buurt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -19,10 +20,10 @@
             <button id="searchBtn" type="submit">
                 <img src="images/searchicon.svg" alt="searchicon">
             </button>
-            <button>Filter</button>
+            <button id="filterbutton">Filter</button>
         </section> 
         <!-- Filtergedeelte -->
-        <section class="hidden"> 
+        <section id="filtergedeelte" class="hidden"> 
             <h2>Filters</h2>
             <h3>Plaats</h3>
                 <input type="search" placeholder="zoek een plaats...">
@@ -35,11 +36,11 @@
             <label for="r&b/soul">R&B/Soul</label>
             <input type="checkbox" id="klassiek" name="type muziek" value="klassiek">
             <label for="klassiek">Klassiek</label>
-            <input type="checkbox" id="jazz" name="type muziek" value="jazz">
+            <input type="checkbox" id="jazz" name="type_muziek" value="jazz">
             <label for="jazz">Jazz</label>
-            <input type="checkbox" id="wereldmuziek" name="type muziek" value="wereldmuziek">
+            <input type="checkbox" id="wereldmuziek" name="type_muziek" value="wereldmuziek">
             <label for="wereldmuziek">Wereldmuziek</label>
-            <input type="checkbox" id="Opera" name="type muziek" value="opera">
+            <input type="checkbox" id="opera" name="type_muziek" value="opera">
             <label for="opera">Opera</label>
             <h3>Datum</h3>
             <h3>Prijs</h3>
@@ -70,7 +71,6 @@
     </main>
     <footer>
         <a href="/buddyzoeken">Buddy zoeken</a>
-
     </footer>
     <script src="/scripts/script.js"></script>
 </body>

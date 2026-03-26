@@ -2,6 +2,7 @@
 window.onload = function() {
     slideOne();
     slideTwo();
+    loadDefaultEvents();
 }
 
 let sliderOne = document.getElementById("slider-1");
@@ -11,6 +12,17 @@ let displayValTwo = document.getElementById("range2");
 let minGap = 0;
 let slidertrack = document.querySelector(".slider-track");
 let sliderMaxValue = document.getElementById("slider-1").max;
+let filteropties = document.getElementById("filtergedeelte");
+
+document.getElementById("filterbutton").addEventListener("click", filteropen);
+
+function filteropen() {
+    if (filteropties.style.display === "block") {
+        filteropties.style.display = "none";
+    } else {
+        filteropties.style.display = "block";
+    }
+}
 
 function slideOne() {
     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
@@ -38,19 +50,11 @@ function fillColor() {
   hsl(0, 0%, 85%) ${percent2}%)`;
 }
 
-document.getElementById("searchBtn").addEventListener("click", async () => {
-
-    console.log("Button werkt");
-    const artist = document.getElementById("artistInput").value;
-
-    if (!artist) return;
-
-    const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
-    const data = await response.json();
-
-    console.log("FRONTEND DATA:", data);
-
+//Functie voor het "aanmaken" van events waar later info in kan
+function renderEvents(data) {
     const results = document.getElementById("results");
+    if (!results) return;
+
     results.innerHTML = "";
 
     if (!Array.isArray(data) || data.length === 0) {
@@ -59,7 +63,6 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
     }
 
     data.forEach(event => {
-
         results.innerHTML += `
             <a  href="/gekozen-concert?id=${event.id}&name=${encodeURIComponent(event.artist)}&date=${event.date}&venue=${encodeURIComponent(event.venue)}&city=${encodeURIComponent(event.city)}&country=${encodeURIComponent(event.country)}&image=${encodeURIComponent(event.image)}">
             <div class="event">
@@ -75,5 +78,54 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
             </a>
         `;
     });
+}
 
-});
+//"default" events ophalen die standaard op de home pagina staan bij openen
+async function loadDefaultEvents() {
+    try {
+        const response = await fetch("/events");
+        const data = await response.json();
+
+        renderEvents(data);
+
+    } catch (error) {
+        console.error("Fout bij ophalen default events:", error);
+    }
+}
+
+//Functie voor zoeken van events voor een specifieke artiest
+const searchBtn = document.getElementById("searchBtn");
+
+if (searchBtn) {
+    searchBtn.addEventListener("click", async () => {
+        console.log("Button werkt");
+
+        const artistInput = document.getElementById("artistInput");
+        if (!artistInput) return;
+
+        const artist = artistInput.value;
+        if (!artist) return;
+
+        try {
+            const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
+            const data = await response.json();
+
+            renderEvents(data);
+
+        } catch (error) {
+            console.error("Fout bij ophalen artist events:", error);
+        }
+    });
+};
+
+
+// CONCERT OPSLAAN NIET COMPLEET
+const addConcertBtn = document.getElementById("...");
+
+// function addConcert() {
+//     const ticketMUrl = 'https://app.ticketmaster.com/discovery/v2/';
+
+//     app.get(ticketMUrl/events/{id})
+// };
+
+addConcertBtn.addEventListener('click', addConcert());

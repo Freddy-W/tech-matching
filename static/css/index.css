@@ -1,3 +1,22 @@
+body {
+    background-color: #062b32;
+    color: white;
+    margin: 1em;    
+}
+
+a, a:visited {
+    color: #97D8E4;
+}
+
+#filtergedeelte {
+    display: none;
+}
+
+section:nth-of-type(1) {
+    display: flex;
+    margin: 0;
+}
+
 .wrapper {
     width: 90%;
     max-width: 20em;

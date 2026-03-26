@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/index.css">
     <title>Buddy zoeken</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -21,7 +23,15 @@
         </div>
         <% }) %>
         <!-- filtergedeelte -->
-        <section class="hidden"> 
+         <h1>Zoek een Buddy</h1>
+         <section>
+            <input id="zoekBuddy" type="search" placeholder="zoek een buddy...">
+            <button id="searchBtn" type="submit">
+                <img src="images/searchicon.svg" alt="searchicon">
+            </button>
+            <button id="filterbutton">Filter</button>
+        </section> 
+        <section id="filtergedeelte" class="hidden"> 
             <h2>Filters</h2>
             <h3>Plaats</h3>
             <input type="search" placeholder="zoek een plaats...">
@@ -65,5 +75,6 @@
     <footer>
         <%- include('partials/menubalk')%>
     </footer>
+    <script src="/scripts/script2.js"></script>
 </body>
 </html>
