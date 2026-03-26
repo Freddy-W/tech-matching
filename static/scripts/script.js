@@ -11,6 +11,17 @@ let displayValTwo = document.getElementById("range2");
 let minGap = 0;
 let slidertrack = document.querySelector(".slider-track");
 let sliderMaxValue = document.getElementById("slider-1").max;
+let filteropties = document.getElementById("filtergedeelte");
+
+document.getElementById("filterbutton").addEventListener("click", filteropen);
+
+function filteropen() {
+    if (filteropties.style.display === "block") {
+        filteropties.style.display = "none";
+    } else {
+        filteropties.style.display = "block";
+    }
+}
 
 function slideOne() {
     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
