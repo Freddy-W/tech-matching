@@ -63,7 +63,10 @@ app.get("/events", async (req, res) => {
           venue: event._embedded?.venues?.[0]?.name || "Onbekend",
           city: event._embedded?.venues?.[0]?.city?.name || "",
           country: event._embedded?.venues?.[0]?.country?.name || "",
-          url: event.url
+          url: event.url,
+          image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url 
+           || event.images?.[0]?.url 
+           || ""
       }));
 
       res.json(formattedEvents);
@@ -97,19 +100,6 @@ app.get(`/artist/:artist`, async (req, res) => {
 
         const events = data._embedded.events;
         
-        const formattedEvents = events.map(event => ({
-            id: event.id,
-            artist: event.name,
-            date: event.dates?.start?.localDate || "Onbekend",
-            time: event.dates?.start?.localTime || "Onbekend",
-            venue: event._embedded?.venues?.[0]?.name || "Onbekend",
-            city: event._embedded?.venues?.[0]?.city?.name || "",
-            country: event._embedded?.venues?.[0]?.country?.name || "",
-            url: event.url,
-            image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url 
-           || event.images?.[0]?.url 
-           || ""
-        }));
 
         res.json(formattedEvents);
 
