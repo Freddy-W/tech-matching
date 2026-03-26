@@ -22,10 +22,14 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
 // CONCERT OPSLAAN NIET COMPLEET
 const addConcertBtn = document.getElementById("...");
 
-// function addConcert() {
-//     const ticketMUrl = 'https://app.ticketmaster.com/discovery/v2/';
+function addConcert() {
+    app.get('/artist/:artist', async (req,res) => {
+        const url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${encodeURIComponent(artist)}&size=10&sort=date,asc&apikey=${apiKey}`;
+        const currentConcert = concertId;
 
-//     app.get(ticketMUrl/events/{id})
-// };
+        app.fetch({url} + "/events/currentConcert/" + {currentConcert})
+
+    })
+};
 
 addConcertBtn.addEventListener('click', addConcert());
