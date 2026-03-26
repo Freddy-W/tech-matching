@@ -12,6 +12,11 @@ a, a:visited {
     display: none;
 }
 
+section:nth-of-type(1) {
+    display: flex;
+    margin: 0;
+}
+
 .wrapper {
     width: 90%;
     max-width: 20em;
