@@ -56,7 +56,17 @@ app.get("/events", async (req, res) => {
 
       const events = data._embedded.events;
 
-      const formattedEvents = events.map(event => ({
+      const filteredEvents = events.filter(event => {
+        const isMusic = event.classifications?.some(c => c.segment?.name.toLowerCase() === "music");
+      
+        const unwanted = ["parking", "permit", "parking permit", "seats", "comfort seats"];
+        const nameLower = event.name.toLowerCase();
+        const isValidName = !unwanted.some(word => nameLower.includes(word));
+      
+        return isMusic && isValidName;
+      });
+
+      const formattedEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
           date: event.dates?.start?.localDate || "Onbekend",
@@ -82,7 +92,7 @@ app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = req.params.artist;
 
-    const url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${encodeURIComponent(artist)}&size=10&sort=date,asc&apikey=${apiKey}`;
+    const url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${encodeURIComponent(artist)}&size=10&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
 
     try {
         const response = await fetch(url);
@@ -101,8 +111,17 @@ app.get(`/artist/:artist`, async (req, res) => {
 
         const events = data._embedded.events;
         
+        const filteredEvents = events.filter(event => {
+          const isMusic = event.classifications?.some(c => c.segment?.name.toLowerCase() === "music");
+        
+          const unwanted = ["parking", "permit", "parking permit"];
+          const nameLower = event.name.toLowerCase();
+          const isValidName = !unwanted.some(word => nameLower.includes(word));
+        
+          return isMusic && isValidName;
+        });
 
-      const formattedEvents = events.map(event => ({
+      const formattedEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
           date: event.dates?.start?.localDate || "Onbekend",
