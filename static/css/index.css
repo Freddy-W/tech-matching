@@ -1,3 +1,7 @@
+.filtergedeelte {
+    display: none;
+}
+
 .wrapper {
     width: 90%;
     max-width: 20em;
