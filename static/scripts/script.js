@@ -2,6 +2,7 @@
 window.onload = function() {
     slideOne();
     slideTwo();
+    loadDefaultEvents();
 }
 
 let sliderOne = document.getElementById("slider-1");
@@ -49,19 +50,11 @@ function fillColor() {
   hsl(0, 0%, 85%) ${percent2}%)`;
 }
 
-document.getElementById("searchBtn").addEventListener("click", async () => {
-
-    console.log("Button werkt");
-    const artist = document.getElementById("artistInput").value;
-
-    if (!artist) return;
-
-    const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
-    const data = await response.json();
-
-    console.log("FRONTEND DATA:", data);
-
+//Functie voor het "aanmaken" van events waar later info in kan
+function renderEvents(data) {
     const results = document.getElementById("results");
+    if (!results) return;
+
     results.innerHTML = "";
 
     if (!Array.isArray(data) || data.length === 0) {
@@ -70,7 +63,6 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
     }
 
     data.forEach(event => {
-
         results.innerHTML += `
             <div class="event">
                 <h3>${event.artist}</h3>
@@ -81,8 +73,45 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
             </div>
         `;
     });
+}
 
-});
+//"default" events ophalen die standaard op de home pagina staan bij openen
+async function loadDefaultEvents() {
+    try {
+        const response = await fetch("/events");
+        const data = await response.json();
+
+        renderEvents(data);
+
+    } catch (error) {
+        console.error("Fout bij ophalen default events:", error);
+    }
+}
+
+//Functie voor zoeken van events voor een specifieke artiest
+const searchBtn = document.getElementById("searchBtn");
+
+if (searchBtn) {
+    searchBtn.addEventListener("click", async () => {
+        console.log("Button werkt");
+
+        const artistInput = document.getElementById("artistInput");
+        if (!artistInput) return;
+
+        const artist = artistInput.value;
+        if (!artist) return;
+
+        try {
+            const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
+            const data = await response.json();
+
+            renderEvents(data);
+
+        } catch (error) {
+            console.error("Fout bij ophalen artist events:", error);
+        }
+    });
+};
 
 
 // CONCERT OPSLAAN NIET COMPLEET

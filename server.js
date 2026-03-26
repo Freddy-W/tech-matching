@@ -34,6 +34,46 @@ app.use(session({
   }
 }));
 
+app.get("/events", async (req, res) => {
+
+  //10 aankomende events in NL
+  const url = `https://app.ticketmaster.com/discovery/v2/events.json?size=10&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
+
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      console.log("DEFAULT EVENTS DATA:", JSON.stringify(data, null, 2));
+
+      if (data.fault) {
+          console.error("API ERROR:", data.fault);
+          return res.status(400).json({ error: "API key werkt niet of geen toegang" });
+      }
+
+      if (!data._embedded || !data._embedded.events) {
+          return res.json([]);
+      }
+
+      const events = data._embedded.events;
+
+      const formattedEvents = events.map(event => ({
+          artist: event.name,
+          date: event.dates?.start?.localDate || "Onbekend",
+          time: event.dates?.start?.localTime || "Onbekend",
+          venue: event._embedded?.venues?.[0]?.name || "Onbekend",
+          city: event._embedded?.venues?.[0]?.city?.name || "",
+          country: event._embedded?.venues?.[0]?.country?.name || "",
+          url: event.url
+      }));
+
+      res.json(formattedEvents);
+
+  } catch (error) {
+      console.error("SERVER ERROR:", error);
+      res.status(500).json({ error: "API request mislukt" });
+  }
+});
+
 app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = req.params.artist;
@@ -46,13 +86,11 @@ app.get(`/artist/:artist`, async (req, res) => {
 
         console.log("DATA:", JSON.stringify(data, null, 2));
 
-        //API fout afhandeling
         if (data.fault) {
             console.error("API ERROR:", data.fault);
             return res.status(400).json({ error: "API key werkt niet of geen toegang" });
         }
 
-        //bestaan de events?
         if (!data._embedded || !data._embedded.events) {
             return res.json([]);
         }
