@@ -6,3 +6,7 @@
 body {
     font-family: 'Alexandria';
 }
+
+.hidden {
+    display: none;
+}

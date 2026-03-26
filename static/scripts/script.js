@@ -61,13 +61,18 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
     data.forEach(event => {
 
         results.innerHTML += `
+            <a  href="/gekozen-concert?id=${event.id}&name=${encodeURIComponent(event.artist)}&date=${event.date}&venue=${encodeURIComponent(event.venue)}&city=${encodeURIComponent(event.city)}&country=${encodeURIComponent(event.country)}&image=${encodeURIComponent(event.image)}">
             <div class="event">
+                <img src="${event.image}" alt="${event.artist}" style="max-width: 200px; border-radius: 8px;">
+                <div class="eventinfo">
                 <h3>${event.artist}</h3>
                 <p><strong>Datum:</strong> ${event.date}</p>
                 <p><strong>Tijd:</strong> ${event.time}</p>
                 <p><strong>Locatie:</strong> ${event.venue} (${event.city}, ${event.country})</p>
                 <a href="${event.url}" target="_blank">Tickets</a>
+                </div>
             </div>
+            </a>
         `;
     });
 
