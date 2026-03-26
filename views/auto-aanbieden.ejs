@@ -13,6 +13,7 @@
     <main>
         <h1>Auto Aanbieden</h1>
         <form action="/autoaanbieden" method="POST">
+        <input type="hidden" name="eventId" value="<%= eventId %>">
             <label>
                 <h2>Welke auto heb je?</h2>
                 <input name="auto" placeholder="Honda Civic" required>

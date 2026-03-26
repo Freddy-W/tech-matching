@@ -154,7 +154,7 @@ app.get("/", (req, res)=> {
 
 app.get("/buddyzoeken", (req, res)=> {
     const eventId = req.query.eventId;
-    res.render('buddyzoeken.ejs');
+    res.render('buddyzoeken.ejs', { eventId });
 })
 
 app.get("/gekozen-concert", (req, res)=>{
@@ -174,7 +174,7 @@ app.get("/gekozen-concert", (req, res)=>{
 
 app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
   const eventId = req.query.eventId;
-    res.render('auto-aanbieden.ejs', { eventId });
+  res.render('auto-aanbieden.ejs', { eventId });
 });
 
 mongoose.connect(process.env.dbPassword);
@@ -198,6 +198,7 @@ const carListingSchema = new mongoose.Schema({
   hoeveel: Number,
   rijden: String,
   brandstof: String,
+  eventId: String
 });
 const userData = mongoose.model("userdata", dataScheme);
 const carListing = mongoose.model("CarListing", carListingSchema);
@@ -279,9 +280,10 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
       hoeveel: req.body.hoeveel,
       rijden: req.body.rijden,
       brandstof: req.body.brandstof,
+      eventId: req.body.eventId
     };
     await carListing.create(listingData);
-    res.redirect("/buddy-zoeken")
+    res.redirect(`/buddy-zoeken?eventId=${req.body.eventId}`);
   } catch (error) {
     console.error(error);
     res.send("Error bij opslaan listing");
@@ -290,8 +292,9 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
 
 app.get("/buddy-zoeken", async (req, res)=>{
   try {
+    const eventId = req.query.eventId; 
     const listings = await carListing
-      .find()
+      .find({ eventId })
       .populate("userId", "voornaam"); // voegt de user info toe
     res.render("buddy-zoeken.ejs", { listings });
   } catch (error) {
