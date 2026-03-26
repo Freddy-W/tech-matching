@@ -5,25 +5,22 @@ const dotenv = require("dotenv");
 dotenv.config();
 const bcrypt = require("bcryptjs");
 const session = require('express-session');
-
+const MongoStore = require('connect-mongo').default;
 const app = express();
 const port = 2020;
 const apiKey = process.env.APIKEY;
+
 app.use(express.static("static"));
 app.set('view engine', 'ejs');
-
 app.listen(port, () => {
     console.log(`Server draait op http://localhost:${port}`);
 });
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
     res.render("index");
 });
-
-const MongoStore = require('connect-mongo').default;
 
 app.use(session({
   secret: 'process.env.SESSIONKEY',
