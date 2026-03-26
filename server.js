@@ -57,6 +57,7 @@ app.get("/events", async (req, res) => {
       const events = data._embedded.events;
 
       const formattedEvents = events.map(event => ({
+          id: event.id,
           artist: event.name,
           date: event.dates?.start?.localDate || "Onbekend",
           time: event.dates?.start?.localTime || "Onbekend",
@@ -102,6 +103,7 @@ app.get(`/artist/:artist`, async (req, res) => {
         
 
       const formattedEvents = events.map(event => ({
+          id: event.id,
           artist: event.name,
           date: event.dates?.start?.localDate || "Onbekend",
           time: event.dates?.start?.localTime || "Onbekend",
