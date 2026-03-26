@@ -1,3 +1,13 @@
+body {
+    background-color: #062b32;
+    color: white;
+    margin: 1em;    
+}
+
+a, a:visited {
+    color: #97D8E4;
+}
+
 #filtergedeelte {
     display: none;
 }
