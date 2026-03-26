@@ -101,6 +101,19 @@ app.get(`/artist/:artist`, async (req, res) => {
         const events = data._embedded.events;
         
 
+      const formattedEvents = events.map(event => ({
+          artist: event.name,
+          date: event.dates?.start?.localDate || "Onbekend",
+          time: event.dates?.start?.localTime || "Onbekend",
+          venue: event._embedded?.venues?.[0]?.name || "Onbekend",
+          city: event._embedded?.venues?.[0]?.city?.name || "",
+          country: event._embedded?.venues?.[0]?.country?.name || "",
+          url: event.url,
+          image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url 
+           || event.images?.[0]?.url 
+           || ""
+      }));
+
         res.json(formattedEvents);
 
     } catch (error) {
@@ -138,6 +151,7 @@ app.get("/", (req, res)=> {
 });
 
 app.get("/buddyzoeken", (req, res)=> {
+    const eventId = req.query.eventId;
     res.render('buddyzoeken.ejs');
 })
 
@@ -157,7 +171,8 @@ app.get("/gekozen-concert", (req, res)=>{
 
 
 app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
-    res.render('auto-aanbieden.ejs');
+  const eventId = req.query.eventId;
+    res.render('auto-aanbieden.ejs', { eventId });
 });
 
 mongoose.connect(process.env.dbPassword);

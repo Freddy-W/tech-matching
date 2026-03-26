@@ -23,8 +23,8 @@
         <section>
              <p><%= event.venue %></p>
         </section>
-        <a href="buddy-zoeken">Zoek een auto</a>
-        <a href="auto-aanbieden">Bied auto aan</a>
+        <a href="/buddy-zoeken?eventId=<%= event.id %>">Zoek een auto</a>
+        <a href="/auto-aanbieden?eventId=<%= event.id %>">Bied auto aan</a>
         </div>
         
     </main>
