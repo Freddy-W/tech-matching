@@ -172,8 +172,7 @@ app.get("/", (req, res)=> {
 });
 
 app.get("/buddyzoeken", (req, res)=> {
-    const eventId = req.query.eventId;
-    res.render('buddyzoeken.ejs', { eventId });
+    res.render('buddy-zoeken.ejs');
 })
 
 app.get("/gekozen-concert", (req, res)=>{

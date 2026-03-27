@@ -71,9 +71,9 @@ input[type="range"]::-webkit-slider-thumb {
 .eventinfo {
     margin-left:10px;
 }
-.eventinfo img {
+/* .eventinfo img {
     
-}
+} */
 
 .event {
     display: flex;
