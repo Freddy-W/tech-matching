@@ -10,3 +10,8 @@ body {
 .hidden {
     display: none;
 }
+
+nav img {
+    filter: invert(1); /* maakt zwart → wit */
+    width: 20vw;
+}
