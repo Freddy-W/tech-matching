@@ -138,7 +138,7 @@ app.get("/", (req, res)=> {
 });
 
 app.get("/buddyzoeken", (req, res)=> {
-    res.render('buddyzoeken.ejs');
+    res.render('buddy-zoeken.ejs');
 })
 
 app.get("/gekozen-concert", (req, res)=>{
