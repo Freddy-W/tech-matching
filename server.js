@@ -56,7 +56,18 @@ app.get("/events", async (req, res) => {
 
       const events = data._embedded.events;
 
-      const formattedEvents = events.map(event => ({
+      const filteredEvents = events.filter(event => {
+        const isMusic = event.classifications?.some(c => c.segment?.name.toLowerCase() === "music");
+      
+        const unwanted = ["parking", "permit", "parking permit", "seats", "comfort seats"];
+        const nameLower = event.name.toLowerCase();
+        const isValidName = !unwanted.some(word => nameLower.includes(word));
+      
+        return isMusic && isValidName;
+      });
+
+      const formattedEvents = filteredEvents.map(event => ({
+          id: event.id,
           artist: event.name,
           date: event.dates?.start?.localDate || "Onbekend",
           time: event.dates?.start?.localTime || "Onbekend",
@@ -81,7 +92,7 @@ app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = req.params.artist;
 
-    const url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${encodeURIComponent(artist)}&size=10&sort=date,asc&apikey=${apiKey}`;
+    const url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${encodeURIComponent(artist)}&size=10&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
 
     try {
         const response = await fetch(url);
@@ -100,6 +111,29 @@ app.get(`/artist/:artist`, async (req, res) => {
 
         const events = data._embedded.events;
         
+        const filteredEvents = events.filter(event => {
+          const isMusic = event.classifications?.some(c => c.segment?.name.toLowerCase() === "music");
+        
+          const unwanted = ["parking", "permit", "parking permit"];
+          const nameLower = event.name.toLowerCase();
+          const isValidName = !unwanted.some(word => nameLower.includes(word));
+        
+          return isMusic && isValidName;
+        });
+
+      const formattedEvents = filteredEvents.map(event => ({
+          id: event.id,
+          artist: event.name,
+          date: event.dates?.start?.localDate || "Onbekend",
+          time: event.dates?.start?.localTime || "Onbekend",
+          venue: event._embedded?.venues?.[0]?.name || "Onbekend",
+          city: event._embedded?.venues?.[0]?.city?.name || "",
+          country: event._embedded?.venues?.[0]?.country?.name || "",
+          url: event.url,
+          image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url 
+           || event.images?.[0]?.url 
+           || ""
+      }));
 
         res.json(formattedEvents);
 
@@ -138,7 +172,7 @@ app.get("/", (req, res)=> {
 });
 
 app.get("/buddyzoeken", (req, res)=> {
-    res.render('buddyzoeken.ejs');
+    res.render('buddy-zoeken.ejs');
 })
 
 app.get("/gekozen-concert", (req, res)=>{
@@ -157,7 +191,8 @@ app.get("/gekozen-concert", (req, res)=>{
 
 
 app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
-    res.render('auto-aanbieden.ejs');
+  const eventId = req.query.eventId;
+  res.render('auto-aanbieden.ejs', { eventId });
 });
 
 mongoose.connect(process.env.dbPassword);
@@ -181,6 +216,7 @@ const carListingSchema = new mongoose.Schema({
   hoeveel: Number,
   rijden: String,
   brandstof: String,
+  eventId: String
 });
 const userData = mongoose.model("userdata", dataScheme);
 const carListing = mongoose.model("CarListing", carListingSchema);
@@ -262,9 +298,10 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
       hoeveel: req.body.hoeveel,
       rijden: req.body.rijden,
       brandstof: req.body.brandstof,
+      eventId: req.body.eventId
     };
     await carListing.create(listingData);
-    res.redirect("/buddy-zoeken")
+    res.redirect(`/buddy-zoeken?eventId=${req.body.eventId}`);
   } catch (error) {
     console.error(error);
     res.send("Error bij opslaan listing");
@@ -273,8 +310,9 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
 
 app.get("/buddy-zoeken", async (req, res)=>{
   try {
+    const eventId = req.query.eventId; 
     const listings = await carListing
-      .find()
+      .find({ eventId })
       .populate("userId", "voornaam"); // voegt de user info toe
     res.render("buddy-zoeken.ejs", { listings });
   } catch (error) {
