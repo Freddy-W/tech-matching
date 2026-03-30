@@ -12,16 +12,21 @@ let displayValTwo = document.getElementById("range2");
 let minGap = 0;
 let slidertrack = document.querySelector(".slider-track");
 let sliderMaxValue = document.getElementById("slider-1").max;
-let filteropties = document.getElementById("filtergedeelte");
+const filterBtn = document.getElementById("filterbutton");
+const filteropties = document.getElementById("filtergedeelte");
+const closeBtn = document.getElementById("annuleer");
 
-document.getElementById("filterbutton").addEventListener("click", filteropen);
+// openen/sluiten
+if (filterBtn) {
+    filterBtn.addEventListener("click", () => {
+        filteropties.classList.add("open");
+    });
+}
 
-function filteropen() {
-    if (filteropties.style.display === "block") {
-        filteropties.style.display = "none";
-    } else {
-        filteropties.style.display = "block";
-    }
+if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+        filteropties.classList.remove("open");
+    });
 }
 
 function slideOne() {
