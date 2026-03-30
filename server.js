@@ -43,8 +43,6 @@ app.get("/events", async (req, res) => {
       const response = await fetch(url);
       const data = await response.json();
 
-      console.log("DEFAULT EVENTS DATA:", JSON.stringify(data, null, 2));
-
       if (data.fault) {
           console.error("API ERROR:", data.fault);
           return res.status(400).json({ error: "API key werkt niet of geen toegang" });
@@ -98,8 +96,6 @@ app.get(`/artist/:artist`, async (req, res) => {
     try {
         const response = await fetch(url);
         const data = await response.json();
-
-        console.log("DATA:", JSON.stringify(data, null, 2));
 
         if (data.fault) {
             console.error("API ERROR:", data.fault);
