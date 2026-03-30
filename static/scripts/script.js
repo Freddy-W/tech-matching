@@ -74,6 +74,7 @@ function renderEvents(data) {
                 <img src="${event.image}" alt="${event.artist}" style="max-width: 200px; border-radius: 8px;">
                 <div class="eventinfo">
                 <h3>${event.artist}</h3>
+                <p><strong>Genre:</strong> ${event.genre}</p>
                 <p><strong>Datum:</strong> ${event.date}</p>
                 <p><strong>Tijd:</strong> ${event.time}</p>
                 <p><strong>Locatie:</strong> ${event.venue} (${event.city}, ${event.country})</p>
