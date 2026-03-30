@@ -69,6 +69,7 @@ app.get("/events", async (req, res) => {
       const formattedEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
+          genre: event.classifications?.[0]?.genre?.name || "Onbekend",
           date: event.dates?.start?.localDate || "Onbekend",
           time: event.dates?.start?.localTime || "Onbekend",
           venue: event._embedded?.venues?.[0]?.name || "Onbekend",
@@ -124,6 +125,7 @@ app.get(`/artist/:artist`, async (req, res) => {
       const formattedEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
+          genre: event.classifications?.[0]?.genre?.name || "Onbekend",
           date: event.dates?.start?.localDate || "Onbekend",
           time: event.dates?.start?.localTime || "Onbekend",
           venue: event._embedded?.venues?.[0]?.name || "Onbekend",
