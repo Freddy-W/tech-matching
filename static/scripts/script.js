@@ -75,9 +75,9 @@ function renderEvents(data) {
                 <div class="eventinfo">
                 <h3>${event.artist}</h3>
                 <p><strong>Genre:</strong> ${event.genre}</p>
+                <!-- <p><strong>Tijd:</strong> ${event.time}</p> -->
                 <p><strong>Datum:</strong> ${event.date}</p>
-                <p><strong>Tijd:</strong> ${event.time}</p>
-                <p><strong>Locatie:</strong> ${event.venue} (${event.city}, ${event.country})</p>
+                <p><strong>Locatie:</strong> ${event.venue} (${event.city})</p>
                 <a href="${event.url}" target="_blank">Tickets</a>
                 </div>
             </div>

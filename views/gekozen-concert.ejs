@@ -5,20 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Concert</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/huidigconcert.css">
 </head>
 <body>
     <header>
+         <%- include('partials/header')%>
     </header>
     <main>
-        <a href="index.html"><img src="Terugpijl"></a>
-        <h1>Huidig Concert</h1>
+        <div>
+            <a href="/"><img src="/images/terugpijl.png"></a>
+            <h1>Huidig Concert</h1>
+        </div>
         <div>
         <section>
             <img src="<%= event.image%>" alt="${event.artist}" style=" border-radius: 8px;">
             <h2><%= event.artist %></h3>
             <p><%= event.city %>, <%= event.country %></p>
             <p><%= event.date %></p>
-            <button></button>
         </section>
         <section>
              <p><%= event.venue %></p>

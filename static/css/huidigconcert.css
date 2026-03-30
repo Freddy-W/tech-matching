@@ -1,0 +1,23 @@
+body {
+    background-color: #062b32;
+    color: white;
+}
+
+main > div:nth-of-type(1) {
+    display: flex;
+    align-items: center;
+}
+
+main > div section img {
+    margin: 1rem;
+    max-width: 80vw;
+    justify-self: center;
+}
+
+main >div:nth-of-type(2) a {
+    padding: 1rem;
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+    text-decoration: 0;
+}
