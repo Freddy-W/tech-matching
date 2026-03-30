@@ -1,17 +1,17 @@
 // https://www.youtube.com/watch?v=DfSYmk_6vk8
 window.onload = function() {
-    slideOne();
-    slideTwo();
+    // slideOne();
+    // slideTwo();
     loadDefaultEvents();
 }
 
-let sliderOne = document.getElementById("slider-1");
-let sliderTwo = document.getElementById("slider-2");
-let displayValOne = document.getElementById("range1");
-let displayValTwo = document.getElementById("range2");
-let minGap = 0;
-let slidertrack = document.querySelector(".slider-track");
-let sliderMaxValue = document.getElementById("slider-1").max;
+// let sliderOne = document.getElementById("slider-1");
+// let sliderTwo = document.getElementById("slider-2");
+// let displayValOne = document.getElementById("range1");
+// let displayValTwo = document.getElementById("range2");
+// let minGap = 0;
+// let slidertrack = document.querySelector(".slider-track");
+// let sliderMaxValue = document.getElementById("slider-1").max;
 const filterBtn = document.getElementById("filterbutton");
 const filteropties = document.getElementById("filtergedeelte");
 const closeBtn = document.getElementById("annuleer");
@@ -29,31 +29,31 @@ if (closeBtn) {
     });
 }
 
-function slideOne() {
-    if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-        sliderOne.value = parseInt(sliderTwo.value) -minGap;
-    }
-    displayValOne.textContent = sliderOne.value;
-    fillColor();
-}
+// function slideOne() {
+//     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+//         sliderOne.value = parseInt(sliderTwo.value) -minGap;
+//     }
+//     displayValOne.textContent = sliderOne.value;
+//     fillColor();
+// }
 
-function slideTwo() {
-    if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-        sliderTwo.value = parseInt(sliderOne.value) + minGap;
-    }
-    displayValTwo.textContent = sliderTwo.value;
-    fillColor();
-}
+// function slideTwo() {
+//     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+//         sliderTwo.value = parseInt(sliderOne.value) + minGap;
+//     }
+//     displayValTwo.textContent = sliderTwo.value;
+//     fillColor();
+// }
 
-function fillColor() {
-    percent1 = (sliderOne.value / sliderMaxValue) * 100;
-    percent2 = (sliderTwo.value / sliderMaxValue) * 100;
-    slidertrack.style.background = `linear-gradient(to right, 
-    hsl(0, 0%, 85%) ${percent1}%,
-  hsl(187, 69%, 37%) ${percent1}%,
-  hsl(187, 69%, 37%) ${percent2}%,
-  hsl(0, 0%, 85%) ${percent2}%)`;
-}
+// function fillColor() {
+//     percent1 = (sliderOne.value / sliderMaxValue) * 100;
+//     percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+//     slidertrack.style.background = `linear-gradient(to right, 
+//     hsl(0, 0%, 85%) ${percent1}%,
+//   hsl(187, 69%, 37%) ${percent1}%,
+//   hsl(187, 69%, 37%) ${percent2}%,
+//   hsl(0, 0%, 85%) ${percent2}%)`;
+// }
 
 //Functie voor het "aanmaken" van events waar later info in kan
 function renderEvents(data) {
@@ -100,12 +100,34 @@ async function loadDefaultEvents() {
 }
 
 //Functie voor zoeken van events voor een specifieke artiest
+// const searchBtn = document.getElementById("searchBtn");
+
+// if (searchBtn) {
+//     searchBtn.addEventListener("click", async () => {
+//         console.log("Button werkt");
+
+//         const artistInput = document.getElementById("artistInput");
+//         if (!artistInput) return;
+
+//         const artist = artistInput.value;
+//         if (!artist) return;
+
+//         try {
+//             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
+//             const data = await response.json();
+
+//             renderEvents(data);
+
+//         } catch (error) {
+//             console.error("Fout bij ophalen artist events:", error);
+//         }
+//     });
+// };
+
 const searchBtn = document.getElementById("searchBtn");
 
 if (searchBtn) {
     searchBtn.addEventListener("click", async () => {
-        console.log("Button werkt");
-
         const artistInput = document.getElementById("artistInput");
         if (!artistInput) return;
 
@@ -116,14 +138,19 @@ if (searchBtn) {
             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
             const data = await response.json();
 
-            renderEvents(data);
+            renderEvents(data); // toont de gevonden concerten
 
         } catch (error) {
             console.error("Fout bij ophalen artist events:", error);
         }
     });
-};
+}
 
+document.getElementById("artistInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        searchBtn.click();
+    }
+});
 
 // CONCERT OPSLAAN NIET COMPLEET
 const addConcertBtn = document.getElementById("...");
@@ -135,3 +162,46 @@ const addConcertBtn = document.getElementById("...");
 // };
 
 // addConcertBtn.addEventListener('click', addConcert());
+
+const filterSubmitBtn = document.getElementById("filterSubmit");
+
+if (filterSubmitBtn) {
+    filterSubmitBtn.addEventListener("click", async () => {
+        try {
+            const response = await fetch("/events");
+            const data = await response.json();
+
+            const plaats = document.getElementById("plaatsInput").value.toLowerCase();
+            // const datum = document.getElementById("datumInput").value;
+
+            const typesChecked = Array.from(document.querySelectorAll('input[name="type_muziek"]:checked'))
+                                      .map(el => el.value);
+
+            const filtered = data.filter(event => {
+                const plaatsMatch = !plaats || event.city.toLowerCase().includes(plaats);
+
+                const typeMatch =
+                    typesChecked.length === 0 ||
+                    typesChecked.some(type => 
+                        event.genre.toLowerCase().includes(type.toLowerCase())
+                    );
+
+                // 👇 HIER hoort je datum code
+                const van = document.getElementById("datumVan").value;
+                const tot = document.getElementById("datumTot").value;
+
+                const datumMatch =
+                    (!van || event.date >= van) &&
+                    (!tot || event.date <= tot);
+
+                return plaatsMatch && typeMatch && datumMatch;
+            });
+
+            renderEvents(filtered);
+            filteropties.classList.remove("open");
+
+        } catch (error) {
+            console.error("Fout bij filteren:", error);
+        }
+    });
+}

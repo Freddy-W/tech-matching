@@ -24,24 +24,38 @@
         <section id="filtergedeelte"> 
             <h2>Filters</h2>
             <h3>Plaats</h3>
-                <input type="search" placeholder="zoek een plaats...">
+            <input type="search" id="plaatsInput" placeholder="zoek een plaats...">
+            <button>Zoek</button>
             <h3>Type muziek</h3>
-            <input type="checkbox" id="pop & rock" name="type muziek" value="pop & rock">
-            <label for="pop & rock">Pop & Rock</label>
-            <input type="checkbox" id="hiphop" name="type muziek" value="hiphop">
-            <label for="hiphop">Hiphop</label>
-            <input type="checkbox" id="r&b/soul" name="type muziek" value="r&b/soul">
-            <label for="r&b/soul">R&B/Soul</label>
-            <input type="checkbox" id="klassiek" name="type muziek" value="klassiek">
+            <input type="checkbox" id="rock" name="type_muziek" value="Rock">
+            <label for="rock">Rock</label>
+            <input type="checkbox" id="dance" name="type_muziek" value="Dance/Electronic">
+            <label for="dance">Dance/Electronic</label>
+            <input type="checkbox" id="country" name="type_muziek" value="Country">
+            <label for="country">Country</label>
+            <input type="checkbox" id="hiphop" name="type_muziek" value="Hip-hop/Rap">
+            <label for="hiphop">Hip-hop/Rap</label>
+            <input type="checkbox" id="other" name="type_muziek" value="Other">
+            <label for="other">Other</label>
+            <!-- <input type="checkbox" id="poprock" name="type_muziek" value="Pop & Rock">
+            <label for="poprock">Pop & Rock</label>
+            <input type="checkbox" id="hip-hop" name="type_muziek" value="Hip-hop">
+            <label for="hip-hop">Hiphop</label>
+            <input type="checkbox" id="rbsoul" name="type_muziek" value="R&B/Soul">
+            <label for="rbsoul">R&B/Soul</label>
+            <input type="checkbox" id="klassiek" name="type_muziek" value="Klassiek">
             <label for="klassiek">Klassiek</label>
-            <input type="checkbox" id="jazz" name="type_muziek" value="jazz">
+            <input type="checkbox" id="jazz" name="type_muziek" value="Jazz">
             <label for="jazz">Jazz</label>
-            <input type="checkbox" id="wereldmuziek" name="type_muziek" value="wereldmuziek">
+            <input type="checkbox" id="wereldmuziek" name="type_muziek" value="Wereldmuziek">
             <label for="wereldmuziek">Wereldmuziek</label>
-            <input type="checkbox" id="opera" name="type_muziek" value="opera">
-            <label for="opera">Opera</label>
+            <input type="checkbox" id="opera" name="type_muziek" value="Opera">
+            <label for="opera">Opera</label> -->
             <h3>Datum</h3>
-            <h3>Prijs</h3>
+            <!-- <input type="date" id="datumInput"> -->
+            <input type="date" id="datumVan">
+            <input type="date" id="datumTot">
+            <!-- <h3>Prijs</h3>
             <div class="wrapper">
                 <div class="container">
                     <div class="slider-track"></div>
@@ -57,9 +71,9 @@
                         100
                     </span>
                 </div>
-            </div>
-            <button>Zoek</button>
-            <button id="annuleer">Annuleer</button>
+            </div> -->
+            <button id="annuleer">Annuleer</button>            
+            <button id="filterSubmit">Zoek</button>
         </section>
         <div id="results"></div>
     </main>
