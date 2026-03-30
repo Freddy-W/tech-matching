@@ -9,17 +9,21 @@
 </head>
 <body>
     <header>
+        <%- include('partials/header')%>
     </header>
     <main>
         <h1>Zoek een buddy</h1>
         <% if (listings.length === 0) { %> 
-        <p>Nog geen buddies beschikbaar, wees de eerste!</p>
+            <p>Nog geen buddies beschikbaar, wees de eerste!</p>
         <% } %>
+
         <% listings.forEach(listing => { %>
-        <div class="listing">
-            <h2><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
-            <p><%= listing.auto %></p>
-        </div>
+            <div class="listing">
+                <a href="listing${listingid}">
+                    <h2><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
+                    <p><%= listing.auto %></p>
+                </a>
+            </div>
         <% }) %>
         <!-- filtergedeelte -->
          <h1>Zoek een Buddy</h1>
@@ -69,6 +73,8 @@
                 </div>
             </div>
             <h3>Prijs</h3>
+            <button>Zoek</button>
+            <button id="annuleer">Annuleer</button>
         </section>
     </main>
     <footer>

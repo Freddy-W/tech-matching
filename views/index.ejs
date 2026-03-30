@@ -9,8 +9,7 @@
 </head>
 <body>
     <header>
-        <img src="#" alt="logo">
-        <a href="accountinfo">Account</a>
+        <%- include('partials/header')%>
     </header>
     <main>
         <h1>Concerten in de buurt</h1>
@@ -22,7 +21,7 @@
             <button id="filterbutton">Filter</button>
         </section> 
         <!-- Filtergedeelte -->
-        <section id="filtergedeelte" class="hidden"> 
+        <section id="filtergedeelte"> 
             <h2>Filters</h2>
             <h3>Plaats</h3>
                 <input type="search" placeholder="zoek een plaats...">
@@ -59,19 +58,14 @@
                     </span>
                 </div>
             </div>
-        </section>
-    </main>
-    <footer>
-        <%- include('partials/menubalk')%>
-            <h3>Prijs</h3>
-                
+            <button>Zoek</button>
+            <button id="annuleer">Annuleer</button>
         </section>
         <div id="results"></div>
     </main>
     <footer>
-        <a href="/buddyzoeken">Buddy zoeken</a>
+        <%- include('partials/menubalk')%>
     </footer>
     <script src="/scripts/script.js"></script>
 </body>
-
 </html>
