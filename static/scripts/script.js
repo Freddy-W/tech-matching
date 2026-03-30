@@ -120,7 +120,7 @@ if (searchBtn) {
 
 
 // CONCERT OPSLAAN NIET COMPLEET
-const addConcertBtn = document.getElementById("...");
+// const addConcertBtn = document.getElementById("...");
 
 // function addConcert() {
 //     const ticketMUrl = 'https://app.ticketmaster.com/discovery/v2/';
@@ -128,4 +128,4 @@ const addConcertBtn = document.getElementById("...");
 //     app.get(ticketMUrl/events/{id})
 // };
 
-addConcertBtn.addEventListener('click', addConcert());
+// addConcertBtn.addEventListener('click', addConcert());

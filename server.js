@@ -147,6 +147,23 @@ app.get(`/artist/:artist`, async (req, res) => {
 
 });
 
+// FAVORIET FUNCTIE
+
+const plusButton = document.querySelector("#plusButton"); //BUTTON BESTAAT NOG NIET
+// plusButton.EventListener('click', addConcert);
+
+app.patch("/userdatas/:id", async (req, res) =>{
+  const userId = req.session.userId;
+  const eventId = req.params.id;
+  await db.collection('userdatas').updateOne(
+  { _id: userId },
+  { $addToSet: { favorieten: eventId } });
+  // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
+  
+});
+
+// EIND FAVORIET "id: event.id";
+
 app.get("/login", (req, res)=>{
     res.render('login.ejs');
 });
@@ -209,6 +226,7 @@ const dataScheme = new mongoose.Schema({
     rijbewijs: String,
     auto: String,
     rijden: String,
+    favorieten: String,
 });
 
 const carListingSchema = new mongoose.Schema({
