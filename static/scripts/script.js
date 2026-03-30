@@ -12,7 +12,7 @@ window.onload = function() {
 // let minGap = 0;
 // let slidertrack = document.querySelector(".slider-track");
 // let sliderMaxValue = document.getElementById("slider-1").max;
-const filterBtn = document.getElementById("filterbutton");
+const filterBtn = document.querySelector("button:nth-of-type(2)");
 const filteropties = document.getElementById("filtergedeelte");
 const closeBtn = document.getElementById("annuleer");
 
@@ -124,11 +124,11 @@ async function loadDefaultEvents() {
 //     });
 // };
 
-const searchBtn = document.getElementById("searchBtn");
+const searchBtn = document.querySelector("button");
 
 if (searchBtn) {
     searchBtn.addEventListener("click", async () => {
-        const artistInput = document.getElementById("artistInput");
+        const artistInput = document.querySelector("input");
         if (!artistInput) return;
 
         const artist = artistInput.value;
@@ -146,7 +146,7 @@ if (searchBtn) {
     });
 }
 
-document.getElementById("artistInput").addEventListener("keydown", (e) => {
+document.querySelector("input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         searchBtn.click();
     }
@@ -170,10 +170,7 @@ if (filterSubmitBtn) {
         try {
             const response = await fetch("/events");
             const data = await response.json();
-
             const plaats = document.getElementById("plaatsInput").value.toLowerCase();
-            // const datum = document.getElementById("datumInput").value;
-
             const typesChecked = Array.from(document.querySelectorAll('input[name="type_muziek"]:checked'))
                                       .map(el => el.value);
 
