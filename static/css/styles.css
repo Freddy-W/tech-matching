@@ -3,6 +3,11 @@
 * {
     margin:0;
 }
+
+a:visited {
+    color: inherit;
+}
+
 body {
     font-family: 'Alexandria';
 }
@@ -11,7 +16,51 @@ body {
     display: none;
 }
 
-nav img {
-    filter: invert(1); /* maakt zwart → wit */
-    width: 20vw;
+header nav {
+    display: flex;
+    flex-direction:row;
+    width:100%;
+    justify-content: space-between;
+}
+
+header nav > div:nth-of-type(1) {
+    display: flex;
+}
+
+header img {
+    max-height: 3em;
+    width: auto;
+    border-radius: 8px;
+}
+
+header > img {
+    margin-right: 1rem;
+
+}
+
+header a {
+    justify-content: flex-end;
+}
+
+header p {
+    grid-row: 2;
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+footer nav img {
+    filter: invert(1); 
+    height: 3rem;
+    margin: 0.5rem;
+
+}
+
+footer nav {
+    width: 100%;
+    display: flex;
+    display: flex;
+    justify-content: space-between;
+    background-color: #062b32;
 }
