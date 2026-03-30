@@ -167,10 +167,6 @@ app.get("/accountinfo", isLoggedIn, (req, res)=>{
   res.render('accountinfo.ejs');
 });
 
-app.get("/", (req, res)=> {
-    res.render('index.ejs');
-});
-
 app.get("/buddyzoeken", (req, res)=> {
     res.render('buddy-zoeken.ejs');
 })
