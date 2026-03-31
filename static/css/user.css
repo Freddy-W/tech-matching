@@ -1,0 +1,17 @@
+main {
+    padding:1rem
+}
+main div img {
+    width: 10rem;
+    margin-right: 1rem;
+}
+
+main > div:nth-of-type(1) {
+    display: flex;
+    
+}
+
+body {
+    background-color: var(--mainblue);
+    color: var(--white)  
+}
