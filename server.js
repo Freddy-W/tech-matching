@@ -45,7 +45,6 @@ async function geocodeAddress(address) {
     throw new Error("Adres niet gevonden: " + address);
   }
 
-  // ORS geeft [lon, lat]
   const coords = data.features[0].geometry.coordinates;
   return { lon: coords[0], lat: coords[1] };
 }
@@ -75,7 +74,6 @@ async function getDistanceKm(fromCoords, toCoords) {
     throw new Error("Geen route gevonden");
   }
 
-  // afstand in meters
   const meters = data.routes[0].summary.distance;
   return meters / 1000;
 }

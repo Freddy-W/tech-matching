@@ -1,8 +1,9 @@
 // https://www.youtube.com/watch?v=DfSYmk_6vk8
-window.onload = function() {
+window.onload = async function() {
     // slideOne();
     // slideTwo();
     ladenBeginEvents();
+    afstandBereken();
 }
 
 // let sliderOne = document.getElementById("slider-1");
@@ -226,6 +227,7 @@ stars.forEach(star => {
   });
 });
 
+async function afstandBereken(){
 try {
     const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
     const data = await response.json();
@@ -242,4 +244,6 @@ try {
     console.error(error);
     distanceText.textContent = "Afstand niet beschikbaar";
   };
+
+}
 
