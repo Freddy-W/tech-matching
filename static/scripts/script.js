@@ -1,8 +1,9 @@
 // https://www.youtube.com/watch?v=DfSYmk_6vk8
-window.onload = function() {
+window.onload = async function() {
     // slideOne();
     // slideTwo();
     ladenBeginEvents();
+    afstandBereken();
 }
 
 // let sliderOne = document.getElementById("slider-1");
@@ -17,6 +18,7 @@ const filteropties = document.getElementById("filtergedeelte");
 const closeBtn = document.getElementById("annuleer");
 const stars = document.querySelectorAll('.star-rating span');
 const ratingInput = document.getElementById('rating');
+const distanceText = document.getElementById("distanceText");
 
 // openen/sluiten
 if (filterBtn) {
@@ -222,25 +224,29 @@ stars.forEach(star => {
   });
 });
 
-// const venue = eventData.dataset.venue;
-// const city = eventData.dataset.city;
-// const country = eventData.dataset.country;
+async function afstandBereken() {
+  try {
+    const params = new URLSearchParams(window.location.search);
 
-// async function fetchDistance(venue, city, country) {
-//   try {
-//     const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
-//     const data = await response.json();
+    const venue = params.get("venue");
+    const city = params.get("city");
+    const country = params.get("country");
 
-//     if (data.error) {
-//       distanceText.textContent = "Afstand niet beschikbaar";
-//       console.error(data.error);
-//       return;
-//     }
+    const distanceText = document.getElementById("distanceText");
 
-//     distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+    const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+    const data = await response.json();
 
-//   } catch (error) {
-//     console.error(error);
-//     distanceText.textContent = "Afstand niet beschikbaar";
-//   }
-// }
+    if (data.error) {
+      distanceText.textContent = "Afstand niet beschikbaar";
+      console.error(data.error);
+      return;
+    }
+
+    distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+
+  } catch (error) {
+    console.error(error);
+    distanceText.textContent = "Afstand niet beschikbaar";
+  }
+}

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laat een Review achter!</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/reviews.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/reviews.css">
 </head>
 <body>
     <header>
@@ -13,7 +13,7 @@
     </header>
     <main>
         <h1>Laat een review achter voor username!</h1>
-            <form method="POST" action="/review">
+            <form method="POST" action="/review/<%= userId %>">
             <div class="star-rating">
                 <span data-value="1">★</span>
                 <span data-value="2">★</span>

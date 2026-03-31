@@ -1,8 +1,12 @@
 main {
     padding:1rem
 }
+
+h1 {
+    margin-bottom: 0.5rem;
+}
 main div img {
-    width: 10rem;
+    width: 8rem;
     margin-right: 1rem;
 }
 
