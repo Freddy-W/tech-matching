@@ -37,15 +37,18 @@ main div:nth-of-type(2) a:first-of-type {
     text-decoration: none;
     margin: 1rem;
     padding: 1rem;
+    display: flex;
+    justify-content: center;
     border-radius: 1rem;
     background-color: var(--black);
     border: var(--white);
     width: 100%;
+    border: 10px white;
 }
 
 main div:nth-of-type(2) {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+
 }
