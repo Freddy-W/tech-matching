@@ -210,7 +210,6 @@ app.get("/gekozen-concert", (req, res)=>{
         country: req.query.country,
         image: req.query.image
         }
-        console.log(event)
         res.render('gekozen-concert.ejs', {event});
 });
 
