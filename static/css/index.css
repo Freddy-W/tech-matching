@@ -1,8 +1,8 @@
 @import url("/styles.css");
+
 body {
     background-color: var(--mainblue);
-    color: var(--white);
-    margin: 1em;    
+    color: var(--white)  
 }
 
 /* filter-overlay */
@@ -110,7 +110,9 @@ input[type="range"]::-webkit-slider-thumb {
 .event img {
     border-radius: 0.5rem 0.5rem 0 0;
 }
-
+main {
+        margin: 1em;  
+ }
 main > section input {
     width: 100%;
     border: none;
