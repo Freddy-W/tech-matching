@@ -183,7 +183,7 @@ if (filterSubmitBtn) {
                         event.genre.toLowerCase().includes(type.toLowerCase())
                     );
 
-                // 👇 HIER hoort je datum code
+                // datum code
                 const van = document.getElementById("datumVan").value;
                 const tot = document.getElementById("datumTot").value;
 
@@ -196,8 +196,8 @@ if (filterSubmitBtn) {
 
             ladenEvents(filtered);
             filteropties.classList.remove("open");
-
-        } catch (error) {
+        } 
+        catch (error) {
             console.error("Fout bij filteren:", error);
         }
     });

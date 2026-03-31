@@ -147,15 +147,21 @@ app.get(`/artist/:artist`, async (req, res) => {
 
 // FAVORIET FUNCTIE
 
-const plusButton = document.querySelector("#plusButton"); //BUTTON BESTAAT NOG NIET
+// const plusButton = document.querySelector("#plusButton"); //BUTTON BESTAAT NOG NIET
 // plusButton.EventListener('click', addConcert);
 
 app.patch("/userdatas/:id", async (req, res) =>{
-  const userId = req.session.userId;
-  const eventId = req.params.id;
-  await db.collection('userdatas').updateOne(
-  { _id: userId },
-  { $addToSet: { favorieten: eventId } });
+  try{
+    const userId = req.session.userId;
+    const eventId = req.params.id;
+    await db.collection('userdatas').updateOne(
+    { _id: userId },
+    { $addToSet: { favorieten: eventId } });
+  }
+  catch(err){
+    alert("Kon favoriet niet opslaan")
+  }
+
   // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
   
 });
@@ -197,6 +203,7 @@ app.get("/gekozen-concert", (req, res)=>{
         country: req.query.country,
         image: req.query.image
         }
+        console.log(event)
         res.render('gekozen-concert.ejs', {event});
 });
 
