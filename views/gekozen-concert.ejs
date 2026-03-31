@@ -24,6 +24,13 @@
             <p><%= event.date %></p>
             <p><%= event.venue %></p>
         </section>
+        <p id="distanceText">Afstand berekenen...</p>
+
+        <div id="eventData"
+            data-venue="<%= event.venue %>"
+            data-city="<%= event.city %>"
+            data-country="<%= event.country %>">
+        </div>
         <div>
             <a href="/buddy-zoeken?eventId=<%= event.id %>">Zoek een auto</a>
             <a href="/auto-aanbieden?eventId=<%= event.id %>">Bied auto aan</a>
@@ -33,5 +40,6 @@
     </main>
     <footer>
     </footer>
+    <script src="/scripts/script.js"></script>
 </body>
 </html>
