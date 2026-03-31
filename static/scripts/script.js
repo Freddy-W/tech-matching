@@ -2,7 +2,7 @@
 window.onload = function() {
     // slideOne();
     // slideTwo();
-    loadDefaultEvents();
+    ladenBeginEvents();
 }
 
 // let sliderOne = document.getElementById("slider-1");
@@ -56,7 +56,7 @@ if (closeBtn) {
 // }
 
 //Functie voor het "aanmaken" van events waar later info in kan
-function renderEvents(data) {
+function ladenEvents(data) {
     const results = document.getElementById("results");
     if (!results) return;
 
@@ -75,7 +75,7 @@ function renderEvents(data) {
                 <div class="eventinfo">
                 <h3>${event.artist}</h3>
                 <p><strong>Genre:</strong> ${event.genre}</p>
-                <!-- <p><strong>Tijd:</strong> ${event.time}</p> -->
+                <p><strong>Tijd:</strong> ${event.time}</p>
                 <p><strong>Datum:</strong> ${event.date}</p>
                 <p><strong>Locatie:</strong> ${event.venue} (${event.city})</p>
                 <a href="${event.url}" target="_blank">Tickets</a>
@@ -87,12 +87,12 @@ function renderEvents(data) {
 }
 
 //"default" events ophalen die standaard op de home pagina staan bij openen
-async function loadDefaultEvents() {
+async function ladenBeginEvents() {
     try {
         const response = await fetch("/events");
         const data = await response.json();
 
-        renderEvents(data);
+        ladenEvents(data);
 
     } catch (error) {
         console.error("Fout bij ophalen default events:", error);
@@ -100,10 +100,10 @@ async function loadDefaultEvents() {
 }
 
 //Functie voor zoeken van events voor een specifieke artiest
-// const searchBtn = document.getElementById("searchBtn");
+// const zoekKnop = document.getElementById("zoekKnop");
 
-// if (searchBtn) {
-//     searchBtn.addEventListener("click", async () => {
+// if (zoekKnop) {
+//     zoekKnopx.addEventListener("click", async () => {
 //         console.log("Button werkt");
 
 //         const artistInput = document.getElementById("artistInput");
@@ -116,7 +116,7 @@ async function loadDefaultEvents() {
 //             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
 //             const data = await response.json();
 
-//             renderEvents(data);
+//             ladenEvents(data);
 
 //         } catch (error) {
 //             console.error("Fout bij ophalen artist events:", error);
@@ -124,10 +124,10 @@ async function loadDefaultEvents() {
 //     });
 // };
 
-const searchBtn = document.querySelector("button");
+const zoekKnop = document.querySelector("button");
 
-if (searchBtn) {
-    searchBtn.addEventListener("click", async () => {
+if (zoekKnop) {
+    zoekKnop.addEventListener("click", async () => {
         const artistInput = document.querySelector("input");
         if (!artistInput) return;
 
@@ -138,7 +138,7 @@ if (searchBtn) {
             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
             const data = await response.json();
 
-            renderEvents(data); // toont de gevonden concerten
+            ladenEvents(data); // toont de gevonden concerten
 
         } catch (error) {
             console.error("Fout bij ophalen artist events:", error);
@@ -148,7 +148,7 @@ if (searchBtn) {
 
 document.querySelector("input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        searchBtn.click();
+        zoekKnop.click();
     }
 });
 
@@ -194,7 +194,7 @@ if (filterSubmitBtn) {
                 return plaatsMatch && typeMatch && datumMatch;
             });
 
-            renderEvents(filtered);
+            ladenEvents(filtered);
             filteropties.classList.remove("open");
 
         } catch (error) {

@@ -64,7 +64,7 @@ app.get("/events", async (req, res) => {
         return isMusic && isValidName;
       });
 
-      const formattedEvents = filteredEvents.map(event => ({
+      const infoEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
           genre: event.classifications?.[0]?.genre?.name || "Onbekend",
@@ -79,7 +79,7 @@ app.get("/events", async (req, res) => {
            || ""
       }));
 
-      res.json(formattedEvents);
+      res.json(infoEvents);
 
   } catch (error) {
       console.error("SERVER ERROR:", error);
@@ -118,7 +118,7 @@ app.get(`/artist/:artist`, async (req, res) => {
           return isMusic && isValidName;
         });
 
-      const formattedEvents = filteredEvents.map(event => ({
+      const infoEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
           genre: event.classifications?.[0]?.genre?.name || "Onbekend",
@@ -133,7 +133,7 @@ app.get(`/artist/:artist`, async (req, res) => {
            || ""
       }));
 
-        res.json(formattedEvents);
+        res.json(infoEvents);
 
     } catch (error) {
 
