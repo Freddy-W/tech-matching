@@ -12,26 +12,6 @@
         <%- include('partials/header')%>
     </header>
     <main>
-        <h1>Zoek een buddy</h1>
-        <section>
-            <input id="zoekBuddy" type="search" placeholder="zoek een buddy...">
-            <button id="searchBtn" type="submit">
-                <img src="images/searchicon.svg" alt="searchicon">
-            </button>
-            <button id="filterbutton">Filter</button>
-        </section> 
-        <% if (listings.length === 0) { %> 
-            <p>Nog geen buddies beschikbaar, wees de eerste!</p>
-        <% } %>
-
-        <% listings.forEach(listing => { %>
-            <div class="listing">
-                <a href="listing${listingid}">
-                    <h2><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
-                    <p><%= listing.auto %></p>
-                </a>
-            </div>
-        <% }) %>
         <!-- filtergedeelte -->
          <section>
             <h1>Zoek een buddy</h1>
