@@ -13,6 +13,13 @@
     </header>
     <main>
         <h1>Zoek een buddy</h1>
+        <section>
+            <input id="zoekBuddy" type="search" placeholder="zoek een buddy...">
+            <button id="searchBtn" type="submit">
+                <img src="images/searchicon.svg" alt="searchicon">
+            </button>
+            <button id="filterbutton">Filter</button>
+        </section> 
         <% if (listings.length === 0) { %> 
             <p>Nog geen buddies beschikbaar, wees de eerste!</p>
         <% } %>
@@ -26,15 +33,8 @@
             </div>
         <% }) %>
         <!-- filtergedeelte -->
-         <h1>Zoek een Buddy</h1>
-         <section>
-            <input id="zoekBuddy" type="search" placeholder="zoek een buddy...">
-            <button id="searchBtn" type="submit">
-                <img src="images/searchicon.svg" alt="searchicon">
-            </button>
-            <button id="filterbutton">Filter</button>
-        </section> 
-        <section id="filtergedeelte" class="hidden"> 
+         <!-- <h1>Zoek een Buddy</h1> -->
+        <section id="filtergedeelte"> 
             <h2>Filters</h2>
             <h3>Plaats</h3>
             <input type="search" placeholder="zoek een plaats...">
@@ -72,7 +72,6 @@
                     </span>
                 </div>
             </div>
-            <h3>Prijs</h3>
             <button id="annuleer">Annuleer</button>
             <button>Zoek</button>
         </section>
