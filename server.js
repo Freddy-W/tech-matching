@@ -160,7 +160,7 @@ app.patch("/userdatas/:id", async (req, res) =>{
   
 });
 
-// EIND FAVORIET "id: event.id";
+// EIND FAVORIET
 
 app.get("/login", (req, res)=>{
     res.render('login.ejs');
