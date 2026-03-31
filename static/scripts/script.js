@@ -18,10 +18,6 @@ const closeBtn = document.getElementById("annuleer");
 const stars = document.querySelectorAll('.star-rating span');
 const ratingInput = document.getElementById('rating');
 
-const venue = eventData.dataset.venue;
-const city = eventData.dataset.city;
-const country = eventData.dataset.country;
-
 // openen/sluiten
 if (filterBtn) {
     filterBtn.addEventListener("click", () => {
@@ -226,20 +222,25 @@ stars.forEach(star => {
   });
 });
 
-try {
-    const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
-    const data = await response.json();
+// const venue = eventData.dataset.venue;
+// const city = eventData.dataset.city;
+// const country = eventData.dataset.country;
 
-    if (data.error) {
-      distanceText.textContent = "Afstand niet beschikbaar";
-      console.error(data.error);
-      return;
-    }
+// async function fetchDistance(venue, city, country) {
+//   try {
+//     const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+//     const data = await response.json();
 
-    distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+//     if (data.error) {
+//       distanceText.textContent = "Afstand niet beschikbaar";
+//       console.error(data.error);
+//       return;
+//     }
 
-  } catch (error) {
-    console.error(error);
-    distanceText.textContent = "Afstand niet beschikbaar";
-  };
+//     distanceText.textContent = `Afstand: ${data.distanceKm} km`;
 
+//   } catch (error) {
+//     console.error(error);
+//     distanceText.textContent = "Afstand niet beschikbaar";
+//   }
+// }
