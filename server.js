@@ -37,13 +37,11 @@ app.use(session({
 app.get("/events", async (req, res) => {
 
   //10 aankomende events in NL
-  const url = `https://app.ticketmaster.com/discovery/v2/events.json?size=10&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
+  const url = `https://app.ticketmaster.com/discovery/v2/events.json?size=100&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
 
   try {
       const response = await fetch(url);
       const data = await response.json();
-
-      console.log("DEFAULT EVENTS DATA:", JSON.stringify(data, null, 2));
 
       if (data.fault) {
           console.error("API ERROR:", data.fault);
@@ -69,6 +67,7 @@ app.get("/events", async (req, res) => {
       const formattedEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
+          genre: event.classifications?.[0]?.genre?.name || "Onbekend",
           date: event.dates?.start?.localDate || "Onbekend",
           time: event.dates?.start?.localTime || "Onbekend",
           venue: event._embedded?.venues?.[0]?.name || "Onbekend",
@@ -98,8 +97,6 @@ app.get(`/artist/:artist`, async (req, res) => {
         const response = await fetch(url);
         const data = await response.json();
 
-        console.log("DATA:", JSON.stringify(data, null, 2));
-
         if (data.fault) {
             console.error("API ERROR:", data.fault);
             return res.status(400).json({ error: "API key werkt niet of geen toegang" });
@@ -124,6 +121,7 @@ app.get(`/artist/:artist`, async (req, res) => {
       const formattedEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
+          genre: event.classifications?.[0]?.genre?.name || "Onbekend",
           date: event.dates?.start?.localDate || "Onbekend",
           time: event.dates?.start?.localTime || "Onbekend",
           venue: event._embedded?.venues?.[0]?.name || "Onbekend",
@@ -184,13 +182,8 @@ app.get("/accountinfo", isLoggedIn, (req, res)=>{
   res.render('accountinfo.ejs');
 });
 
-app.get("/", (req, res)=> {
-    res.render('index.ejs');
-});
-
 app.get("/buddyzoeken", (req, res)=> {
-    const eventId = req.query.eventId;
-    res.render('buddyzoeken.ejs', { eventId });
+    res.render('buddy-zoeken.ejs');
 })
 
 app.get("/gekozen-concert", (req, res)=>{
@@ -214,7 +207,8 @@ app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
 });
 
 mongoose.connect(process.env.dbPassword);
-const dataScheme = new mongoose.Schema({
+const userScheme = new mongoose.Schema({
+    username: String,
     userId: String,
     voornaam: String,
     achternaam: String,
@@ -237,13 +231,14 @@ const carListingSchema = new mongoose.Schema({
   brandstof: String,
   eventId: String
 });
-const userData = mongoose.model("userdata", dataScheme);
+const userData = mongoose.model("userdata", userScheme);
 const carListing = mongoose.model("CarListing", carListingSchema);
 
 //Registeren, checkt of het emailadres al bestaat, encrypt het wachtwoord en stuurt naar de DB
 app.post("/register", async (req, res) => {
   try {
     const registerData = {
+      username: req.body.username,
       userId: req.session.userId,
       voornaam: req.body.voornaam,
       achternaam: req.body.achternaam,
@@ -253,8 +248,8 @@ app.post("/register", async (req, res) => {
       wachtwoord: req.body.wachtwoord
     };
 
-    const existingUser = await userData.findOne({ email: registerData.email });
-    if (existingUser) return res.send("Email is already registered!");
+    const existingUser = await userData.findOne({ username: registerData.username });
+    if (existingUser) return res.send("Username is already registered!");
 
     const hashedPassword = await bcrypt.hash(registerData.wachtwoord, 10);
     registerData.wachtwoord = hashedPassword;
@@ -271,11 +266,11 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const loginData = {
-        email: req.body.email,
+        username: req.body.username,
         wachtwoord: req.body.wachtwoord
     };
 
-    const user = await userData.findOne({ email: loginData.email });
+    const user = await userData.findOne({ username: loginData.username });
     if (!user) return res.send("Email not registered");
 
     const match = await bcrypt.compare(loginData.wachtwoord, user.wachtwoord);
@@ -294,6 +289,7 @@ app.post("/login", async (req, res) => {
 app.post("/accountinfo", async (req, res) =>  {
     try {
       const accountData = {
+      username: req.body.username,
       adres: req.body.adres,
       leeftijd: req.body.leeftijd,
       rijbewijs: req.body.rijbewijs,
@@ -327,7 +323,7 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
   }
 });
 
-app.get("/buddy-zoeken", async (req, res)=>{
+app.get("/buddy-zoeken", isLoggedIn, async (req, res)=>{
   try {
     const eventId = req.query.eventId; 
     const listings = await carListing
