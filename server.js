@@ -147,7 +147,7 @@ app.get(`/artist/:artist`, async (req, res) => {
 
 // FAVORIET FUNCTIE
 
-const plusButton = document.querySelector("#plusButton"); //BUTTON BESTAAT NOG NIET
+// const plusButton = document.querySelector("#plusButton"); //BUTTON BESTAAT NOG NIET
 // plusButton.EventListener('click', addConcert);
 
 app.patch("/userdatas/:id", async (req, res) =>{
