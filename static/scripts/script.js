@@ -2,7 +2,7 @@
 window.onload = function() {
     // slideOne();
     // slideTwo();
-    loadDefaultEvents();
+    ladenBeginEvents();
 }
 
 // let sliderOne = document.getElementById("slider-1");
@@ -15,6 +15,8 @@ window.onload = function() {
 const filterBtn = document.querySelector("button:nth-of-type(2)");
 const filteropties = document.getElementById("filtergedeelte");
 const closeBtn = document.getElementById("annuleer");
+const stars = document.querySelectorAll('.star-rating span');
+const ratingInput = document.getElementById('rating');
 
 // openen/sluiten
 if (filterBtn) {
@@ -56,7 +58,7 @@ if (closeBtn) {
 // }
 
 //Functie voor het "aanmaken" van events waar later info in kan
-function renderEvents(data) {
+function ladenEvents(data) {
     const results = document.getElementById("results");
     if (!results) return;
 
@@ -75,7 +77,7 @@ function renderEvents(data) {
                 <div class="eventinfo">
                 <h3>${event.artist}</h3>
                 <p><strong>Genre:</strong> ${event.genre}</p>
-                <!-- <p><strong>Tijd:</strong> ${event.time}</p> -->
+                <p><strong>Tijd:</strong> ${event.time}</p>
                 <p><strong>Datum:</strong> ${event.date}</p>
                 <p><strong>Locatie:</strong> ${event.venue} (${event.city})</p>
                 <a href="${event.url}" target="_blank">Tickets</a>
@@ -87,12 +89,12 @@ function renderEvents(data) {
 }
 
 //"default" events ophalen die standaard op de home pagina staan bij openen
-async function loadDefaultEvents() {
+async function ladenBeginEvents() {
     try {
         const response = await fetch("/events");
         const data = await response.json();
 
-        renderEvents(data);
+        ladenEvents(data);
 
     } catch (error) {
         console.error("Fout bij ophalen default events:", error);
@@ -100,10 +102,10 @@ async function loadDefaultEvents() {
 }
 
 //Functie voor zoeken van events voor een specifieke artiest
-// const searchBtn = document.getElementById("searchBtn");
+// const zoekKnop = document.getElementById("zoekKnop");
 
-// if (searchBtn) {
-//     searchBtn.addEventListener("click", async () => {
+// if (zoekKnop) {
+//     zoekKnopx.addEventListener("click", async () => {
 //         console.log("Button werkt");
 
 //         const artistInput = document.getElementById("artistInput");
@@ -116,7 +118,7 @@ async function loadDefaultEvents() {
 //             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
 //             const data = await response.json();
 
-//             renderEvents(data);
+//             ladenEvents(data);
 
 //         } catch (error) {
 //             console.error("Fout bij ophalen artist events:", error);
@@ -124,10 +126,10 @@ async function loadDefaultEvents() {
 //     });
 // };
 
-const searchBtn = document.querySelector("button");
+const zoekKnop = document.querySelector("button");
 
-if (searchBtn) {
-    searchBtn.addEventListener("click", async () => {
+if (zoekKnop) {
+    zoekKnop.addEventListener("click", async () => {
         const artistInput = document.querySelector("input");
         if (!artistInput) return;
 
@@ -138,7 +140,7 @@ if (searchBtn) {
             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
             const data = await response.json();
 
-            renderEvents(data); // toont de gevonden concerten
+            ladenEvents(data); // toont de gevonden concerten
 
         } catch (error) {
             console.error("Fout bij ophalen artist events:", error);
@@ -148,12 +150,12 @@ if (searchBtn) {
 
 document.querySelector("input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        searchBtn.click();
+        zoekKnop.click();
     }
 });
 
 // CONCERT OPSLAAN NIET COMPLEET
-const addConcertBtn = document.getElementById("...");
+// const addConcertBtn = document.getElementById("...");
 
 // function addConcert() {
 //     const ticketMUrl = 'https://app.ticketmaster.com/discovery/v2/';
@@ -183,7 +185,7 @@ if (filterSubmitBtn) {
                         event.genre.toLowerCase().includes(type.toLowerCase())
                     );
 
-                // 👇 HIER hoort je datum code
+                // datum code
                 const van = document.getElementById("datumVan").value;
                 const tot = document.getElementById("datumTot").value;
 
@@ -194,17 +196,14 @@ if (filterSubmitBtn) {
                 return plaatsMatch && typeMatch && datumMatch;
             });
 
-            renderEvents(filtered);
+            ladenEvents(filtered);
             filteropties.classList.remove("open");
-
-        } catch (error) {
+        } 
+        catch (error) {
             console.error("Fout bij filteren:", error);
         }
     });
 }
-
-const stars = document.querySelectorAll('.star-rating span');
-const ratingInput = document.getElementById('rating');
 
 function setStars(value) {
   stars.forEach(star => {
@@ -216,7 +215,6 @@ function setStars(value) {
 }
 
 setStars(ratingInput.value);
-
 stars.forEach(star => {
   const val = parseInt(star.dataset.value);
 

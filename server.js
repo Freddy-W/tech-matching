@@ -64,7 +64,7 @@ app.get("/events", async (req, res) => {
         return isMusic && isValidName;
       });
 
-      const formattedEvents = filteredEvents.map(event => ({
+      const infoEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
           genre: event.classifications?.[0]?.genre?.name || "Onbekend",
@@ -79,7 +79,7 @@ app.get("/events", async (req, res) => {
            || ""
       }));
 
-      res.json(formattedEvents);
+      res.json(infoEvents);
 
   } catch (error) {
       console.error("SERVER ERROR:", error);
@@ -117,7 +117,7 @@ app.get(`/artist/:artist`, async (req, res) => {
           return isMusic && isValidName;
         });
 
-      const formattedEvents = filteredEvents.map(event => ({
+      const infoEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
           genre: event.classifications?.[0]?.genre?.name || "Onbekend",
@@ -132,7 +132,7 @@ app.get(`/artist/:artist`, async (req, res) => {
            || ""
       }));
 
-        res.json(formattedEvents);
+        res.json(infoEvents);
 
     } catch (error) {
 
@@ -143,6 +143,29 @@ app.get(`/artist/:artist`, async (req, res) => {
     }
 
 });
+
+// FAVORIET FUNCTIE
+
+// const plusButton = document.querySelector("#plusButton"); //BUTTON BESTAAT NOG NIET
+// plusButton.EventListener('click', addConcert);
+
+app.patch("/userdatas/:id", async (req, res) =>{
+  try{
+    const userId = req.session.userId;
+    const eventId = req.params.id;
+    await db.collection('userdatas').updateOne(
+    { _id: userId },
+    { $addToSet: { favorieten: eventId } });
+  }
+  catch(err){
+    alert("Kon favoriet niet opslaan")
+  }
+
+  // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
+  
+});
+
+// EIND FAVORIET
 
 app.get("/login", (req, res)=>{
     res.render('login.ejs');
@@ -187,6 +210,7 @@ app.get("/gekozen-concert", (req, res)=>{
         country: req.query.country,
         image: req.query.image
         }
+        console.log(event)
         res.render('gekozen-concert.ejs', {event});
 });
 
@@ -216,6 +240,7 @@ const userScheme = new mongoose.Schema({
     rijbewijs: String,
     auto: String,
     rijden: String,
+    favorieten: String,
 });
 
 const carListingSchema = new mongoose.Schema({
