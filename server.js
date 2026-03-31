@@ -153,7 +153,7 @@ app.get(`/artist/:artist`, async (req, res) => {
 app.patch("/userdatas/:id", async (req, res) =>{
   try{
     const userId = req.session.userId;
-    const eventId = req.params.id;
+    const eventId = req.query.id;
     await db.collection('userdatas').updateOne(
     { _id: userId },
     { $addToSet: { favorieten: eventId } });
