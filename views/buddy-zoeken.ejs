@@ -12,26 +12,9 @@
         <%- include('partials/header')%>
     </header>
     <main>
-        <h1>Zoek een buddy</h1>
-        <% if (listings.length === 0) { %> 
-            <p>Nog geen buddies beschikbaar, wees de eerste!</p>
-        <% } %>
-
-        <% listings.forEach(listing => { %>
-            <div class="listing">
-                <a href="listing${listingid}">
-                    <h2><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
-                    <p><%= listing.auto %></p>
-                </a>
-            </div>
-        <% }) %>
         <!-- filtergedeelte -->
-         <h1>Zoek een Buddy</h1>
          <section>
-            <input id="zoekBuddy" type="search" placeholder="zoek een buddy...">
-            <button id="searchBtn" type="submit">
-                <img src="images/searchicon.svg" alt="searchicon">
-            </button>
+            <h1>Zoek een buddy</h1>
             <button id="filterbutton">Filter</button>
         </section> 
         <section id="filtergedeelte" class="hidden"> 
@@ -76,6 +59,19 @@
             <button id="annuleer">Annuleer</button>
             <button>Zoek</button>
         </section>
+
+        <% if (listings.length === 0) { %> 
+            <p>Nog geen buddies beschikbaar, wees de eerste!</p>
+        <% } %>
+
+        <% listings.forEach(listing => { %>
+            <div class="listing">
+                <a href="/listing/<%= listing._id %>">
+                    <h2><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
+                    <p><%= listing.auto %></p>
+                </a>
+            </div>
+        <% }) %>
     </main>
     <footer>
         <%- include('partials/menubalk')%>

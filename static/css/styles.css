@@ -4,6 +4,16 @@
     margin:0;
 }
 
+:root {
+--accentcolour: #97D8E4;
+--accentcolour2: #1d909f;
+--darkgray: #1F1F1F;
+--mainblue: #062B32;
+--happyflow: #1DA067;
+--black: #000000;
+--white: #FFFFFF;
+}
+
 a:visited {
     color: inherit;
 }
@@ -17,9 +27,9 @@ body {
 }
 
 header nav {
+    margin: 1rem;
     display: flex;
     flex-direction:row;
-    width:100%;
     justify-content: space-between;
 }
 
@@ -62,5 +72,5 @@ footer nav {
     display: flex;
     display: flex;
     justify-content: space-between;
-    background-color: #062b32;
+    background-color: var(--main-blue);
 }

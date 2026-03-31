@@ -202,3 +202,27 @@ if (filterSubmitBtn) {
         }
     });
 }
+
+const stars = document.querySelectorAll('.star-rating span');
+const ratingInput = document.getElementById('rating');
+
+function setStars(value) {
+  stars.forEach(star => {
+    star.classList.remove('selected');
+    if (parseInt(star.dataset.value) <= value) {
+      star.classList.add('selected');
+    }
+  });
+}
+
+setStars(ratingInput.value);
+
+stars.forEach(star => {
+  const val = parseInt(star.dataset.value);
+
+  star.addEventListener('click', () => {
+    ratingInput.value = val;
+    setStars(val);
+  });
+});
+

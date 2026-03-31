@@ -90,7 +90,6 @@ app.get("/events", async (req, res) => {
 app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = req.params.artist;
-
     const url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${encodeURIComponent(artist)}&size=10&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
 
     try {
@@ -149,6 +148,10 @@ app.get("/login", (req, res)=>{
     res.render('login.ejs');
 });
 
+app.get("/user", (req, res)=>{
+    res.render('user.ejs');
+});
+
 app.get("/register", (req, res)=>{
     res.render('register.ejs');
 });
@@ -160,6 +163,10 @@ function isLoggedIn(req, res, next) {
     res.redirect("/login");
   }
 }
+
+app.get("/listing/:id", isLoggedIn, async (req, res) => {
+  res.render('listing.ejs')
+});
 
 app.get("/accountinfo", isLoggedIn, (req, res)=>{
   res.render('accountinfo.ejs');
@@ -189,6 +196,12 @@ app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
   res.render('auto-aanbieden.ejs', { eventId });
 });
 
+
+app.get("/review", isLoggedIn, (req, res) => {
+  res.render('review.ejs');
+});
+
+// https://www.youtube.com/watch?v=ZhqOp1Dkuso
 mongoose.connect(process.env.dbPassword);
 const userScheme = new mongoose.Schema({
     username: String,
@@ -207,12 +220,23 @@ const userScheme = new mongoose.Schema({
 
 const carListingSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+  listingId: String,
   auto: String,
   hoeveel: Number,
   rijden: String,
   brandstof: String,
-  eventId: String
+  eventId: String,
+  passagiers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userdata" }]
 });
+
+const reviewScheme = new mongoose.Schema({
+  reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "carlisting" },
+  reviewee: String,
+  rating: Number,
+  review: String,
+});
+
+const reviewData = mongoose.model("reviewData", reviewScheme)
 const userData = mongoose.model("userdata", userScheme);
 const carListing = mongoose.model("CarListing", carListingSchema);
 
@@ -253,7 +277,7 @@ app.post("/login", async (req, res) => {
     };
 
     const user = await userData.findOne({ username: loginData.username });
-    if (!user) return res.send("Email not registered");
+    if (!user) return res.send("Username not registered");
 
     const match = await bcrypt.compare(loginData.wachtwoord, user.wachtwoord);
     if (!match) return res.send("Incorrect wachtwoord");
@@ -287,10 +311,12 @@ app.post("/accountinfo", async (req, res) =>  {
   }
 });
 
+
 app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
   try {
     const listingData = {
-      userId: req.session.userId, // Koppeling met user
+      userId: req.session.userId, // koppelen met user
+      adres: req.body.adres,
       auto: req.body.auto,
       hoeveel: req.body.hoeveel,
       rijden: req.body.rijden,
@@ -305,14 +331,26 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
   }
 });
 
-app.get("/buddy-zoeken", isLoggedIn, async (req, res)=>{
+app.get("/buddy-zoeken", isLoggedIn, async (req, res) =>{
   try {
     const eventId = req.query.eventId; 
     const listings = await carListing
       .find({ eventId })
-      .populate("userId", "voornaam"); // voegt de user info toe
+      .populate("userId", "voornaam"); // callt de user info voor de ejs pagina.
     res.render("buddy-zoeken.ejs", { listings });
   } catch (error) {
     console.error(error);
     res.send("Error loading rides");
 }});
+
+// app.post("/review", isLoggedIn, async (req, res) => {
+//   try {
+//     const reviewData = {
+//       reviewer: req.session.userId, 
+//       reviewee: req.body.,
+//       rating: req.body.rating,
+//       review: req.body.review,
+//     };
+//   }
+// })
+
