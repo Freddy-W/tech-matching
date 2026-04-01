@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(session({
-  secret: 'process.env.SESSIONKEY',
+  secret: process.env.SESSIONKEY,
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
