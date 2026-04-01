@@ -20,6 +20,26 @@ const stars = document.querySelectorAll('.star-rating span');
 const ratingInput = document.getElementById('rating');
 const distanceText = document.getElementById("distanceText");
 
+
+function setStars(value) {
+  stars.forEach(star => {
+    star.classList.remove('selected');
+    if (parseInt(star.dataset.value) <= value) {
+      star.classList.add('selected');
+    }
+  });
+}
+
+setStars(ratingInput.value);
+
+stars.forEach(star => {
+  const val = parseInt(star.dataset.value);
+  star.addEventListener('click', () => {
+    ratingInput.value = val;
+    setStars(val);
+  });
+});
+
 // openen/sluiten
 if (filterBtn) {
     filterBtn.addEventListener("click", () => {
@@ -212,24 +232,6 @@ if (filterSubmitBtn) {
         }
     });
 }
-
-function setStars(value) {
-  stars.forEach(star => {
-    star.classList.remove('selected');
-    if (parseInt(star.dataset.value) <= value) {
-      star.classList.add('selected');
-    }
-  });
-}
-
-setStars(ratingInput.value);
-stars.forEach(star => {
-  const val = parseInt(star.dataset.value);
-  star.addEventListener('click', () => {
-    ratingInput.value = val;
-    setStars(val);
-  });
-});
 
 const venue = eventData.dataset.venue;
 const city = eventData.dataset.city;

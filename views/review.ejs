@@ -12,7 +12,7 @@
         <%- include('partials/header')%>
     </header>
     <main>
-        <h1>Laat een review achter voor username!</h1>
+        <h1>Laat een review achter voor @<%= reviewedUser.username %>!</h1>
             <form method="POST" action="/review/<%= userId %>">
             <div class="star-rating">
                 <span data-value="1">★</span>

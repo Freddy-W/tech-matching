@@ -32,6 +32,14 @@ app.use(session({
   }
 }));
 
+function isLoggedIn(req, res, next) {
+  if (req.session.userId) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
 //middleware, als er om een userid gevraagd wordt wordt deze gepakt.
 app.use(async (req, res, next) => {
   if (req.session.userId) {
@@ -269,9 +277,10 @@ app.get("/login", (req, res)=>{
 
 app.get("/user/:id", isLoggedIn, async (req, res) => {
   try {
-    const user = await userData.findById(req.session.userId);
+    const user = await userData.findById(req.params.id);
     const reviews = await reviewData
       .find({ reviewee: req.params.id })
+      .populate("reviewer", "username");
     res.render("user.ejs", { user, reviews });
   } catch (error) {
     console.error(error);
@@ -282,14 +291,6 @@ app.get("/user/:id", isLoggedIn, async (req, res) => {
 app.get("/register", (req, res)=>{
     res.render('register.ejs');
 });
-
-function isLoggedIn(req, res, next) {
-  if (req.session.userId) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-}
 
 app.get("/listing/:id", isLoggedIn, async (req, res) => {
   res.render('listing.ejs')
@@ -324,10 +325,15 @@ app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
 });
 
 
-app.get("/review/:userId", isLoggedIn, (req, res) => {
-  
-  res.render('review.ejs', { userId: req.params.userId} );
-  
+app.get("/review/:userId", isLoggedIn, async (req, res) => {
+  try {
+    const reviewedUser = await userData.findById(req.params.userId);
+    if (!reviewedUser) return res.send("Gebruiker niet gevonden");
+    res.render('review.ejs', { reviewedUser, userId: req.params.userId });
+  } catch (error) {
+    console.error(error);
+    res.send("Error loading review page");
+  }
 });
 
 // https://www.youtube.com/watch?v=ZhqOp1Dkuso
@@ -346,6 +352,7 @@ const userScheme = new mongoose.Schema({
     auto: String,
     rijden: String,
     favorieten: String,
+    totaalRating: { type: Number, default: 0 },
 });
 
 const carListingSchema = new mongoose.Schema({
@@ -490,11 +497,19 @@ app.post("/review/:userId", isLoggedIn, async (req, res) => {
     const newReview = {
       reviewer: req.session.userId, 
       reviewee: req.params.userId,
-      rating: req.body.rating,
+      rating: Number(req.body.rating),
       review: req.body.review,
     };
     await reviewData.create(newReview);
-    res.redirect("/user"); // of terug naar profiel
+    // average rating vastleggen. ChatGPT heeft de totaal rating som gemaakt.
+    const reviews = await reviewData.find({ reviewee: req.params.userId });
+    const totaalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
+    const gemiddeldeRating = totaalRating / reviews.length;
+
+    await userData.updateOne( { _id: req.params.userId }, { $set: { totalRating: gemiddeldeRating } }
+)
+    res.redirect('/user/${req.params.userId}'); 
+
 console.log(req.params.userId);
 console.log(req.body);
   } catch (error) {
