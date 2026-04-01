@@ -32,6 +32,22 @@ app.use(session({
   }
 }));
 
+//middleware, als er om een userid gevraagd wordt wordt deze gepakt.
+app.use(async (req, res, next) => {
+  if (req.session.userId) {
+    try {
+      const user = await userData.findById(req.session.userId);
+      res.locals.user = user;
+    } catch (err) {
+      console.error(err);
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+  next();
+});
+
 async function geocodeAddress(address) {
   const url = `https://api.openrouteservice.org/geocode/search?api_key=${orsKey}&text=${encodeURIComponent(address)}`;
 
@@ -490,21 +506,7 @@ console.log(req.body);
   }
 }) 
 
-//middleware, als er om een userid gevraagd wordt wordt deze gepakt.
-app.use(async (req, res, next) => {
-  if (req.session.userId) {
-    try {
-      const user = await userData.findById(req.session.userId);
-      res.locals.user = user;
-    } catch (err) {
-      console.error(err);
-      res.locals.user = null;
-    }
-  } else {
-    res.locals.user = null;
-  }
-  next();
-});
+
 
 // async function geocodeAddress(address) {
 //   const url = `https://api.openrouteservice.org/geocode/search?api_key=${orsKey}&text=${encodeURIComponent(address)}`;
