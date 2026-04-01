@@ -155,15 +155,23 @@ document.querySelector("input").addEventListener("keydown", (e) => {
 });
 
 // CONCERT OPSLAAN NIET COMPLEET
-// const addConcertBtn = document.getElementById("...");
+const favButton = document.getElementById("favButton");
+favButton.addEventListener("click", favEvent);
 
-// function addConcert() {
-//     const ticketMUrl = 'https://app.ticketmaster.com/discovery/v2/';
+async function favEvent () {
+    const eventurl = document.location.search;
+    const eventId= eventurl.split("id=")[1].split("&")[0];
 
-//     app.get(ticketMUrl/events/{id})
-// };
-
-// addConcertBtn.addEventListener('click', addConcert());
+    try {
+    const res = await fetch("/userdatas/favorite", {
+        method: "PATCH",
+        body: JSON.stringify({eventId})});
+        console.log("Success");
+    }
+    catch (error) {
+        alert("Kon niet opslaan");
+    }
+};
 
 const filterSubmitBtn = document.getElementById("filterSubmit");
 
@@ -224,6 +232,25 @@ stars.forEach(star => {
   });
 });
 
+<<<<<<< HEAD
+const venue = eventData.dataset.venue;
+const city = eventData.dataset.city;
+const country = eventData.dataset.country;
+
+async function fetchDistance(venue, city, country) {
+  try {
+    const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+    const data = await response.json();
+
+    if (data.error) {
+      distanceText.textContent = "Afstand niet beschikbaar";
+      console.error(data.error);
+      return;
+    }
+
+    distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+
+=======
 async function afstandBereken() {
   try {
     const params = new URLSearchParams(window.location.search);
@@ -245,6 +272,7 @@ async function afstandBereken() {
 
     distanceText.textContent = `Afstand: ${data.distanceKm} km`;
 
+>>>>>>> 3de1cb5d64cd7a912e5a3e61886fb516024a23a3
   } catch (error) {
     console.error(error);
     distanceText.textContent = "Afstand niet beschikbaar";
