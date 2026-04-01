@@ -270,11 +270,9 @@ app.get("/login", (req, res)=>{
 app.get("/user/:id", isLoggedIn, async (req, res) => {
   try {
     const user = await userData.findById(req.session.userId);
-
     const reviews = await reviewData
       .find({ reviewee: req.params.id })
     res.render("user.ejs", { user, reviews });
-
   } catch (error) {
     console.error(error);
     res.send("Error loading user");
@@ -504,90 +502,3 @@ console.log(req.body);
     res.send("Error saving review");
   }
 }) 
-
-
-
-// async function geocodeAddress(address) {
-//   const url = `https://api.openrouteservice.org/geocode/search?api_key=${orsKey}&text=${encodeURIComponent(address)}`;
-
-//   const response = await fetch(url);
-//   const data = await response.json();
-
-//   if (!data.features || data.features.length === 0) {
-//     throw new Error("Adres niet gevonden: " + address);
-//   }
-
-//   // ORS geeft [lon, lat]
-//   const coords = data.features[0].geometry.coordinates;
-//   return { lon: coords[0], lat: coords[1] };
-// }
-
-// async function getDistanceKm(fromCoords, toCoords) {
-//   const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
-
-//   const body = {
-//     coordinates: [
-//       [fromCoords.lon, fromCoords.lat],
-//       [toCoords.lon, toCoords.lat]
-//     ]
-//   };
-
-//   const response = await fetch(url, {
-//     method: "POST",
-//     headers: {
-//       "Authorization": orsKey,
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify(body)
-//   });
-
-//   const data = await response.json();
-
-//   if (!data.routes || data.routes.length === 0) {
-//     throw new Error("Geen route gevonden");
-//   }
-
-//   // afstand in meters
-//   const meters = data.routes[0].summary.distance;
-//   return meters / 1000;
-// }
-
-// app.get("/distance", isLoggedIn, async (req, res) => {
-//   try {
-//     const venue = req.query.venue;
-//     const city = req.query.city;
-//     const country = req.query.country;
-
-//     if (!venue || !city || !country) {
-//       return res.status(400).json({ error: "Venue/city/country ontbreekt" });
-//     }
-
-//     // gebruiker ophalen
-//     const user = await userData.findById(req.session.userId);
-//     if (!user || !user.adres) {
-//       return res.status(400).json({ error: "Gebruiker heeft geen adres ingevuld" });
-//     }
-
-//     const userAddress = user.adres;
-//     const eventAddress = `${venue}, ${city}, ${country}`;
-
-//     // geocode beide adressen
-//     const fromCoords = await geocodeAddress(userAddress);
-//     const toCoords = await geocodeAddress(eventAddress);
-
-//     // afstand berekenen
-//     const distanceKm = await getDistanceKm(fromCoords, toCoords);
-
-//     res.json({
-//       from: userAddress,
-//       to: eventAddress,
-//       distanceKm: Math.round(distanceKm * 10) / 10
-//     });
-
-//     console.log(distanceKm);
-
-//   } catch (error) {
-//     console.error("DISTANCE ERROR:", error);
-//     res.status(500).json({ error: "Afstand berekenen mislukt" });
-//   }
-// });

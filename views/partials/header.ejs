@@ -5,11 +5,11 @@
         <div>
         <a href="/"><img src="/images/app-name.svg" alt="Logotext"></a>
        <% if (user) { %>
-                <p>@<%= user.username %></p>
+            <p>@<%= user.username %></p>
             <% } else { %>
                 <p>Gast</p>
             <% } %>
         </div>
     </div>
-    <a href="user/  <%= user._id %>"><img src="/images/pfp.jpg" alt="profielfoto"></a>
+    <a href="user/<%= user._id %>"><img src="/images/pfp.jpg" alt="profielfoto"></a>
 </nav>
