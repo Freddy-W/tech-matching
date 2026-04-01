@@ -225,12 +225,37 @@ function setStars(value) {
 setStars(ratingInput.value);
 stars.forEach(star => {
   const val = parseInt(star.dataset.value);
-
   star.addEventListener('click', () => {
     ratingInput.value = val;
     setStars(val);
   });
 });
+
+const venue = eventData.dataset.venue;
+const city = eventData.dataset.city;
+const country = eventData.dataset.country;
+
+async function fetchDistance(venue, city, country) {
+  const distanceText = document.getElementById("distanceText"); 
+
+  try {
+    const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+    const data = await response.json();
+
+    if (data.error) {
+      distanceText.textContent = "Afstand niet beschikbaar";
+      console.error(data.error);
+      return;
+    }
+
+    distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+
+  } catch (error) {
+    console.error(error);
+    distanceText.textContent = "Afstand niet beschikbaar";
+  }
+}
+
 
 async function afstandBereken() {
   try {

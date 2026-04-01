@@ -24,11 +24,9 @@
         </div>
         <div>
             <h2>Reviews</h2>
-
                 <% if (reviews.length === 0) { %>
                 <p>Geen reviews</p>
                 <% } %>
-
                 <% reviews.forEach(review => { %>
                 <div class="review">
                     <p><strong><%= review.reviewer.username %></strong></p>
