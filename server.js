@@ -45,13 +45,13 @@ app.use(async (req, res, next) => {
   if (req.session.userId) {
     try {
       const user = await userData.findById(req.session.userId);
-      res.locals.user = user;
+      res.locals.loggedInUser = user;
     } catch (err) {
       console.error(err);
-      res.locals.user = null;
+      res.locals.loggedInUser = null;
     }
   } else {
-    res.locals.user = null;
+    res.locals.loggedInUser = null;
   }
   next();
 });
@@ -277,11 +277,13 @@ app.get("/login", (req, res)=>{
 
 app.get("/user/:id", isLoggedIn, async (req, res) => {
   try {
-    const user = await userData.findById(req.params.id);
+    const profileUser = await userData.findById(req.params.id);
+    const loggedInUser = await userData.findById(req.session.userId);
+
     const reviews = await reviewData
       .find({ reviewee: req.params.id })
       .populate("reviewer", "username");
-    res.render("user.ejs", { user, reviews });
+    res.render("user.ejs", { user: profileUser, loggedInUser, reviews });
   } catch (error) {
     console.error(error);
     res.send("Error loading user");
@@ -292,17 +294,10 @@ app.get("/register", (req, res)=>{
     res.render('register.ejs');
 });
 
-app.get("/listing/:id", isLoggedIn, async (req, res) => {
-  res.render('listing.ejs')
-});
-
 app.get("/accountinfo", isLoggedIn, (req, res)=>{
   res.render('accountinfo.ejs');
 });
 
-app.get("/buddyzoeken", (req, res)=> {
-    res.render('buddy-zoeken.ejs');
-})
 
 app.get("/gekozen-concert", (req, res)=>{
         const event = {
@@ -352,7 +347,7 @@ const userScheme = new mongoose.Schema({
     auto: String,
     rijden: String,
     favorieten: String,
-    totaalrating: { type: Number, default: 0 },
+    totaalRating: { type: Number, default: 0 },
 });
 
 const carListingSchema = new mongoose.Schema({
@@ -452,7 +447,7 @@ app.post("/accountinfo", async (req, res) =>  {
 app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
   try {
     const listingData = {
-      userId: req.session.userId, // koppelen met user
+      userId: req.session.ObjectId, // koppelen met user
       adres: req.body.adres,
       auto: req.body.auto,
       hoeveel: req.body.hoeveel,
@@ -506,7 +501,7 @@ app.post("/review/:userId", isLoggedIn, async (req, res) => {
     const totaalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
     const gemiddeldeRating = totaalRating / reviews.length;
 
-    await userData.updateOne( { _id: req.params.userId }, { $set: { totaalrating: gemiddeldeRating } }
+    await userData.updateOne( { _id: req.params.userId }, { $set: { totaalRating: gemiddeldeRating } }
 )
     res.redirect(`/user/${req.params.userId}`); 
 
@@ -517,3 +512,50 @@ console.log(req.body);
     res.send("Error saving review");
   }
 }) 
+
+
+app.get("/listing/:listingId", isLoggedIn, async (req, res) => {
+  try {
+    const listing = await carListing
+      .findById(req.params.listingId)
+      .populate("userId", "voornaam leeftijd auto totaalRating")
+      .populate("passagiers", "voornaam leeftijd auto totaalRating");
+
+    if (!listing) {
+      return res.send("Listing not found");
+    }
+
+    res.render("listing.ejs", { listing });
+
+  } catch (error) {
+    console.error(error);
+    res.send("Error loading listing");
+  }
+});
+
+app.post("/addToListing", isLoggedIn, async (req, res) => {
+  try {
+    const listingId = req.body.listingId;
+    const userId = req.session.userId;
+
+    const listing = await carListing.findById(listingId);
+
+    if (!listing) {
+      return res.send("Listing not found");
+    }
+
+    if (listing.userId.toString() === userId) {
+      return res.send("You are the owner of this listing");
+    }
+
+    await carListing.findByIdAndUpdate(listingId, {
+      $addToSet: { passagiers: userId }
+    });
+
+    res.redirect(`/listing/${listingId}`);
+
+  } catch (error) {
+    console.error(error);
+    res.send("Error joining listing");
+  }
+});
