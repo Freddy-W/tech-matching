@@ -173,8 +173,6 @@ async function favEvent () {
     }
 };
 
-// addConcertBtn.addEventListener('click', addConcert());
-
 const filterSubmitBtn = document.getElementById("filterSubmit");
 
 if (filterSubmitBtn) {
