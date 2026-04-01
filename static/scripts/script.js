@@ -171,12 +171,6 @@ async function favEvent () {
     }
 };
 
-// function addConcert() {
-//     const ticketMUrl = 'https://app.ticketmaster.com/discovery/v2/';
-
-//     app.get(ticketMUrl/events/{id})
-// };
-
 // addConcertBtn.addEventListener('click', addConcert());
 
 const filterSubmitBtn = document.getElementById("filterSubmit");
