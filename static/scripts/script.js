@@ -232,25 +232,6 @@ stars.forEach(star => {
   });
 });
 
-<<<<<<< HEAD
-const venue = eventData.dataset.venue;
-const city = eventData.dataset.city;
-const country = eventData.dataset.country;
-
-async function fetchDistance(venue, city, country) {
-  try {
-    const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
-    const data = await response.json();
-
-    if (data.error) {
-      distanceText.textContent = "Afstand niet beschikbaar";
-      console.error(data.error);
-      return;
-    }
-
-    distanceText.textContent = `Afstand: ${data.distanceKm} km`;
-
-=======
 async function afstandBereken() {
   try {
     const params = new URLSearchParams(window.location.search);
@@ -272,7 +253,6 @@ async function afstandBereken() {
 
     distanceText.textContent = `Afstand: ${data.distanceKm} km`;
 
->>>>>>> 3de1cb5d64cd7a912e5a3e61886fb516024a23a3
   } catch (error) {
     console.error(error);
     distanceText.textContent = "Afstand niet beschikbaar";

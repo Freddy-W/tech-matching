@@ -52,3 +52,11 @@ main div:nth-of-type(2) {
     align-items: center;
 
 }
+
+#plusButton img {
+    height: 3rem;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--mainblue);
+    border-radius: 100%;
+}
