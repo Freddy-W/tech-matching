@@ -20,10 +20,6 @@ app.listen(port, () => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.render("index");
-});
-
 app.use(session({
   secret: process.env["sessionKey"] || '2eKey',
   resave: false,
@@ -255,8 +251,18 @@ app.get("/login", (req, res)=>{
     res.render('login.ejs');
 });
 
-app.get("/user", (req, res)=>{
-    res.render('user.ejs');
+app.get("/user/:id", isLoggedIn, async (req, res) => {
+  try {
+    const user = await userData.findById(req.session.userId);
+
+    const reviews = await reviewData
+      .find({ reviewee: req.params.id })
+    res.render("user.ejs", { user, reviews });
+
+  } catch (error) {
+    console.error(error);
+    res.send("Error loading user");
+  }
 });
 
 app.get("/register", (req, res)=>{
@@ -304,8 +310,10 @@ app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
 });
 
 
-app.get("/review", isLoggedIn, (req, res) => {
-  res.render('review.ejs');
+app.get("/review/:userId", isLoggedIn, (req, res) => {
+  
+  res.render('review.ejs', { userId: req.params.userId} );
+  
 });
 
 // https://www.youtube.com/watch?v=ZhqOp1Dkuso
@@ -338,8 +346,8 @@ const carListingSchema = new mongoose.Schema({
 });
 
 const reviewScheme = new mongoose.Schema({
-  reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "carlisting" },
-  reviewee: String,
+  reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+  reviewee: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
   rating: Number,
   review: String,
 });
@@ -451,16 +459,51 @@ app.get("/buddy-zoeken", isLoggedIn, async (req, res) =>{
     res.send("Error loading rides");
 }});
 
-// app.post("/review", isLoggedIn, async (req, res) => {
-//   try {
-//     const reviewData = {
-//       reviewer: req.session.userId, 
-//       reviewee: req.body.,
-//       rating: req.body.rating,
-//       review: req.body.review,
-//     };
-//   }
-// })
+app.get("/", async (req, res) => {
+  try {
+    const user = await userData.findById(req.session.userId); 
+    res.render("index.ejs", { user });
+
+  } catch (error) {
+    console.error(error);
+    res.send("Error loading index");
+  }
+});
+
+
+app.post("/review/:userId", isLoggedIn, async (req, res) => {
+  try {
+    const newReview = {
+      reviewer: req.session.userId, 
+      reviewee: req.params.userId,
+      rating: req.body.rating,
+      review: req.body.review,
+    };
+    await reviewData.create(newReview);
+    res.redirect("/user"); // of terug naar profiel
+console.log(req.params.userId);
+console.log(req.body);
+  } catch (error) {
+    console.error(error);
+    res.send("Error saving review");
+  }
+}) 
+
+//middleware, als er om een userid gevraagd wordt wordt deze gepakt.
+app.use(async (req, res, next) => {
+  if (req.session.userId) {
+    try {
+      const user = await userData.findById(req.session.userId);
+      res.locals.user = user;
+    } catch (err) {
+      console.error(err);
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+  next();
+});
 
 // async function geocodeAddress(address) {
 //   const url = `https://api.openrouteservice.org/geocode/search?api_key=${orsKey}&text=${encodeURIComponent(address)}`;

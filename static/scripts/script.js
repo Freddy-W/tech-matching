@@ -1,8 +1,9 @@
 // https://www.youtube.com/watch?v=DfSYmk_6vk8
-window.onload = function() {
+window.onload = async function() {
     // slideOne();
     // slideTwo();
     ladenBeginEvents();
+    afstandBereken();
 }
 
 // let sliderOne = document.getElementById("slider-1");
@@ -17,6 +18,7 @@ const filteropties = document.getElementById("filtergedeelte");
 const closeBtn = document.getElementById("annuleer");
 const stars = document.querySelectorAll('.star-rating span');
 const ratingInput = document.getElementById('rating');
+const distanceText = document.getElementById("distanceText");
 
 // openen/sluiten
 if (filterBtn) {
@@ -232,6 +234,7 @@ stars.forEach(star => {
   });
 });
 
+<<<<<<< HEAD
 const venue = eventData.dataset.venue;
 const city = eventData.dataset.city;
 const country = eventData.dataset.country;
@@ -249,6 +252,29 @@ async function fetchDistance(venue, city, country) {
 
     distanceText.textContent = `Afstand: ${data.distanceKm} km`;
 
+=======
+async function afstandBereken() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+
+    const venue = params.get("venue");
+    const city = params.get("city");
+    const country = params.get("country");
+
+    const distanceText = document.getElementById("distanceText");
+
+    const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+    const data = await response.json();
+
+    if (data.error) {
+      distanceText.textContent = "Afstand niet beschikbaar";
+      console.error(data.error);
+      return;
+    }
+
+    distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+
+>>>>>>> 3de1cb5d64cd7a912e5a3e61886fb516024a23a3
   } catch (error) {
     console.error(error);
     distanceText.textContent = "Afstand niet beschikbaar";
