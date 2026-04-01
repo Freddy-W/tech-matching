@@ -352,7 +352,7 @@ const userScheme = new mongoose.Schema({
     auto: String,
     rijden: String,
     favorieten: String,
-    totaalRating: { type: Number, default: 0 },
+    totaalrating: { type: Number, default: 0 },
 });
 
 const carListingSchema = new mongoose.Schema({
@@ -506,9 +506,9 @@ app.post("/review/:userId", isLoggedIn, async (req, res) => {
     const totaalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
     const gemiddeldeRating = totaalRating / reviews.length;
 
-    await userData.updateOne( { _id: req.params.userId }, { $set: { totalRating: gemiddeldeRating } }
+    await userData.updateOne( { _id: req.params.userId }, { $set: { totaalrating: gemiddeldeRating } }
 )
-    res.redirect('/user/${req.params.userId}'); 
+    res.redirect(`/user/${req.params.userId}`); 
 
 console.log(req.params.userId);
 console.log(req.body);
