@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
     <title>Concerten in de buurt</title>
 </head>
 <body>
@@ -20,8 +21,8 @@
             </button>
             <button>Filter</button>
         </section> 
-        <!-- Filtergedeelte -->
-        <section id="filtergedeelte"> 
+        <!-- <div id="results"></div> -->
+         <form id="filtergedeelte">
             <h2>Filters</h2>
             <h3>Plaats</h3>
             <input type="search" id="plaatsInput" placeholder="zoek een plaats...">
@@ -41,9 +42,13 @@
             <input type="date" id="datumVan">
             <input type="date" id="datumTot">
             <button id="annuleer">Annuleer</button>            
-            <button id="filterSubmit">Zoek</button>
-        </section>
-        <div id="results"></div>
+            <button type="submit"id="submitbutton">Zoek</button>
+        </form>
+
+        <div id="concertList">
+            <ul class="list" id="results"></ul>
+        </div>
+
     </main>
     <footer>
         <%- include('partials/menubalk')%>

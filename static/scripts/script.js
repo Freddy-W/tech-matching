@@ -1,7 +1,6 @@
-// https://www.youtube.com/watch?v=DfSYmk_6vk8
+// import List from 'list.js';
+
 window.onload = function() {
-    // slideOne();
-    // slideTwo();
     loadDefaultEvents();
 }
 
@@ -20,6 +19,18 @@ if (closeBtn) {
     closeBtn.addEventListener("click", () => {
         filteropties.classList.remove("open");
     });
+}
+
+rock.addEventListener("click", sorteerAll);
+dance.addEventListener("click", sorteerAll);
+country.addEventListener("click", sorteerAll);
+hiphop.addEventListener("click", sorteerAll);
+other.addEventListener("click", sorteerAll);
+
+function sorteerAll(event) {
+  let lijst = document.querySelector("ul");
+  let value = event.target.value;
+  lijst.className = value;
 }
 
 //Functie voor het "aanmaken" van events waar later info in kan
@@ -66,59 +77,6 @@ async function loadDefaultEvents() {
     }
 }
 
-//Functie voor zoeken van events voor een specifieke artiest
-// const searchBtn = document.getElementById("searchBtn");
-
-// if (searchBtn) {
-//     searchBtn.addEventListener("click", async () => {
-//         console.log("Button werkt");
-
-//         const artistInput = document.getElementById("artistInput");
-//         if (!artistInput) return;
-
-//         const artist = artistInput.value;
-//         if (!artist) return;
-
-//         try {
-//             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
-//             const data = await response.json();
-
-//             renderEvents(data);
-
-//         } catch (error) {
-//             console.error("Fout bij ophalen artist events:", error);
-//         }
-//     });
-// };
-
-const searchBtn = document.querySelector("button");
-
-if (searchBtn) {
-    searchBtn.addEventListener("click", async () => {
-        const artistInput = document.querySelector("input");
-        if (!artistInput) return;
-
-        const artist = artistInput.value;
-        if (!artist) return;
-
-        try {
-            const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
-            const data = await response.json();
-
-            renderEvents(data); // toont de gevonden concerten
-
-        } catch (error) {
-            console.error("Fout bij ophalen artist events:", error);
-        }
-    });
-}
-
-document.querySelector("input").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        searchBtn.click();
-    }
-});
-
 // CONCERT OPSLAAN NIET COMPLEET
 // const addConcertBtn = document.getElementById("...");
 
@@ -130,42 +88,3 @@ document.querySelector("input").addEventListener("keydown", (e) => {
 
 // addConcertBtn.addEventListener('click', addConcert());
 
-const filterSubmitBtn = document.getElementById("filterSubmit");
-
-if (filterSubmitBtn) {
-    filterSubmitBtn.addEventListener("click", async () => {
-        try {
-            const response = await fetch("/events");
-            const data = await response.json();
-            const plaats = document.getElementById("plaatsInput").value.toLowerCase();
-            const typesChecked = Array.from(document.querySelectorAll('input[name="type_muziek"]:checked'))
-                                      .map(el => el.value);
-
-            const filtered = data.filter(event => {
-                const plaatsMatch = !plaats || event.city.toLowerCase().includes(plaats);
-
-                const typeMatch =
-                    typesChecked.length === 0 ||
-                    typesChecked.some(type => 
-                        event.genre.toLowerCase().includes(type.toLowerCase())
-                    );
-
-                // datum code
-                const van = document.getElementById("datumVan").value;
-                const tot = document.getElementById("datumTot").value;
-
-                const datumMatch =
-                    (!van || event.date >= van) &&
-                    (!tot || event.date <= tot);
-
-                return plaatsMatch && typeMatch && datumMatch;
-            });
-
-            renderEvents(filtered);
-            filteropties.classList.remove("open");
-        } 
-        catch (error) {
-            console.error("Fout bij filteren:", error);
-        }
-    });
-}
