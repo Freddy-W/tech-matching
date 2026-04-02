@@ -1,68 +1,29 @@
-// import List from 'list.js';
-
 window.onload = function() {
-    loadDefaultEvents();
+  loadDefaultEvents();
 }
 
-const filterBtn = document.querySelector("button:nth-of-type(2)");
-const filteropties = document.getElementById("filtergedeelte");
+function formatGenre(genre) {
+  return genre.toLowerCase().replace(/[^a-z0-9]/g, "-");
+}
+
+const toggleFilterBtn = document.getElementById("toggleFilter");
+const filterGedeelte = document.getElementById("filtergedeelte");
 const closeBtn = document.getElementById("annuleer");
 
 // openen/sluiten
-if (filterBtn) {
-    filterBtn.addEventListener("click", () => {
-        filteropties.classList.add("open");
+if (toggleFilterBtn) {
+    toggleFilterBtn.addEventListener("click", () => {
+        filterGedeelte.classList.add("open");
     });
 }
 
 if (closeBtn) {
     closeBtn.addEventListener("click", () => {
-        filteropties.classList.remove("open");
+        filterGedeelte.classList.remove("open");
     });
 }
 
-rock.addEventListener("click", sorteerAll);
-dance.addEventListener("click", sorteerAll);
-country.addEventListener("click", sorteerAll);
-hiphop.addEventListener("click", sorteerAll);
-other.addEventListener("click", sorteerAll);
-
-function sorteerAll(event) {
-  let lijst = document.querySelector("ul");
-  let value = event.target.value;
-  lijst.className = value;
-}
-
-//Functie voor het "aanmaken" van events waar later info in kan
-function renderEvents(data) {
-    const results = document.getElementById("results");
-    if (!results) return;
-
-    results.innerHTML = "";
-
-    if (!Array.isArray(data) || data.length === 0) {
-        results.innerHTML = "<p>Geen aankomende events gevonden.</p>";
-        return;
-    }
-
-    data.forEach(event => {
-        results.innerHTML += `
-            <a  href="/gekozen-concert?id=${event.id}&name=${encodeURIComponent(event.artist)}&date=${event.date}&venue=${encodeURIComponent(event.venue)}&city=${encodeURIComponent(event.city)}&country=${encodeURIComponent(event.country)}&image=${encodeURIComponent(event.image)}">
-            <div class="event">
-                <img src="${event.image}" alt="${event.artist}" style="max-width: 200px; border-radius: 8px;">
-                <div class="eventinfo">
-                <h3>${event.artist}</h3>
-                <p><strong>Genre:</strong> ${event.genre}</p>
-                <!-- <p><strong>Tijd:</strong> ${event.time}</p> -->
-                <p><strong>Datum:</strong> ${event.date}</p>
-                <p><strong>Locatie:</strong> ${event.venue} (${event.city})</p>
-                <a href="${event.url}" target="_blank">Tickets</a>
-                </div>
-            </div>
-            </a>
-        `;
-    });
-}
+let userList;
 
 //"default" events ophalen die standaard op de home pagina staan bij openen
 async function loadDefaultEvents() {
@@ -77,14 +38,86 @@ async function loadDefaultEvents() {
     }
 }
 
-// CONCERT OPSLAAN NIET COMPLEET
-// const addConcertBtn = document.getElementById("...");
+//Functie voor het "aanmaken" van events waar later info in kan
+function renderEvents(data) {
+  const results = document.getElementById("results");
+  results.innerHTML = "";
 
-// function addConcert() {
-//     const ticketMUrl = 'https://app.ticketmaster.com/discovery/v2/';
+  if (!Array.isArray(data) || data.length === 0) {
+    results.innerHTML = "<li>Geen aankomende events gevonden</li>";
+    return;
+  }
 
-//     app.get(ticketMUrl/events/{id})
-// };
+  data.forEach(event => {
+    results.innerHTML += `
+      <li data-genre="${formatGenre(event.genre)}">
+        <img src="${event.image}" alt="${event.artist}">
+        <div>
+          <h3 class="artist">${event.artist}</h3>
+          <p class="genre">${event.genre}</p>
+          <p class="date">${event.date} - ${event.venue} (${event.city})</p>
+        </div>
+      </li>
+    `;
+  });
+  initializeList();
+}
 
-// addConcertBtn.addEventListener('click', addConcert());
+function initializeList() {
+  const options = { valueNames: ['artist', 'genre', 'date'] };
+  userList = new List('concertList', options);
+}
 
+// const searchBtn = document.querySelector("button");
+
+// if (searchBtn) {
+//     searchBtn.addEventListener("click", async () => {
+//         const artistInput = document.querySelector("input");
+//         if (!artistInput) return;
+
+//         const artist = artistInput.value;
+//         if (!artist) return;
+
+//         try {
+//             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
+//             const data = await response.json();
+
+//             renderEvents(data); // toont de gevonden concerten
+
+//         } catch (error) {
+//             console.error("Fout bij ophalen artist events:", error);
+//         }
+//     });
+// }
+
+// document.querySelector("input").addEventListener("keydown", (e) => {
+//     if (e.key === "Enter") {
+//         searchBtn.click();
+//     }
+// });
+
+// const filterSubmitBtn = document.getElementById("filterSubmit");
+
+const genreCheckboxes = document.querySelectorAll(".genre-filter");
+genreCheckboxes.forEach(cb => cb.addEventListener("change", filterGenre));
+
+function filterGenre() {
+  const selectedGenres = Array.from(genreCheckboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+  const ul = document.getElementById("results");
+
+  if (selectedGenres.length === 0) {
+    Array.from(ul.children).forEach(li => li.style.display = "flex");
+    return;
+  }
+
+    Array.from(ul.children).forEach(li => {
+        const genre = li.dataset.genre;
+        li.style.display = selectedGenres.includes(genre) ? "flex" : "none";
+    });
+
+}
+
+console.log(formatGenre("Hip-hop/Rap"));

@@ -14,36 +14,29 @@
     </header>
     <main>
         <h1>Concerten in de buurt</h1>
-        <section>
-            <input type="search" placeholder="zoek een concert...">
-            <button type="submit">
-                <img src="images/searchicon.svg" alt="searchicon">
-            </button>
-            <button>Filter</button>
-        </section> 
+        <section id="searchSection">
+            <input type="search" placeholder="Zoek een concert..." id="searchInput">
+            <button id="searchButton">Zoek</button>
+            <button id="toggleFilter">Filter</button>
+        </section>
         <!-- <div id="results"></div> -->
-         <form id="filtergedeelte">
+        <form id="filtergedeelte">
             <h2>Filters</h2>
-            <h3>Plaats</h3>
-            <input type="search" id="plaatsInput" placeholder="zoek een plaats...">
-            <button>Zoek</button>
             <h3>Type muziek</h3>
-            <input type="checkbox" id="rock" name="type_muziek" value="Rock">
+            <input type="checkbox" id="rock" class="genre-filter" value="rock">
             <label for="rock">Rock</label>
-            <input type="checkbox" id="dance" name="type_muziek" value="Dance/Electronic">
+            <input type="checkbox" id="dance" class="genre-filter" value="dance-electronic">
             <label for="dance">Dance/Electronic</label>
-            <input type="checkbox" id="country" name="type_muziek" value="Country">
+            <input type="checkbox" id="country" class="genre-filter" value="country">
             <label for="country">Country</label>
-            <input type="checkbox" id="hiphop" name="type_muziek" value="Hip-hop/Rap">
+            <input type="checkbox" id="hiphop" class="genre-filter" value="hip-hop-rap">
             <label for="hiphop">Hip-hop/Rap</label>
-            <input type="checkbox" id="other" name="type_muziek" value="Other">
+            <input type="checkbox" id="other" class="genre-filter" value="other">
             <label for="other">Other</label>
-            <h3>Datum</h3>
-            <input type="date" id="datumVan">
-            <input type="date" id="datumTot">
-            <button id="annuleer">Annuleer</button>            
-            <button type="submit"id="submitbutton">Zoek</button>
-        </form>
+
+      <button type="button" id="annuleer">Annuleer</button>
+      <button type="button" id="zoek">Zoek</button>
+    </form>
 
         <div id="concertList">
             <ul class="list" id="results"></ul>
