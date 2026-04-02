@@ -251,17 +251,13 @@ app.get(`/artist/:artist`, async (req, res) => {
 
 // FAVORIET FUNCTIE
 
-app.post("/user/:id", async (req, res) =>{
+app.post("/addToFav", isLoggedIn, async (req, res) =>{
   try{
-    const userId = req.session.userId;
-    const eventurl = document.location.search;
-    const eventId= eventurl.split("id=")[1].split("&")[0];    
-    await db.collection('userdatas').updateOne(
-    { _id: userId },
-    { $addToSet: { favorieten: eventId } });
-    res.json({message:"Event opgeslagen"})
-    console.log(eventId);
-  }
+       const userId = req.session.userId;
+    const eventId= req.body.eventId;
+    await userData.findByIdAndUpdate(userId, 
+      {$addToSet: { favorieten: eventId }}
+      )}
   catch(err){
     console.log("error")
     res.status(500).json({error: "Kon niet toevoegen"});

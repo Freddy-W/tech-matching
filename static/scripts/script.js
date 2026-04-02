@@ -157,26 +157,6 @@ document.querySelector("input").addEventListener("keydown", (e) => {
     }
 });
 
-// CONCERT OPSLAAN NIET COMPLEET
-const favButton = document.getElementById("favButton");
-favButton.addEventListener("click", favEvent);
-
-async function favEvent () {
-    const eventurl = document.location.search;
-    const eventId= eventurl.split("id=")[1].split("&")[0];
-
-    try {
-        console.log(eventId);
-    const res = await fetch("/userdatas/favorite", {
-        method: "POST",
-        body: JSON.stringify({eventId})});
-        console.log("Success");
-    }
-    catch (error) {
-        alert("Kon niet opslaan");
-    }
-};
-
 const filterSubmitBtn = document.getElementById("filterSubmit");
 
 if (filterSubmitBtn) {
