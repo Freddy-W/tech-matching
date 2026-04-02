@@ -11,7 +11,7 @@
             <% } %>
         </div>
     </div>
-    <a href="/user/<%=loggedInUser._id%>">
+      <a href="<%= loggedInUser ? `/user/${loggedInUser._id}` : '/login' %>">
     <img src="/images/pfp.jpg" alt="profielfoto">
 </a>
 </nav>

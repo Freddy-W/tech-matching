@@ -146,7 +146,7 @@ async function ladenBeginEvents() {
 //     });
 // };
 
-const zoekKnop = document.querySelector("button");
+const zoekKnop = document.getElementById("zoekKnop");
 
 if (zoekKnop) {
     zoekKnop.addEventListener("click", async () => {
