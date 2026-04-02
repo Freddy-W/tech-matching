@@ -251,14 +251,16 @@ app.get(`/artist/:artist`, async (req, res) => {
 
 // FAVORIET FUNCTIE
 
-app.post("/userdatas/:id", async (req, res) =>{
+app.post("/user/:id", async (req, res) =>{
   try{
     const userId = req.session.userId;
-    const eventId = req.params.eventId;
+    const eventurl = document.location.search;
+    const eventId= eventurl.split("id=")[1].split("&")[0];    
     await db.collection('userdatas').updateOne(
     { _id: userId },
     { $addToSet: { favorieten: eventId } });
     res.json({message:"Event opgeslagen"})
+    console.log(eventId);
   }
   catch(err){
     console.log("error")
