@@ -1,11 +1,5 @@
-// https://www.youtube.com/watch?v=DfSYmk_6vk8
-window.onload = async function() {
-    // slideOne();
-    // slideTwo();
-    ladenBeginEvents();
-        if (document.getElementById("distanceText")) {
-        afstandBereken();
-    }
+window.onload = function() {
+  loadDefaultEvents();
 }
 
 function formatGenre(genre) {
@@ -15,31 +9,6 @@ function formatGenre(genre) {
 const toggleFilterBtn = document.getElementById("toggleFilter");
 const filterGedeelte = document.getElementById("filtergedeelte");
 const closeBtn = document.getElementById("annuleer");
-const stars = document.querySelectorAll('.star-rating span');
-const ratingInput = document.getElementById('rating');
-const distanceText = document.getElementById("distanceText");
-
-
-function setStars(value) {
-  stars.forEach(star => {
-    star.classList.remove('selected');
-    if (parseInt(star.dataset.value) <= value) {
-      star.classList.add('selected');
-    }
-  });
-}
-
-if (document.getElementById(".star-rating span")) {
-    setStars(ratingInput.value);
-}
-
-stars.forEach(star => {
-  const val = parseInt(star.dataset.value);
-  star.addEventListener('click', () => {
-    ratingInput.value = val;
-    setStars(val);
-  });
-});
 
 // openen/sluiten
 if (toggleFilterBtn) {
@@ -57,12 +26,12 @@ if (closeBtn) {
 let userList;
 
 //"default" events ophalen die standaard op de home pagina staan bij openen
-async function ladenBeginEvents() {
+async function loadDefaultEvents() {
     try {
         const response = await fetch("/events");
         const data = await response.json();
 
-        ladenEvents(data);
+        renderEvents(data);
 
     } catch (error) {
         console.error("Fout bij ophalen default events:", error);
