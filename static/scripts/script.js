@@ -25,7 +25,9 @@ function setStars(value) {
   });
 }
 
-setStars(ratingInput.value);
+if (document.getElementById(".star-rating span")) {
+    setStars(ratingInput.value);
+}
 
 stars.forEach(star => {
   const val = parseInt(star.dataset.value);
