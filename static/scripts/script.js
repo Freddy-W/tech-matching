@@ -1,5 +1,7 @@
 window.onload = function() {
-  loadDefaultEvents();
+  if (document.getElementById("results")) {
+    loadDefaultEvents();
+  }
 }
 
 function formatGenre(genre) {

@@ -1,5 +1,3 @@
-@import url("/styles.css");
-
 h2:not(:last-of-type) {
     font-size: small;    
     color: var(--accentcolour);
