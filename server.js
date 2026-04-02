@@ -253,7 +253,7 @@ app.get(`/artist/:artist`, async (req, res) => {
 
 app.post("/addToFav", isLoggedIn, async (req, res) =>{
   try{
-       const userId = req.session.userId;
+    const userId = req.session.userId;
     const eventId= req.body.eventId;
     await userData.findByIdAndUpdate(userId, 
       {$addToSet: { favorieten: eventId }}
@@ -558,3 +558,17 @@ app.post("/addToListing", isLoggedIn, async (req, res) => {
   }
 });
 
+// app.get("/favConcerts", isLoggedIn, async (req, res) => {
+//   try {
+//     const userId = await userData.findById(req.session.userId);
+//     const concertPic = await ...
+//     const favConcerten = userId.favorieten;
+//     favConcerten.forEach(li => {
+      
+//     });
+//   }
+//   catch (error) {
+//     console.error(error);
+//     res.send("Geen concerten gevonden")
+//   }
+// })
