@@ -1,6 +1,7 @@
 body {
-    background-color: var(--mainblue);
+    background-color: var(--white);
     color: var(--white);
+
 } 
 main {
     margin: 1rem;
