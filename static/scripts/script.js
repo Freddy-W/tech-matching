@@ -3,7 +3,9 @@ window.onload = async function() {
     // slideOne();
     // slideTwo();
     ladenBeginEvents();
-    afstandBereken();
+        if (document.getElementById("distanceText")) {
+        afstandBereken();
+    }
 }
 
 const filterBtn = document.querySelector("button:nth-of-type(2)");
