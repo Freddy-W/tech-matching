@@ -162,8 +162,9 @@ async function favEvent () {
     const eventId= eventurl.split("id=")[1].split("&")[0];
 
     try {
+        console.log(eventId);
     const res = await fetch("/userdatas/favorite", {
-        method: "PATCH",
+        method: "POST",
         body: JSON.stringify({eventId})});
         console.log("Success");
     }
