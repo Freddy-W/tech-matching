@@ -141,8 +141,8 @@ app.get("/distance", isLoggedIn, async (req, res) => {
 
 app.get("/events", async (req, res) => {
 
-  //10 aankomende events in NL
-  const url = `https://app.ticketmaster.com/discovery/v2/events.json?size=100&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
+  //30 aankomende events in NL
+  const url = `https://app.ticketmaster.com/discovery/v2/events.json?size=50&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
 
   try {
       const response = await fetch(url);
