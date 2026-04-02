@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laat een Review achter!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/reviews.css">
+</head>
+<body>
+    <header>
+        <%- include('partials/header')%>
+    </header>
+    <main>
+        <h1>Laat een review achter voor @<%= reviewedUser.username %>!</h1>
+            <form method="POST" action="/review/<%= userId %>">
+            <div class="star-rating">
+                <span data-value="1">★</span>
+                <span data-value="2">★</span>
+                <span data-value="3">★</span>
+                <span data-value="4">★</span>
+                <span data-value="5">★</span>
+            </div>
+            <input type="hidden" name="rating" id="rating" value="0" required />
+            <textarea name="review" placeholder="Schrijf een review..."></textarea>
+            <button type="submit">Verstuur review</button>
+            </form>
+    </main>
+    <script src="/scripts/script.js"></script>
+</body>
+</html>

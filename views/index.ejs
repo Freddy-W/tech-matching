@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
     <title>Concerten in de buurt</title>
 </head>
 <body>
@@ -14,14 +15,14 @@
     <main>
         <h1>Concerten in de buurt</h1>
         <section>
-            <input type="search" placeholder="zoek een concert...">
+            <input id="zoekKnop" type="search" placeholder="zoek een concert...">
             <button type="submit">
                 <img src="images/searchicon.svg" alt="searchicon">
             </button>
             <button>Filter</button>
         </section> 
-        <!-- Filtergedeelte -->
-        <section id="filtergedeelte"> 
+        <!-- <div id="results"></div> -->
+         <form id="filtergedeelte">
             <h2>Filters</h2>
             <h3>Plaats</h3>
             <input type="search" id="plaatsInput" placeholder="zoek een plaats...">
@@ -37,45 +38,17 @@
             <label for="hiphop">Hip-hop/Rap</label>
             <input type="checkbox" id="other" name="type_muziek" value="Other">
             <label for="other">Other</label>
-            <!-- <input type="checkbox" id="poprock" name="type_muziek" value="Pop & Rock">
-            <label for="poprock">Pop & Rock</label>
-            <input type="checkbox" id="hip-hop" name="type_muziek" value="Hip-hop">
-            <label for="hip-hop">Hiphop</label>
-            <input type="checkbox" id="rbsoul" name="type_muziek" value="R&B/Soul">
-            <label for="rbsoul">R&B/Soul</label>
-            <input type="checkbox" id="klassiek" name="type_muziek" value="Klassiek">
-            <label for="klassiek">Klassiek</label>
-            <input type="checkbox" id="jazz" name="type_muziek" value="Jazz">
-            <label for="jazz">Jazz</label>
-            <input type="checkbox" id="wereldmuziek" name="type_muziek" value="Wereldmuziek">
-            <label for="wereldmuziek">Wereldmuziek</label>
-            <input type="checkbox" id="opera" name="type_muziek" value="Opera">
-            <label for="opera">Opera</label> -->
             <h3>Datum</h3>
-            <!-- <input type="date" id="datumInput"> -->
             <input type="date" id="datumVan">
             <input type="date" id="datumTot">
-            <!-- <h3>Prijs</h3>
-            <div class="wrapper">
-                <div class="container">
-                    <div class="slider-track"></div>
-                    <input type="range" min="0" max="100" value="30" id="slider-1" oninput="slideOne()">
-                    <input type="range" min="0" max="100" value="70" id="slider-2" oninput="slideTwo()">
-                </div>
-                <div class="values">
-                    <span id="range1">
-                        0
-                    </span>
-                    <span> - </span>
-                    <span id="range2">
-                        100
-                    </span>
-                </div>
-            </div> -->
             <button id="annuleer">Annuleer</button>            
-            <button id="filterSubmit">Zoek</button>
-        </section>
-        <div id="results"></div>
+            <button type="submit"id="submitbutton">Zoek</button>
+        </form>
+
+        <div id="concertList">
+            <ul class="list" id="results"></ul>
+        </div>
+
     </main>
     <footer>
         <%- include('partials/menubalk')%>

@@ -1,20 +1,39 @@
 // https://www.youtube.com/watch?v=DfSYmk_6vk8
-window.onload = function() {
+window.onload = async function() {
     // slideOne();
     // slideTwo();
-    loadDefaultEvents();
+    ladenBeginEvents();
+        if (document.getElementById("distanceText")) {
+        afstandBereken();
+    }
 }
 
-// let sliderOne = document.getElementById("slider-1");
-// let sliderTwo = document.getElementById("slider-2");
-// let displayValOne = document.getElementById("range1");
-// let displayValTwo = document.getElementById("range2");
-// let minGap = 0;
-// let slidertrack = document.querySelector(".slider-track");
-// let sliderMaxValue = document.getElementById("slider-1").max;
 const filterBtn = document.querySelector("button:nth-of-type(2)");
 const filteropties = document.getElementById("filtergedeelte");
 const closeBtn = document.getElementById("annuleer");
+const stars = document.querySelectorAll('.star-rating span');
+const ratingInput = document.getElementById('rating');
+const distanceText = document.getElementById("distanceText");
+
+
+function setStars(value) {
+  stars.forEach(star => {
+    star.classList.remove('selected');
+    if (parseInt(star.dataset.value) <= value) {
+      star.classList.add('selected');
+    }
+  });
+}
+
+setStars(ratingInput.value);
+
+stars.forEach(star => {
+  const val = parseInt(star.dataset.value);
+  star.addEventListener('click', () => {
+    ratingInput.value = val;
+    setStars(val);
+  });
+});
 
 // openen/sluiten
 if (filterBtn) {
@@ -29,34 +48,20 @@ if (closeBtn) {
     });
 }
 
-// function slideOne() {
-//     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-//         sliderOne.value = parseInt(sliderTwo.value) -minGap;
-//     }
-//     displayValOne.textContent = sliderOne.value;
-//     fillColor();
-// }
+rock.addEventListener("click", sorteerAll);
+dance.addEventListener("click", sorteerAll);
+country.addEventListener("click", sorteerAll);
+hiphop.addEventListener("click", sorteerAll);
+other.addEventListener("click", sorteerAll);
 
-// function slideTwo() {
-//     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-//         sliderTwo.value = parseInt(sliderOne.value) + minGap;
-//     }
-//     displayValTwo.textContent = sliderTwo.value;
-//     fillColor();
-// }
-
-// function fillColor() {
-//     percent1 = (sliderOne.value / sliderMaxValue) * 100;
-//     percent2 = (sliderTwo.value / sliderMaxValue) * 100;
-//     slidertrack.style.background = `linear-gradient(to right, 
-//     hsl(0, 0%, 85%) ${percent1}%,
-//   hsl(187, 69%, 37%) ${percent1}%,
-//   hsl(187, 69%, 37%) ${percent2}%,
-//   hsl(0, 0%, 85%) ${percent2}%)`;
-// }
+function sorteerAll(event) {
+  let lijst = document.querySelector("ul");
+  let value = event.target.value;
+  lijst.className = value;
+}
 
 //Functie voor het "aanmaken" van events waar later info in kan
-function renderEvents(data) {
+function ladenEvents(data) {
     const results = document.getElementById("results");
     if (!results) return;
 
@@ -71,14 +76,12 @@ function renderEvents(data) {
         results.innerHTML += `
             <a  href="/gekozen-concert?id=${event.id}&name=${encodeURIComponent(event.artist)}&date=${event.date}&venue=${encodeURIComponent(event.venue)}&city=${encodeURIComponent(event.city)}&country=${encodeURIComponent(event.country)}&image=${encodeURIComponent(event.image)}">
             <div class="event">
-                <img src="${event.image}" alt="${event.artist}" style="max-width: 200px; border-radius: 8px;">
+                <img src="${event.image}" alt="${event.artist}">
                 <div class="eventinfo">
                 <h3>${event.artist}</h3>
                 <p><strong>Genre:</strong> ${event.genre}</p>
-                <!-- <p><strong>Tijd:</strong> ${event.time}</p> -->
                 <p><strong>Datum:</strong> ${event.date}</p>
                 <p><strong>Locatie:</strong> ${event.venue} (${event.city})</p>
-                <a href="${event.url}" target="_blank">Tickets</a>
                 </div>
             </div>
             </a>
@@ -87,12 +90,12 @@ function renderEvents(data) {
 }
 
 //"default" events ophalen die standaard op de home pagina staan bij openen
-async function loadDefaultEvents() {
+async function ladenBeginEvents() {
     try {
         const response = await fetch("/events");
         const data = await response.json();
 
-        renderEvents(data);
+        ladenEvents(data);
 
     } catch (error) {
         console.error("Fout bij ophalen default events:", error);
@@ -124,7 +127,7 @@ async function loadDefaultEvents() {
 //     });
 // };
 
-const searchBtn = document.querySelector("button");
+const zoekKnop = document.getElementById("zoekKnop");
 
 if (searchBtn) {
     searchBtn.addEventListener("click", async () => {
@@ -153,15 +156,24 @@ document.querySelector("input").addEventListener("keydown", (e) => {
 });
 
 // CONCERT OPSLAAN NIET COMPLEET
-// const addConcertBtn = document.getElementById("...");
+const favButton = document.getElementById("favButton");
+favButton.addEventListener("click", favEvent);
 
-// function addConcert() {
-//     const ticketMUrl = 'https://app.ticketmaster.com/discovery/v2/';
+async function favEvent () {
+    const eventurl = document.location.search;
+    const eventId= eventurl.split("id=")[1].split("&")[0];
 
-//     app.get(ticketMUrl/events/{id})
-// };
-
-// addConcertBtn.addEventListener('click', addConcert());
+    try {
+        console.log(eventId);
+    const res = await fetch("/userdatas/favorite", {
+        method: "POST",
+        body: JSON.stringify({eventId})});
+        console.log("Success");
+    }
+    catch (error) {
+        alert("Kon niet opslaan");
+    }
+};
 
 const filterSubmitBtn = document.getElementById("filterSubmit");
 
@@ -201,4 +213,57 @@ if (filterSubmitBtn) {
             console.error("Fout bij filteren:", error);
         }
     });
+}
+
+const venue = eventData.dataset.venue;
+const city = eventData.dataset.city;
+const country = eventData.dataset.country;
+
+async function fetchDistance(venue, city, country) {
+  const distanceText = document.getElementById("distanceText"); 
+
+  try {
+    const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+    const data = await response.json();
+
+    if (data.error) {
+      distanceText.textContent = "Afstand niet beschikbaar";
+      console.error(data.error);
+      return;
+    }
+
+    distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+
+  } catch (error) {
+    console.error(error);
+    distanceText.textContent = "Afstand niet beschikbaar";
+  }
+}
+
+
+async function afstandBereken() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+
+    const venue = params.get("venue");
+    const city = params.get("city");
+    const country = params.get("country");
+
+    const distanceText = document.getElementById("distanceText");
+
+    const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+    const data = await response.json();
+
+    if (data.error) {
+      distanceText.textContent = "Afstand niet beschikbaar";
+      console.error(data.error);
+      return;
+    }
+
+    distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+
+  } catch (error) {
+    console.error(error);
+    distanceText.textContent = "Afstand niet beschikbaar";
+  }
 }

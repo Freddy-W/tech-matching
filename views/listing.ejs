@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoek een buddy!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/listing.css">
+</head>
+<body>
+    <header>
+        <%- include('partials/header')%>
+    </header>
+<main>
+    <h1>Zoek een buddy</h1>
+        <div class="listing">
+    <div>
+        <a class="owner" href="/user/<%=listing.userId._id%>">
+            <img src="../images/pfp.jpg">
+            <div>
+                <p><%= listing.userId.voornaam %></p>
+                <p>Auto: <%= listing.auto %></p>
+                <p><%= listing.userId.leeftijd %> jaar oud</p>
+                <p>Rijden: <%= listing.rijden %></p>
+                <p>Rating: <%= listing.userId.totaalRating || 0 %></p>
+            </div>
+            
+        </a>
+    </div>
+    <% if (listing.passagiers && listing.passagiers.length > 0) { %>
+        <div>
+            <h4>Passagiers:</h4>
+            <% listing.passagiers.forEach(passagier => { %>
+                <a class="passagier" href="/user/<%=passagier._id%>">
+                    <img src="../images/pfp.jpg">
+                    <div>
+                        <p><%= passagier.voornaam %></p>
+                        <p><%= passagier.leeftijd %> jaar oud</p>
+                        <p>Rating: <%= passagier.totaalRating || 0 %></p>
+                    </div>
+                </a>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <p>No passengers yet</p>
+    <% } %>
+<form action="/addToListing" method="POST">
+        <input type="hidden" name="listingId" value="<%= listing._id %>">
+        <button type="submit">Join this ride</button>
+    </form>
+</div>
+</main>
+    <footer>
+        <%- include('partials/menubalk')%>
+    </footer>
+</body>
+</html>

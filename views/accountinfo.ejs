@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
-    <h1>Accountgegevens</h1>
+    <header>
+        <%- include('partials/header')%>
+    </header>
+    <main>
+        <h1>Accountgegevens</h1>
     <form action="/accountinfo" method="POST">
             <label>
                 <h2>E-mail</h2>
@@ -65,5 +69,7 @@
             </label>
             <button type="sumbit"><h2>Klaar</h2></button>
         </form>
+    </main>
+
 </body>
 </html>
