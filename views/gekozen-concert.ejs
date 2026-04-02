@@ -18,14 +18,14 @@
         </div>
 
         <section>
-            <img src="<%= event.image%>" alt="${event.artist}" style=" border-radius: 8px;">
+            <img src="<%= event.image %>" alt="<%= event.artist %>" style="border-radius: 8px;">
             <form method="post" action="/addToFav">
                 <input type="hidden" name="eventId" id="idinput" value="<%= event.id %>">
                 <button id="favButton" type="submit">
                     <img src="/images/plus-button.svg" alt="plus">
                 </button>
             </form>
-            <h2><%= event.artist %></h3>
+            <h2><%= event.artist %></h2>
             <p><%= event.city %>, <%= event.country %></p>
             <p><%= event.date %></p>
             <p><%= event.venue %></p>

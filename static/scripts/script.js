@@ -49,17 +49,29 @@ function renderEvents(data) {
   }
 
   data.forEach(event => {
-    results.innerHTML += `
-      <li data-genre="${formatGenre(event.genre)}">
-        <img src="${event.image}" alt="${event.artist}">
-        <div>
-          <h3 class="artist">${event.artist}</h3>
-          <p class="genre">${event.genre}</p>
-          <p class="date">${event.date} - ${event.venue} (${event.city})</p>
-        </div>
-      </li>
+    const li = document.createElement("li");
+    li.dataset.genre = formatGenre(event.genre);
+    li.innerHTML = `
+      <img src="${event.image}" alt="${event.artist}">
+      <div>
+        <h3 class="artist">${event.artist}</h3>
+        <p class="genre">${event.genre}</p>
+        <p class="date">${event.date} - ${event.venue} (${event.city})</p>
+      </div>
     `;
+    li.addEventListener("click", () => {
+      window.location.href = `/gekozen-concert?id=${encodeURIComponent(event.id)}
+        &name=${encodeURIComponent(event.artist)}
+        &date=${encodeURIComponent(event.date)}
+        &time=${encodeURIComponent(event.time)}
+        &venue=${encodeURIComponent(event.venue)}
+        &city=${encodeURIComponent(event.city)}
+        &country=${encodeURIComponent(event.country)}
+        &image=${encodeURIComponent(event.image)}`;
+    });
+    results.appendChild(li);
   });
+
   initializeList();
 }
 
