@@ -1,23 +1,62 @@
+@import url("/styles.css");
+
 body {
-    background-color: #062b32;
-    color: white;
+    background-color: var(--mainblue);
+    color: var(--white);
+}
+
+main {
+    margin: 1rem;
+}
+ 
+h1 {
+    margin-left: 1rem;
 }
 
 main > div:nth-of-type(1) {
     display: flex;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
-main > div section img {
-    margin: 1rem;
-    max-width: 80vw;
+main > section img {
+    max-width: 100%;
     justify-self: center;
 }
 
-main >div:nth-of-type(2) a {
+main > section {
+    margin-bottom: 2rem;
+}
+
+main > div:nth-of-type(1) > a {
+    margin: 0.5rem;
+}
+
+
+main div:nth-of-type(2) a:first-of-type {
+    text-decoration: none;
+    margin: 1rem;
     padding: 1rem;
-    background-color: white;
-    color: black;
-    border-radius: 8px;
-    text-decoration: 0;
+    display: flex;
+    justify-content: center;
+    border-radius: 1rem;
+    background-color: var(--black);
+    border: var(--white);
+    width: 100%;
+    border: 10px white;
+}
+
+main div:nth-of-type(2) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+#plusButton img {
+    height: 3rem;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--mainblue);
+    border-radius: 100%;
 }

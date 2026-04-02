@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
     <header>
+        <%- include('partials/header')%>
     </header>
     <main>
         <h1>Auto Aanbieden</h1>
@@ -17,6 +18,10 @@
             <label>
                 <h2>Welke auto heb je?</h2>
                 <input name="auto" placeholder="Honda Civic" required>
+            </label>
+            <label>
+                <h2>Hoe oud ben je?</h2>
+                <input name="leeftijd" placeholder="23" required>
             </label>
             <label>
                 <h2>Hoeveel passen er in je auto?</h2>

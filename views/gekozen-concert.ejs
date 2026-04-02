@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Concert</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/huidigconcert.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/huidigconcert.css">
 </head>
 <body>
     <header>
@@ -16,22 +16,33 @@
             <a href="/"><img src="/images/terugpijl.png"></a>
             <h1>Huidig Concert</h1>
         </div>
-        <div>
+
         <section>
             <img src="<%= event.image%>" alt="${event.artist}" style=" border-radius: 8px;">
+            <form method="patch">
+                <button id="favButton"><img src="/images/plus-button.svg" alt="plus"></button>
+            </form>
             <h2><%= event.artist %></h3>
             <p><%= event.city %>, <%= event.country %></p>
             <p><%= event.date %></p>
+            <p><%= event.venue %></p>
         </section>
-        <section>
-             <p><%= event.venue %></p>
-        </section>
-        <a href="/buddy-zoeken?eventId=<%= event.id %>">Zoek een auto</a>
-        <a href="/auto-aanbieden?eventId=<%= event.id %>">Bied auto aan</a>
+        <p id="distanceText">Afstand berekenen...</p>
+
+        <div id="eventData"
+            data-venue="<%= event.venue %>"
+            data-city="<%= event.city %>"
+            data-country="<%= event.country %>">
         </div>
+        <div>
+            <a href="/buddy-zoeken?eventId=<%= event.id %>">Zoek een auto</a>
+            <a href="/auto-aanbieden?eventId=<%= event.id %>">Bied auto aan</a>
+        </div>
+        
         
     </main>
     <footer>
     </footer>
+    <script src="/scripts/script.js"></script>
 </body>
 </html>

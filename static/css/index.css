@@ -1,7 +1,8 @@
+@import url("/styles.css");
+
 body {
-    background-color: #062b32;
-    color: white;
-    margin: 1em;    
+    background-color: var(--mainblue);
+    color: var(--white)  
 }
 
 /* filter-overlay */
@@ -12,7 +13,7 @@ body {
     width: 100%;
     height: 100vh;
 
-    background-color: #062b32;
+    background-color: var(--black);
     z-index: 1000;
 
     padding: 1em;
@@ -31,7 +32,7 @@ body {
 }
 
 a, a:visited {
-    color: white;
+    color: var(--white);
     text-decoration: none;
 }
 
@@ -72,7 +73,7 @@ input[type="range"]::-webkit-slider-thumb {
     appearance: none;
     height: 1.5em;
     width: 1.5em;
-    background: hsl(187,69%,37%);
+    background: var(--accentcolour2);
     border-radius: 50%;
     cursor: pointer;
     pointer-events: auto;
@@ -81,22 +82,67 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* waarde onder slider */
 .values {
-    background: hsl(187,69%,37%);
+    background: var(--accentcolour2);
     width: 32%;
     margin: 2em auto 0;
     padding: 8px;
     border-radius: .5em;
     text-align: center;
-    color: hsl(0, 0%, 100%);
+    color: var(--white);
 }
-
-.eventinfo {
-    margin-left:10px;
-}
-/* .eventinfo img {
-    
-} */
 
 .event {
     display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    background-color: #1C5863;
+    max-width: 450px;
+}
+
+.eventinfo {
+    margin: 0.5rem 1rem 1rem 1rem;
+}
+
+.event:first-of-type {
+    margin-top: 1rem;
+}
+
+.event img {
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+main {
+        margin: 1em;  
+ }
+main > section input {
+    width: 100%;
+    border: none;
+    height: 3rem;
+    border-radius: 1rem 0 0 1rem;
+    padding: 1rem;
+}
+
+
+main > section button {
+    border: none;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+main > section button:nth-of-type(1) {
+    background-color: white;
+    
+} 
+
+main > section:nth-of-type(1) button:nth-of-type(2) {
+    border-radius: 0 1rem 1rem 0;
+    background-color: #1C5863;
+    color: white;
+    font-weight: bold;
+}
+
+main > section {
+    border-radius: 1rem;
+    background-color: azure;
+
 }

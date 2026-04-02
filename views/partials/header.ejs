@@ -3,9 +3,15 @@
     <div>
         <img src="/images/logo-1color.svg" alt="Logo">
         <div>
-        <img src="/images/app-name.svg" alt="Logotext">
-        <p>@username</p>
+        <a href="/"><img src="/images/app-name.svg" alt="Logotext"></a>
+       <% if (loggedInUser) { %>
+            <p>@<%= loggedInUser.username %></p>
+            <% } else { %>
+                <p>Gast</p>
+            <% } %>
         </div>
     </div>
-    <a href="accountinfo"><img src="/images/pfp.jpg" alt="profielfoto"></a>
+    <a href="/user/<%=loggedInUser._id%>">
+    <img src="/images/pfp.jpg" alt="profielfoto">
+</a>
 </nav>

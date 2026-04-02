@@ -1,11 +1,18 @@
+@import url("/styles.css");
+
 h2:not(:last-of-type) {
     font-size: small;    
-    color: #97D8E4;
+    color: var(--accentcolour);
 }
 
 body {
-    background-color: #062b32;
-    color: white;
+    background-color: var(--mainblue);
+    color: var(--white);
+}
+
+body main {
+    background-color: var(--mainblue);
+    color: var(--white);
     display: flex;
     flex-direction: column;
     align-items:center;
@@ -23,12 +30,12 @@ body form {
 
 
 a, a:visited {
-    color: #97D8E4;
+    color: var(--accentcolour);
 }
 
 button {
-    color: white;
-    background-color: #1DA067;
+    color: var(white);
+    background-color: var(--happyflow);
     border: none;
     width: 10em;
     border-radius: 10px;
