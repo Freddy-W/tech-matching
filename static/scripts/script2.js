@@ -1,3 +1,4 @@
+// https://www.youtube.com/watch?v=DfSYmk_6vk8
 window.onload = function() {
     slideOne();
     slideTwo();

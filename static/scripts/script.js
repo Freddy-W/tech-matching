@@ -6,13 +6,6 @@ window.onload = async function() {
     afstandBereken();
 }
 
-// let sliderOne = document.getElementById("slider-1");
-// let sliderTwo = document.getElementById("slider-2");
-// let displayValOne = document.getElementById("range1");
-// let displayValTwo = document.getElementById("range2");
-// let minGap = 0;
-// let slidertrack = document.querySelector(".slider-track");
-// let sliderMaxValue = document.getElementById("slider-1").max;
 const filterBtn = document.querySelector("button:nth-of-type(2)");
 const filteropties = document.getElementById("filtergedeelte");
 const closeBtn = document.getElementById("annuleer");
@@ -53,31 +46,17 @@ if (closeBtn) {
     });
 }
 
-// function slideOne() {
-//     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-//         sliderOne.value = parseInt(sliderTwo.value) -minGap;
-//     }
-//     displayValOne.textContent = sliderOne.value;
-//     fillColor();
-// }
+rock.addEventListener("click", sorteerAll);
+dance.addEventListener("click", sorteerAll);
+country.addEventListener("click", sorteerAll);
+hiphop.addEventListener("click", sorteerAll);
+other.addEventListener("click", sorteerAll);
 
-// function slideTwo() {
-//     if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-//         sliderTwo.value = parseInt(sliderOne.value) + minGap;
-//     }
-//     displayValTwo.textContent = sliderTwo.value;
-//     fillColor();
-// }
-
-// function fillColor() {
-//     percent1 = (sliderOne.value / sliderMaxValue) * 100;
-//     percent2 = (sliderTwo.value / sliderMaxValue) * 100;
-//     slidertrack.style.background = `linear-gradient(to right, 
-//     hsl(0, 0%, 85%) ${percent1}%,
-//   hsl(187, 69%, 37%) ${percent1}%,
-//   hsl(187, 69%, 37%) ${percent2}%,
-//   hsl(0, 0%, 85%) ${percent2}%)`;
-// }
+function sorteerAll(event) {
+  let lijst = document.querySelector("ul");
+  let value = event.target.value;
+  lijst.className = value;
+}
 
 //Functie voor het "aanmaken" van events waar later info in kan
 function ladenEvents(data) {
@@ -122,10 +101,10 @@ async function ladenBeginEvents() {
 }
 
 //Functie voor zoeken van events voor een specifieke artiest
-// const zoekKnop = document.getElementById("zoekKnop");
+// const searchBtn = document.getElementById("searchBtn");
 
-// if (zoekKnop) {
-//     zoekKnopx.addEventListener("click", async () => {
+// if (searchBtn) {
+//     searchBtn.addEventListener("click", async () => {
 //         console.log("Button werkt");
 
 //         const artistInput = document.getElementById("artistInput");
@@ -138,7 +117,7 @@ async function ladenBeginEvents() {
 //             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
 //             const data = await response.json();
 
-//             ladenEvents(data);
+//             renderEvents(data);
 
 //         } catch (error) {
 //             console.error("Fout bij ophalen artist events:", error);
@@ -148,8 +127,8 @@ async function ladenBeginEvents() {
 
 const zoekKnop = document.getElementById("zoekKnop");
 
-if (zoekKnop) {
-    zoekKnop.addEventListener("click", async () => {
+if (searchBtn) {
+    searchBtn.addEventListener("click", async () => {
         const artistInput = document.querySelector("input");
         if (!artistInput) return;
 
@@ -160,7 +139,7 @@ if (zoekKnop) {
             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
             const data = await response.json();
 
-            ladenEvents(data); // toont de gevonden concerten
+            renderEvents(data); // toont de gevonden concerten
 
         } catch (error) {
             console.error("Fout bij ophalen artist events:", error);
@@ -170,7 +149,7 @@ if (zoekKnop) {
 
 document.querySelector("input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        zoekKnop.click();
+        searchBtn.click();
     }
 });
 
@@ -224,7 +203,7 @@ if (filterSubmitBtn) {
                 return plaatsMatch && typeMatch && datumMatch;
             });
 
-            ladenEvents(filtered);
+            renderEvents(filtered);
             filteropties.classList.remove("open");
         } 
         catch (error) {
