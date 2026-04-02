@@ -25,7 +25,7 @@ function setStars(value) {
   });
 }
 
-setStars(ratingInput.value);
+// setStars(ratingInput.value);
 
 stars.forEach(star => {
   const val = parseInt(star.dataset.value);
@@ -48,11 +48,11 @@ if (closeBtn) {
     });
 }
 
-rock.addEventListener("click", sorteerAll);
-dance.addEventListener("click", sorteerAll);
-country.addEventListener("click", sorteerAll);
-hiphop.addEventListener("click", sorteerAll);
-other.addEventListener("click", sorteerAll);
+// rock.addEventListener("click", sorteerAll);
+// dance.addEventListener("click", sorteerAll);
+// country.addEventListener("click", sorteerAll);
+// hiphop.addEventListener("click", sorteerAll);
+// other.addEventListener("click", sorteerAll);
 
 function sorteerAll(event) {
   let lijst = document.querySelector("ul");
