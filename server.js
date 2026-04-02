@@ -559,3 +559,4 @@ app.post("/addToListing", isLoggedIn, async (req, res) => {
     res.send("Error joining listing");
   }
 });
+
