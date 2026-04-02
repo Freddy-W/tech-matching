@@ -23,7 +23,7 @@
                 <button id="favButton"><img src="/images/plus-button.svg" alt="plus"></button>
             </form>
             <h2><%= event.artist %></h3>
-            <a href=<%= event.id%>><p>Favoriet</p></a>
+            <a id="favLink"method="post" href="/gekozen-concert" value=<%= event.id %>><p>Favoriet</p></a>
             <p><%= event.city %>, <%= event.country %></p>
             <p><%= event.date %></p>
             <p><%= event.venue %></p>

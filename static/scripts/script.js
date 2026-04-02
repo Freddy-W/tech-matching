@@ -156,7 +156,7 @@ document.querySelector("input").addEventListener("keydown", (e) => {
 });
 
 // CONCERT OPSLAAN NIET COMPLEET
-const favButton = document.getElementById("favButton");
+const favButton = document.getElementById("favLink");
 favButton.addEventListener("click", favEvent);
 
 async function favEvent () {
