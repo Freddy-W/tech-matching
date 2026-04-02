@@ -251,10 +251,10 @@ app.get(`/artist/:artist`, async (req, res) => {
 
 // FAVORIET FUNCTIE
 
-app.patch("/userdatas/:id", async (req, res) =>{
+app.post("/userdatas/:id", async (req, res) =>{
   try{
     const userId = req.session.userId;
-    const eventId = req.body.eventId;
+    const eventId = req.params.eventId;
     await db.collection('userdatas').updateOne(
     { _id: userId },
     { $addToSet: { favorieten: eventId } });
