@@ -4,54 +4,58 @@ window.onload = function() {
   }
 }
 
-function formatGenre(genre) {
-  return genre.toLowerCase().replace(/[^a-z0-9]/g, "-");
-}
-
+let userList;
 const filterButton = document.getElementById("toggleFilter");
 const filterGedeelte = document.getElementById("filtergedeelte");
 const sluitButton = document.getElementById("zoek");
 const annuleerButton = document.getElementById("annuleer");
+const searchInput = document.getElementById("searchInput");
+const results = document.getElementById("results");
+const li = document.createElement("li");
+const genreCheckboxes = document.querySelectorAll(".genre-filter");
+const options = { valueNames: ['artist', 'genre', 'date', 'city'] };
+const ul = document.getElementById("results");
 
-// openen/sluiten
-if (filterButton) {
-    filterButton.addEventListener("click", () => {
-        filterGedeelte.classList.add("open");
-    });
+document.querySelectorAll(".genre-filter").forEach(cb => cb.addEventListener("change", filterAlles));
+
+searchInput.addEventListener("input", filterAlles);
+filterButton.addEventListener("click", filterenOpen);
+sluitButton.addEventListener("click", pasToe);
+annuleerButton.addEventListener("click", annuleer);
+
+function formatGenre(genre) {
+  return genre.toLowerCase().replace(/[^a-z0-9]/g, "-");
 }
 
-if (sluitButton) {
-    sluitButton.addEventListener("click", () => {
-        filterGedeelte.classList.remove("open");
-    });
+function filterenOpen() {
+  filterGedeelte.classList.add("open");
 }
 
-if (annuleerButton) {
-    annuleerButton.addEventListener("click", () => {
-        filterGedeelte.classList.remove("open");
-        genreCheckboxes.forEach(cb => cb.checked = false);
-        filterGenre(); // herberekent alles netjes
-    });
+function pasToe() {
+  filterGedeelte.classList.remove("open");
+  filterAlles();
 }
 
-let userList;
+function annuleer() {
+  filterGedeelte.classList.remove("open");
+  genreCheckboxes.forEach(cb => cb.checked = false);
+  filterAlles(); // herberekent alles netjes
+  checkNoResults();
+}
 
 //"default" events ophalen die standaard op de home pagina staan bij openen
 async function loadDefaultEvents() {
-    try {
-        const response = await fetch("/events");
-        const data = await response.json();
-
-        renderEvents(data);
-
+  try {
+    const response = await fetch("/events");
+    const data = await response.json();
+    renderEvents(data);
     } catch (error) {
-        console.error("Fout bij ophalen default events:", error);
+      console.error("Fout bij ophalen default events:", error);
     }
 }
 
 //Functie voor het "aanmaken" van events waar later info in kan
 function renderEvents(data) {
-  const results = document.getElementById("results");
   results.innerHTML = "";
 
   if (!Array.isArray(data) || data.length === 0) {
@@ -60,13 +64,14 @@ function renderEvents(data) {
   }
 
   data.forEach(event => {
-    const li = document.createElement("li");
-    li.dataset.genre = formatGenre(event.genre);
+    const li = document.createElement("li"); // <-- hier maken we elke keer een nieuwe
     li.innerHTML = `
       <img src="${event.image}" alt="${event.artist}">
       <div>
         <h3 class="artist">${event.artist}</h3>
         <p class="genre">${event.genre}</p>
+        <p class="city">${event.city}</p>
+        <p class="venue">${event.venue}</p>
         <p class="date">${event.date} - ${event.venue} (${event.city})</p>
       </div>
     `;
@@ -88,47 +93,49 @@ function renderEvents(data) {
 }
 
 function initializeList() {
-  const options = { valueNames: ['artist', 'genre', 'date'] };
   userList = new List('concertList', options);
-  const searchInput = document.getElementById("searchInput");
-
-if (searchInput) {
-  searchInput.addEventListener("input", function () {
-    const value = searchInput.value.toLowerCase();
-    userList.search(value);
-    checkNoResults();
-  });
-}
 }
 
-const genreCheckboxes = document.querySelectorAll(".genre-filter");
-genreCheckboxes.forEach(cb => cb.addEventListener("change", filterGenre));
-
-function filterGenre() {
-  const selectedGenres = Array.from(genreCheckboxes)
+function filterAlles() {
+  const selected = Array.from(document.querySelectorAll(".genre-filter"))
     .filter(cb => cb.checked)
     .map(cb => cb.value);
 
-  const ul = document.getElementById("results");
+  userList.filter(item => {
+    const values = item.values();
+    const artist = values.artist.toLowerCase();
+    const genre = formatGenre(values.genre);
+    const city = values.city.toLowerCase();
+    const date = values.date;
+    const search = searchInput?.value.toLowerCase();
+    const plaats = document.getElementById("plaatsInput")?.value.toLowerCase();
+    const van = document.getElementById("datumVan")?.value;
+    const tot = document.getElementById("datumTot")?.value;
 
-  if (selectedGenres.length === 0) {
-    Array.from(ul.children).forEach(li => li.style.display = "flex");
-    return;
-  }
+    const searchMatch =
+      !search || search.length < 2 || artist.includes(search);
 
-    Array.from(ul.children).forEach(li => {
-        const genre = li.dataset.genre;
-        li.style.display = selectedGenres.includes(genre) ? "flex" : "none";
-    });
+    const plaatsMatch =
+      !plaats || city.includes(plaats);
 
+    const genreMatch =
+      selected.length === 0 || selected.includes(genre);
+
+    const datumMatch =
+      (!van || date >= van) &&
+      (!tot || date <= tot);
+
+    return searchMatch && plaatsMatch && genreMatch && datumMatch;
+  });
+
+  checkNoResults();
 }
 
 console.log(formatGenre("Hip-hop/Rap"));
 
-// compact "geen resultaten" check
+// bericht tonen als er niks meer zichtbaar is na filteren
 function checkNoResults() {
-    const ul = document.getElementById("results");
     ul.querySelector("#no-results-msg")?.remove();
     if (!Array.from(ul.children).some(li => li.style.display !== "none"))
-        ul.insertAdjacentHTML("beforeend", '<li id="no-results-msg" style="font-style:italic;text-align:center">Geen resultaten gevonden</li>');
+    ul.insertAdjacentHTML("beforeend", '<li id="no-results-msg" style="font-style:italic;text-align:center">Geen resultaten gevonden</li>');
 }
