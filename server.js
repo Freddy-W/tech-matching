@@ -142,7 +142,7 @@ app.get("/distance", isLoggedIn, async (req, res) => {
 app.get("/events", async (req, res) => {
 
   //30 aankomende events in NL
-  const url = `https://app.ticketmaster.com/discovery/v2/events.json?size=50&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
+  const url = `https://app.ticketmaster.com/discovery/v2/events.json?size=100&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
 
   try {
       const response = await fetch(url);
@@ -195,7 +195,7 @@ app.get("/events", async (req, res) => {
 app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = req.params.artist;
-    const url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${encodeURIComponent(artist)}&size=10&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
+    const url = `https://app.ticketmaster.com/discovery/v2/events.json?keyword=${encodeURIComponent(artist)}&size=100&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
 
     try {
         const response = await fetch(url);

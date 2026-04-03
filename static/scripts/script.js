@@ -8,20 +8,29 @@ function formatGenre(genre) {
   return genre.toLowerCase().replace(/[^a-z0-9]/g, "-");
 }
 
-const toggleFilterBtn = document.getElementById("toggleFilter");
+const filterButton = document.getElementById("toggleFilter");
 const filterGedeelte = document.getElementById("filtergedeelte");
-const closeBtn = document.getElementById("annuleer");
+const sluitButton = document.getElementById("zoek");
+const annuleerButton = document.getElementById("annuleer");
 
 // openen/sluiten
-if (toggleFilterBtn) {
-    toggleFilterBtn.addEventListener("click", () => {
+if (filterButton) {
+    filterButton.addEventListener("click", () => {
         filterGedeelte.classList.add("open");
     });
 }
 
-if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
+if (sluitButton) {
+    sluitButton.addEventListener("click", () => {
         filterGedeelte.classList.remove("open");
+    });
+}
+
+if (annuleerButton) {
+    annuleerButton.addEventListener("click", () => {
+        filterGedeelte.classList.remove("open");
+        genreCheckboxes.forEach(cb => cb.checked = false);
+        filterGenre(); // herberekent alles netjes
     });
 }
 
@@ -75,42 +84,22 @@ function renderEvents(data) {
   });
 
   initializeList();
+  checkNoResults();
 }
 
 function initializeList() {
   const options = { valueNames: ['artist', 'genre', 'date'] };
   userList = new List('concertList', options);
+  const searchInput = document.getElementById("searchInput");
+
+if (searchInput) {
+  searchInput.addEventListener("input", function () {
+    const value = searchInput.value.toLowerCase();
+    userList.search(value);
+    checkNoResults();
+  });
 }
-
-// const searchBtn = document.querySelector("button");
-
-// if (searchBtn) {
-//     searchBtn.addEventListener("click", async () => {
-//         const artistInput = document.querySelector("input");
-//         if (!artistInput) return;
-
-//         const artist = artistInput.value;
-//         if (!artist) return;
-
-//         try {
-//             const response = await fetch(`/artist/${encodeURIComponent(artist)}`);
-//             const data = await response.json();
-
-//             renderEvents(data); // toont de gevonden concerten
-
-//         } catch (error) {
-//             console.error("Fout bij ophalen artist events:", error);
-//         }
-//     });
-// }
-
-// document.querySelector("input").addEventListener("keydown", (e) => {
-//     if (e.key === "Enter") {
-//         searchBtn.click();
-//     }
-// });
-
-// const filterSubmitBtn = document.getElementById("filterSubmit");
+}
 
 const genreCheckboxes = document.querySelectorAll(".genre-filter");
 genreCheckboxes.forEach(cb => cb.addEventListener("change", filterGenre));
@@ -135,3 +124,11 @@ function filterGenre() {
 }
 
 console.log(formatGenre("Hip-hop/Rap"));
+
+// compact "geen resultaten" check
+function checkNoResults() {
+    const ul = document.getElementById("results");
+    ul.querySelector("#no-results-msg")?.remove();
+    if (!Array.from(ul.children).some(li => li.style.display !== "none"))
+        ul.insertAdjacentHTML("beforeend", '<li id="no-results-msg" style="font-style:italic;text-align:center">Geen resultaten gevonden</li>');
+}
