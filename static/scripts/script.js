@@ -23,6 +23,7 @@ if (filterButton) {
 if (sluitButton) {
     sluitButton.addEventListener("click", () => {
         filterGedeelte.classList.remove("open");
+        checkNoResults();
     });
 }
 
@@ -31,6 +32,7 @@ if (annuleerButton) {
         filterGedeelte.classList.remove("open");
         genreCheckboxes.forEach(cb => cb.checked = false);
         filterGenre(); // herberekent alles netjes
+        checkNoResults
     });
 }
 
