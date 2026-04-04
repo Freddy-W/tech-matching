@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/index.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
     <title>Buddy zoeken</title>
 </head>
 <body>
@@ -15,19 +16,14 @@
         <!-- filtergedeelte -->
         <h1>Zoek een buddy</h1>
         <section>
-            <input type="search" placeholder="Zoek een concert..." id="searchInput">
-            <button id="searchButton"><img src="/images/searchicon.svg"></img></button>
+            <input type="search" placeholder="Zoek een buddy..." id="zoekBuddy">
             <button id="filterbutton">Filter</button>
         </section>
-        <section id="filtergedeelte" class="hidden"> 
+        <form id="filtergedeelte"> 
             <h2>Filters</h2>
             <h3>Plaats</h3>
-            <input type="search" placeholder="zoek een plaats...">
-            <h3>Auto beschikbaar</h3>
-            <input type="checkbox" id="auto-ja" name="auto" value="ja">
-            <label for="auto-ja">Ja</label>
-            <input type="checkbox" id="auto-nee" name="auto" value="nee">
-            <label for="auto-nee">Nee</label>
+            <input type="search" id="zoekPlaats" placeholder="zoek een plaats">
+            <button type="button" id="plaatsButton">Zoek</button>
             <h3>Wil en mag je rijden?</h3>
             <input type="checkbox" id="rijden-ja" name="rijden" value="ja">
             <label for="rijden-ja">Ja</label>
@@ -40,7 +36,7 @@
             <label for="heen">Heen</label>
             <input type="checkbox" id="terug" name="reis" value="Terug">
             <label for="terug">Terug</label>
-            <h3>Leeftijd</h3>
+            <!-- <h3>Leeftijd</h3>
             <div class="wrapper">
                 <div class="container">
                     <div class="slider-track"></div>
@@ -56,23 +52,38 @@
                         100
                     </span>
                 </div>
-            </div>
+            </div> -->
             <button id="annuleer">Annuleer</button>
             <button>Zoek</button>
-        </section>
+        </form>
 
-        <% if (listings.length === 0) { %> 
+        <!-- <%# if (listings.length === 0) { %> 
             <p>Nog geen buddies beschikbaar, wees de eerste!</p>
-        <% } %>
+        <%# } %> -->
 
-        <% listings.forEach(listing => { %>
+        <!-- <%# listings.forEach(listing => { %>
             <div class="listing">
-                <a href="/listing/<%= listing._id %>">
-                    <h2><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
-                    <p><%= listing.auto %></p>
+                <a href="/listing/<%#= listing._id %>">
+                    <h2 class="naam"><%#= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
+                    <p class="auto"><%#= listing.auto %></p>
+                    <p class="stad"><%#= listing.stad %></p>
                 </a>
             </div>
-        <% }) %>
+        <%# }) %> -->
+
+        <div id="buddyList">
+            <ul class="list">
+                <% listings.forEach(listing => { %>
+                <li>
+                    <a href="/listing/<%= listing._id %>">
+                    <h2 class="naam"><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
+                    <p><%= listing.auto %></p>
+                    <p class="stad"><%= listing.stad %></p>
+                    </a>
+                </li>
+                <% }) %>
+            </ul>
+        </div>
     </main>
     <footer>
         <%- include('partials/menubalk')%>
