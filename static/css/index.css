@@ -93,7 +93,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 /* waarde onder slider */
-.values {
+/* .values {
     background: var(--accentcolour2);
     width: 32%;
     margin: 2em auto 0;
@@ -101,7 +101,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: .5em;
     text-align: center;
     color: var(--white);
-}
+} */
 
 .event {
     display: flex;
@@ -123,9 +123,11 @@ input[type="range"]::-webkit-slider-thumb {
 .event img {
     border-radius: 0.5rem 0.5rem 0 0;
 }
+
 main {
         margin: 1em;  
- }
+}
+
 main > section input {
     width: 100%;
     border: none;
@@ -133,7 +135,6 @@ main > section input {
     border-radius: 1rem 0 0 1rem;
     padding: 1rem;
 }
-
 
 main > section button {
     border: none;
@@ -151,5 +152,10 @@ main > section button:nth-of-type(1) {
 main > section {
     border-radius: 1rem;
     background-color: azure;
+}
 
+li a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }

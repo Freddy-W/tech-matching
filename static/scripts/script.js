@@ -148,8 +148,6 @@ function filterAlles() {
   checkNoResults();
 }
 
-console.log(formatGenre("Hip-hop/Rap"));
-
 // bericht tonen als er niks meer zichtbaar is na filteren https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
 function checkNoResults() {
     ul.querySelector("#no-results-msg")?.remove();
