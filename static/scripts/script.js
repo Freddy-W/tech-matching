@@ -5,24 +5,38 @@ window.onload = function() {
 }
 
 let userList;
-const filterButton = document.getElementById("toggleFilter");
-const filterGedeelte = document.getElementById("filtergedeelte");
+const filterButton = document.querySelector("section button"); // de filter knop in de header, met vraagteken omdat deze niet op elke pagina staat
+const filterGedeelte = document.querySelector("form");
 const sluitButton = document.getElementById("zoek");
 const annuleerButton = document.getElementById("annuleer");
-const searchInput = document.getElementById("searchInput");
+const searchInput = document.getElementById("zoekConcert");
 const results = document.getElementById("results");
-const li = document.createElement("li");
 const genreCheckboxes = document.querySelectorAll(".genre-filter");
 const options = { valueNames: ['artist', 'genre', 'date', 'city'] };
 const ul = document.getElementById("results");
+const plaatsButton = document.getElementById("plaatsButton");
+const zoekPlaats = document.getElementById("zoekPlaats");
 
+// Zodra een checkbox verandert, wordt de filterfunctie aangeroepen
 document.querySelectorAll(".genre-filter").forEach(cb => cb.addEventListener("change", filterAlles));
 
-searchInput.addEventListener("input", filterAlles);
-filterButton.addEventListener("click", filterenOpen);
-sluitButton.addEventListener("click", pasToe);
-annuleerButton.addEventListener("click", annuleer);
+// met vraagteken anders werkt het niet op de andere pagina's waar deze elementen niet bestaan
+searchInput?.addEventListener("input", filterAlles);
+filterButton?.addEventListener("click", filterenOpen);
+sluitButton?.addEventListener("click", pasToe);
+annuleerButton?.addEventListener("click", annuleer);
+plaatsButton?.addEventListener("click", pasToe);
 
+zoekPlaats?.addEventListener("keydown", plaatsSubmit);
+  
+function plaatsSubmit(event) {
+  if (event.key === "Enter") {
+    event.preventDefault(); 
+    pasToe();
+  }
+};
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase en https://www.w3schools.com/jsref/jsref_replace.asp
 function formatGenre(genre) {
   return genre.toLowerCase().replace(/[^a-z0-9]/g, "-");
 }
@@ -92,14 +106,16 @@ function renderEvents(data) {
   checkNoResults();
 }
 
+// https://listjs.com/docs/
 function initializeList() {
   userList = new List('concertList', options);
 }
 
+// https://www.w3schools.com/jsref/jsref_filter.asp
 function filterAlles() {
-  const selected = Array.from(document.querySelectorAll(".genre-filter"))
+  const geselecteerd = Array.from(document.querySelectorAll(".genre-filter"))
     .filter(cb => cb.checked)
-    .map(cb => cb.value);
+    .map(cb => cb.value); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
 
   userList.filter(item => {
     const values = item.values();
@@ -108,24 +124,25 @@ function filterAlles() {
     const city = values.city.toLowerCase();
     const date = values.date;
     const search = searchInput?.value.toLowerCase();
-    const plaats = document.getElementById("plaatsInput")?.value.toLowerCase();
+    const plaats = document.getElementById("zoekPlaats")?.value.toLowerCase();
     const van = document.getElementById("datumVan")?.value;
     const tot = document.getElementById("datumTot")?.value;
 
-    const searchMatch =
-      !search || search.length < 2 || artist.includes(search);
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators
+    const concertZoeken =
+      !search || search.length < 2 || artist.includes(search); // mag leeg zijn, minder dan twee letters, of de artiestennaam
 
-    const plaatsMatch =
-      !plaats || city.includes(plaats);
+    const plaatsZoeken =
+      !plaats || city.includes(plaats); // deze mag leeg zijn of de plaatsnaam
 
-    const genreMatch =
-      selected.length === 0 || selected.includes(genre);
+    const genreKiezen =
+      geselecteerd.length === 0 || geselecteerd.includes(genre); // als er niks is geselecteerd, mag alles, anders moet het in de genres zitten
 
-    const datumMatch =
-      (!van || date >= van) &&
-      (!tot || date <= tot);
+    const datumKiezen =
+      (!van || date >= van) && // de begindatum moet groter of gelijk zijn aan "van" als die is ingevuld
+      (!tot || date <= tot); // de einddatum moet kleiner of gelijk zijn aan "tot" als die is ingevuld
 
-    return searchMatch && plaatsMatch && genreMatch && datumMatch;
+    return concertZoeken && plaatsZoeken && genreKiezen && datumKiezen; // && betekend het moet kloppen, anders wordt dat onderdeel eruit gelaten.
   });
 
   checkNoResults();
@@ -133,9 +150,9 @@ function filterAlles() {
 
 console.log(formatGenre("Hip-hop/Rap"));
 
-// bericht tonen als er niks meer zichtbaar is na filteren
+// bericht tonen als er niks meer zichtbaar is na filteren https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
 function checkNoResults() {
     ul.querySelector("#no-results-msg")?.remove();
-    if (!Array.from(ul.children).some(li => li.style.display !== "none"))
+    if (!Array.from(ul.children).some(li => li.style.display !== "none")) // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
     ul.insertAdjacentHTML("beforeend", '<li id="no-results-msg" style="font-style:italic;text-align:center">Geen resultaten gevonden</li>');
 }
