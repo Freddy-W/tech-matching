@@ -558,17 +558,20 @@ app.post("/addToListing", isLoggedIn, async (req, res) => {
   }
 });
 
-// app.get("/favConcerts", isLoggedIn, async (req, res) => {
-//   try {
-//     const userId = await userData.findById(req.session.userId);
-//     const concertPic = await ...
-//     const favConcerten = userId.favorieten;
-//     favConcerten.forEach(li => {
-      
-//     });
-//   }
-//   catch (error) {
-//     console.error(error);
-//     res.send("Geen concerten gevonden")
-//   }
-// })
+app.get("/favConcerts", isLoggedIn, async (req, res) => {
+  const user = await userData.findById(req.session.userId);
+  const events = user.favorieten;
+  try {
+    const listEvents = events.map(event => ({
+      artist: event.name,
+      image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url
+    }))
+    res.send("user", {favs: listEvents});
+  }
+  catch (error) {
+    console.error(error);
+    res.send("Geen concerten gevonden")
+  }
+})
+
+// this shit dont work man idk
