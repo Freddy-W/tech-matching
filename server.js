@@ -277,8 +277,9 @@ app.get("/register", (req, res)=>{
     res.render('register.ejs');
 });
 
-app.get("/accountinfo", isLoggedIn, (req, res)=>{
-  res.render('accountinfo.ejs');
+app.get("/accountinfo", isLoggedIn, async (req, res) => {
+    const user = await userData.findById(req.session.userId);
+    res.render('accountinfo.ejs', { user });
 });
 
 
