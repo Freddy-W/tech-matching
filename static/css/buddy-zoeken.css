@@ -1,0 +1,18 @@
+img {
+    width:50vw;
+    border-radius: 0.5rem;
+}
+
+#buddyList {
+    margin-top: 1rem; 
+}
+
+.list li{
+    padding-left: 1rem;
+}
+
+.list a {
+    display: flex;
+    align-items: center;
+}
+

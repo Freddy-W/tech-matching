@@ -31,22 +31,11 @@ a, a:visited {
     color: var(--accentcolour);
 }
 
-button {
-    color: var(white);
-    background-color: var(--happyflow);
-    border: none;
-    width: 10em;
-    border-radius: 10px;
-    align-items: center;
-    display: flex;
-    align-self: center;
-    justify-content: center;
-}
-
 button h2 {
     font-weight: 500;
     font-size: medium;
 }
+
 label, h2 {
     font-size: small;
     font-weight: 400;

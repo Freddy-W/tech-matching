@@ -18,6 +18,7 @@
         </div>
 
         <section>
+            <h2><%= event.artist %></h2>
             <img src="<%= event.image %>" alt="<%= event.artist %>" style="border-radius: 8px;">
             <form method="post" action="/addToFav">
                 <input type="hidden" name="eventId" id="idinput" value="<%= event.id %>">
@@ -25,24 +26,22 @@
                     <img src="/images/plus-button.svg" alt="plus">
                 </button>
             </form>
-            <h2><%= event.artist %></h2>
+            
             <p><%= event.city %>, <%= event.country %></p>
             <p><%= event.date %></p>
             <p><%= event.venue %></p>
+            <p id="distanceText">Afstand berekenen...</p>
         </section>
-        <p id="distanceText">Afstand berekenen...</p>
-
+        
         <div id="eventData"
             data-venue="<%= event.venue %>"
             data-city="<%= event.city %>"
             data-country="<%= event.country %>">
         </div>
-        <div>
-            <a href="/buddy-zoeken?eventId=<%= event.id %>">Zoek een auto</a>
+        <div class="autoOpties">
+            <a href="/buddy-zoeken?eventId=<%=event.id.trim()%>&name=<%=encodeURIComponent(event.artist)%>&venue=<%=encodeURIComponent(event.venue)%>&city=<%=encodeURIComponent(event.city)%>&country=<%=encodeURIComponent(event.country)%>&date=<%=event.date %>&time=<%=event.time%>&image=<%=encodeURIComponent(event.image)%>">Zoek een auto</a>
             <a href="/auto-aanbieden?eventId=<%= event.id %>">Bied auto aan</a>
         </div>
-        
-        
     </main>
     <footer>
     </footer>

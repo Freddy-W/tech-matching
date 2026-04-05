@@ -13,3 +13,37 @@
 .star-rating span.hover {
   color: gold;
 }
+
+
+body {
+    background-color: var(--mainblue);
+    color: var(--white)  
+}
+
+main {
+  margin: 1rem;
+}
+ 
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form button {
+  margin-top: 1rem;
+  background-color: var(--happyflow);
+  color: var(--white);
+  border: none;
+  height: 2rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+}
+
+form textarea {
+  margin-top: 0.5rem;
+  font-family: Alexandria;
+  height: 5rem;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
