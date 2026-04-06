@@ -74,6 +74,35 @@ async function loadDefaultEvents() {
     }
 }
 
+async function getDistanceKm(fromCoords, toCoords) {
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
+  
+    const body = {
+      coordinates: [
+        [fromCoords.lon, fromCoords.lat],
+        [toCoords.lon, toCoords.lat]
+      ]
+    };
+  
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": orsKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+  
+    const data = await response.json();
+  
+    if (!data.routes || data.routes.length === 0) {
+      throw new Error("Geen route gevonden");
+    }
+  
+    const meters = data.routes[0].summary.distance;
+    return meters / 1000;
+  }
+
 //Functie voor het berekenen van de afstand tussen de verschillende passagiers
 async function afstandBereken() {
     const listingData = document.getElementById("listingData");
@@ -93,6 +122,7 @@ async function afstandBereken() {
       }
   
       tripDistance.textContent = `Totale afstand: ${data.distanceKm} km`;
+  
     } catch (error) {
       console.error(error);
       tripDistance.textContent = "Afstand niet beschikbaar";
