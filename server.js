@@ -70,14 +70,75 @@ async function geocodeAddress(address) {
   return { lon: coords[0], lat: coords[1] };
 }
 
-async function getDistanceKm(fromCoords, toCoords) {
+app.get("/distance-trip/:listingId", isLoggedIn, async (req, res) => {
+  try {
+    const listing = await carListing.findById(req.params.listingId)
+      .populate("userId", "adres")
+      .populate("passagiers", "adres");
+
+    if (!listing) {
+      return res.status(404).json({ error: "Listing niet gevonden" });
+    }
+
+    if (!listing.userId?.adres) {
+      return res.status(400).json({ error: "Bestuurder heeft geen adres" });
+    }
+
+    // Concert ophalen via Ticketmaster eventId
+    const tmUrl = `https://app.ticketmaster.com/discovery/v2/events/${listing.eventId}.json?apikey=${apiKey}`;
+    const tmResponse = await fetch(tmUrl);
+    const tmData = await tmResponse.json();
+
+    const venue = tmData._embedded?.venues?.[0];
+    if (!venue) {
+      return res.status(400).json({ error: "Venue niet gevonden bij event" });
+    }
+
+    const concertAddress = `${venue.name}, ${venue.city?.name}, ${venue.country?.name}`;
+
+    // geocode driver
+    const driverCoords = await geocodeAddress(listing.userId.adres);
+
+    // geocode passagiers (allemaal)
+    const passengerCoords = [];
+    for (const passenger of listing.passagiers) {
+      if (passenger?.adres) {
+        const coords = await geocodeAddress(passenger.adres);
+        passengerCoords.push(coords);
+      }
+    }
+
+    // geocode concert
+    const concertCoords = await geocodeAddress(concertAddress);
+
+    // route opbouwen:
+    // driver -> passengers -> concert -> passengers reversed -> driver
+    const coordsArray = [
+      [driverCoords.lon, driverCoords.lat],
+      ...passengerCoords.map(p => [p.lon, p.lat]),
+      [concertCoords.lon, concertCoords.lat],
+      ...passengerCoords.slice().reverse().map(p => [p.lon, p.lat]),
+      [driverCoords.lon, driverCoords.lat]
+    ];
+
+    const distanceKm = await getDistanceVolledig(coordsArray);
+
+    res.json({
+      distanceKm: Math.round(distanceKm * 10) / 10,
+      passengerCount: passengerCoords.length
+    });
+
+  } catch (error) {
+    console.error("DISTANCE TRIP ERROR:", error);
+    res.status(500).json({ error: "Afstand berekenen mislukt" });
+  }
+});
+
+async function getDistanceVolledig(coordinatesArray) {
   const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
 
   const body = {
-    coordinates: [
-      [fromCoords.lon, fromCoords.lat],
-      [toCoords.lon, toCoords.lat]
-    ]
+    coordinates: coordinatesArray
   };
 
   const response = await fetch(url, {

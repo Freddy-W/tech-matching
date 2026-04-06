@@ -75,11 +75,36 @@ async function loadDefaultEvents() {
     }
 }
 
-//Functie voor het "aanmaken" van events waar later info in kan
+//Functie voor het berekenen van de afstand tussen de verschillende passagiers
+async function afstandBereken() {
+    const listingData = document.getElementById("listingData");
+    const tripDistance = document.getElementById("tripDistance");
+  
+    if (!listingData || !tripDistance) return;
+  
+    const listingId = listingData.dataset.listingid;
+  
+    try {
+      const response = await fetch(`/distance-trip/${listingId}`);
+      const data = await response.json();
+  
+      if (data.error) {
+        tripDistance.textContent = "Afstand niet beschikbaar";
+        return;
+      }
+  
+      tripDistance.textContent = `Totale afstand: ${data.distanceKm} km`;
+    } catch (error) {
+      console.error(error);
+      tripDistance.textContent = "Afstand niet beschikbaar";
+    }
+  }
+
+//Functie voor het "aanmaken" van events waar later info in kan 
 function renderEvents(data) {
   results.innerHTML = "";
   if (!Array.isArray(data) || data.length === 0) {
-    results.innerHTML = "<li>Geen aankomende events gevonden</li>";
+    results.innerHTML = "<li>Geen aankomende events gevonden</li>"; //Met foutafhandeling als er geen data gevonden wordt
     return;
   }
 
