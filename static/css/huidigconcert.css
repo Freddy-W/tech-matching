@@ -58,4 +58,31 @@ main div:nth-of-type(2) {
     background-color: var(--happyflow);
  }
 
- 
+#favButton img {
+    width: 5vh;
+    height: 5vh;
+    padding: 0;
+    filter: invert(1);
+}
+
+#favButton {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.25em;
+    border: none;
+    border-radius: 100px;
+    background-color: var(--accentcolour3);
+    margin: 1em;
+}
+
+#favButton:hover {
+    background-color: var(--accentcolour2);
+    
+}
+
+section form {
+    display: flex;
+    justify-self: end;
+}
+
