@@ -94,8 +94,9 @@ async function afstandBereken() {
         return;
       }
   
+      const aantalPassagiers = data.passengerCount;
       tripDistance.textContent = `Totale afstand: ${data.distanceKm} km`;
-      const bedrag = data.distanceKm*0.5*1.20;
+      const bedrag = ((((data.distanceKm/15)*2.59)*1.50)/aantalPassagiers).toFixed(2);
       tripCosts.textContent = `Totale kosten: €${bedrag}`;
   
     } catch (error) {
