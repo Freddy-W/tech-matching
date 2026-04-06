@@ -1,5 +1,9 @@
 img {
+<<<<<<< Updated upstream
     width:50vw;
+=======
+    max-width: 15vw;
+>>>>>>> Stashed changes
     border-radius: 0.5rem;
 }
 
@@ -16,3 +20,20 @@ img {
     align-items: center;
 }
 
+<<<<<<< Updated upstream
+=======
+.eventcard {
+    display: flex;
+    align-items: center;
+}
+
+.eventcard div {
+    padding-left: 1rem;
+}
+
+.eventcard img {
+    aspect-ratio: 1/1;
+    object-fit:cover;
+}
+
+>>>>>>> Stashed changes

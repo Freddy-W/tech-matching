@@ -40,6 +40,50 @@ function isLoggedIn(req, res, next) {
   }
 }
 
+<<<<<<< Updated upstream
+=======
+// https://www.youtube.com/watch?v=ZhqOp1Dkuso
+mongoose.connect(process.env.dbPassword);
+const userScheme = new mongoose.Schema({
+    username: String,
+    userId: String,
+    voornaam: String,
+    achternaam: String,
+    adres: String,
+    telefoonnummer: String,
+    email: String,
+    wachtwoord: String,
+    leeftijd: String,
+    rijbewijs: String,
+    auto: String,
+    rijden: String,
+    reviewCount: { type: Number, default: 0 },
+    favorieten: [{ type: String }],
+    totaalRating: { type: Number, default: 0},
+});
+
+const carListingSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+  listingId: String,
+  auto: String,
+  hoeveel: Number,
+  brandstof: String,
+  eventId: String,
+  passagiers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userdata" }]
+});
+
+const reviewScheme = new mongoose.Schema({
+  reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+  reviewee: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+  rating: Number,
+  review: String,
+});
+
+const reviewData = mongoose.model("reviewData", reviewScheme)
+const userData = mongoose.model("userdata", userScheme);
+const carListing = mongoose.model("CarListing", carListingSchema);
+
+>>>>>>> Stashed changes
 //middleware, als er om een userid gevraagd wordt wordt deze gepakt.
 app.use(async (req, res, next) => {
   if (req.session.userId) {
@@ -70,6 +114,7 @@ async function geocodeAddress(address) {
   return { lon: coords[0], lat: coords[1] };
 }
 
+<<<<<<< Updated upstream
 app.get("/distance-trip/:listingId", isLoggedIn, async (req, res) => {
   try {
     const listing = await carListing.findById(req.params.listingId)
@@ -139,6 +184,16 @@ async function getDistanceVolledig(coordinatesArray) {
 
   const body = {
     coordinates: coordinatesArray
+=======
+async function getDistanceKm(fromCoords, toCoords) {
+  const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
+
+  const body = {
+    coordinates: [
+      [fromCoords.lon, fromCoords.lat],
+      [toCoords.lon, toCoords.lat]
+    ]
+>>>>>>> Stashed changes
   };
 
   const response = await fetch(url, {
@@ -343,7 +398,6 @@ app.get("/accountinfo", isLoggedIn, async (req, res) => {
     res.render('accountinfo.ejs', { user });
 });
 
-
 app.get("/gekozen-concert", (req, res)=>{
         const event = {
         id: req.query.id,
@@ -360,10 +414,19 @@ app.get("/gekozen-concert", (req, res)=>{
 
 
 app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
+  const event = {
+        id: req.query.eventId,
+        artist: req.query.name,
+        date: req.query.date,
+        time: req.query.time,
+        venue: req.query.venue,
+        city: req.query.city,
+        country: req.query.country,
+        image: req.query.image
+        }
   const eventId = req.query.eventId;
-  res.render('auto-aanbieden.ejs', { eventId });
+  res.render('auto-aanbieden.ejs', { event, eventId });
 });
-
 
 app.get("/review/:userId", isLoggedIn, async (req, res) => {
   try {
@@ -499,6 +562,16 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
       hoeveel: req.body.hoeveel,
       brandstof: req.body.brandstof,
       eventId: req.body.eventId
+    };
+    const event = {
+      id: req.query.eventId,
+      artist: req.query.name,
+      date: req.query.date,
+      time: req.query.time,
+      venue: req.query.venue,
+      city: req.query.city,
+      country: req.query.country,
+      image: req.query.image
     };
     await carListing.create(listingData);
     res.redirect(`/buddy-zoeken?eventId=${req.body.eventId}`);

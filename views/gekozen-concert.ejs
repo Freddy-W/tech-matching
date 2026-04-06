@@ -40,7 +40,7 @@
         </div>
         <div class="autoOpties">
             <a href="/buddy-zoeken?eventId=<%=event.id.trim()%>&name=<%=encodeURIComponent(event.artist)%>&venue=<%=encodeURIComponent(event.venue)%>&city=<%=encodeURIComponent(event.city)%>&country=<%=encodeURIComponent(event.country)%>&date=<%=event.date %>&time=<%=event.time%>&image=<%=encodeURIComponent(event.image)%>">Zoek een auto</a>
-            <a href="/auto-aanbieden?eventId=<%= event.id %>">Bied auto aan</a>
+            <a href="/auto-aanbieden?eventId=<%=event.id.trim()%>&name=<%=encodeURIComponent(event.artist)%>&venue=<%=encodeURIComponent(event.venue)%>&city=<%=encodeURIComponent(event.city)%>&country=<%=encodeURIComponent(event.country)%>&date=<%=event.date %>&time=<%=event.time%>&image=<%=encodeURIComponent(event.image)%>">Bied auto aan</a>
         </div>
     </main>
     <footer>

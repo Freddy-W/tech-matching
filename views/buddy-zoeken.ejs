@@ -58,9 +58,21 @@
             <button id="annuleer">Annuleer</button>
             <button>Zoek</button>
         </form>
+<<<<<<< Updated upstream
 <img src="<%= event.image %>" alt="<%= event.artist %>">
 <p>Venue: <%= event.venue %>, <%= event.city %></p>
 <p>Date: <%= event.date %></p>
+=======
+        <div class="eventcard">
+            <img src="<%= event.image %>" alt="<%= event.artist %>">
+            <div>
+                <h3><%= event.artist %></h3>
+                <p><%= event.venue %>, <%= event.city %></p>
+                <p><%= event.date %></p>
+            </div>
+        </div>
+
+>>>>>>> Stashed changes
         <div id="buddyList">
             <ul class="list">
                 <% listings.forEach(listing => { %>

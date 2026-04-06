@@ -131,7 +131,6 @@ function renderEvents(data) {
     });
     results.appendChild(li);
   });
-
   initializeList();
   checkNoResults();
 }
@@ -185,6 +184,7 @@ function checkNoResults() {
     ul.insertAdjacentHTML("beforeend", '<li id="no-results-msg" style="font-style:italic;text-align:center">Geen resultaten gevonden</li>');
 }
 
+if (stars.length > 0 && ratingInput) {setStars}
 
 function setStars(value) {
   stars.forEach(star => {
@@ -194,8 +194,6 @@ function setStars(value) {
     }
   });
 }
-
-setStars(ratingInput.value);
 
 stars.forEach(star => {
   const val = parseInt(star.dataset.value);
