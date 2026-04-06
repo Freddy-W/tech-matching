@@ -41,12 +41,14 @@
                 </a>
             <% }) %>
         </div>
+        <p id="tripDistance">Afstand berekenen...</p>
+<div id="listingData" data-listingid="<%= listing._id %>"></div>
     <% } else { %>
         <p>No passengers yet</p>
     <% } %>
 <form action="/addToListing" method="POST">
         <input type="hidden" name="listingId" value="<%= listing._id %>">
-        <button type="submit">Join this ride</button>
+        <button class="happyflow" type="submit">Join this ride</button>
     </form>
 </div>
 </main>

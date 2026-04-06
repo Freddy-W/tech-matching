@@ -19,3 +19,15 @@ body {
     background-color: var(--mainblue);
     color: var(--white)  
 }
+
+.review {
+    background-color: var(--accentcolour3);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+}
+
+.review img {
+    width: 5rem;
+}

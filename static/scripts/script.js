@@ -2,6 +2,8 @@ window.onload = function() {
   if (document.getElementById("results")) {
     loadDefaultEvents();
   }
+    afstandBereken();
+
 }
 
 let userList;
@@ -16,6 +18,10 @@ const options = { valueNames: ['artist', 'genre', 'date', 'city'] };
 const ul = document.getElementById("results");
 const plaatsButton = document.getElementById("plaatsButton");
 const zoekPlaats = document.getElementById("zoekPlaats");
+const stars = document.querySelectorAll('.star-rating span');
+const ratingInput = document.getElementById('rating');
+
+
 
 // Zodra een checkbox verandert, wordt de filterfunctie aangeroepen
 document.querySelectorAll(".genre-filter").forEach(cb => cb.addEventListener("change", filterAlles));
@@ -68,12 +74,66 @@ async function loadDefaultEvents() {
     }
 }
 
-//Functie voor het "aanmaken" van events waar later info in kan
+async function getDistanceKm(fromCoords, toCoords) {
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
+  
+    const body = {
+      coordinates: [
+        [fromCoords.lon, fromCoords.lat],
+        [toCoords.lon, toCoords.lat]
+      ]
+    };
+  
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": orsKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+  
+    const data = await response.json();
+  
+    if (!data.routes || data.routes.length === 0) {
+      throw new Error("Geen route gevonden");
+    }
+  
+    const meters = data.routes[0].summary.distance;
+    return meters / 1000;
+  }
+
+//Functie voor het berekenen van de afstand tussen de verschillende passagiers
+async function afstandBereken() {
+    const listingData = document.getElementById("listingData");
+    const tripDistance = document.getElementById("tripDistance");
+  
+    if (!listingData || !tripDistance) return;
+  
+    const listingId = listingData.dataset.listingid;
+  
+    try {
+      const response = await fetch(`/distance-trip/${listingId}`);
+      const data = await response.json();
+  
+      if (data.error) {
+        tripDistance.textContent = "Afstand niet beschikbaar";
+        return;
+      }
+  
+      tripDistance.textContent = `Totale afstand: ${data.distanceKm} km`;
+  
+    } catch (error) {
+      console.error(error);
+      tripDistance.textContent = "Afstand niet beschikbaar";
+    }
+  }
+
+//Functie voor het "aanmaken" van events waar later info in kan 
 function renderEvents(data) {
   results.innerHTML = "";
-
   if (!Array.isArray(data) || data.length === 0) {
-    results.innerHTML = "<li>Geen aankomende events gevonden</li>";
+    results.innerHTML = "<li>Geen aankomende events gevonden</li>"; //Met foutafhandeling als er geen data gevonden wordt
     return;
   }
 
@@ -182,3 +242,36 @@ document.addEventListener("DOMContentLoaded", () => {
     favList();
   }
 });
+
+function setStars(value) {
+  stars.forEach(star => {
+    star.classList.remove('selected');
+    if (parseInt(star.dataset.value) <= value) {
+      star.classList.add('selected');
+    }
+  });
+}
+
+setStars(ratingInput.value);
+
+stars.forEach(star => {
+  const val = parseInt(star.dataset.value);
+  star.addEventListener('click', () => {
+    ratingInput.value = val;
+    setStars(val);
+  });
+});
+
+// openen/sluiten
+if (filterBtn) {
+    filterBtn.addEventListener("click", () => {
+        filteropties.classList.add("open");
+    });
+}
+
+if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+        filteropties.classList.remove("open");
+    });
+}
+

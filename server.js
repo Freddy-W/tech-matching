@@ -70,14 +70,75 @@ async function geocodeAddress(address) {
   return { lon: coords[0], lat: coords[1] };
 }
 
-async function getDistanceKm(fromCoords, toCoords) {
+app.get("/distance-trip/:listingId", isLoggedIn, async (req, res) => {
+  try {
+    const listing = await carListing.findById(req.params.listingId)
+      .populate("userId", "adres")
+      .populate("passagiers", "adres");
+
+    if (!listing) {
+      return res.status(404).json({ error: "Listing niet gevonden" });
+    }
+
+    if (!listing.userId?.adres) {
+      return res.status(400).json({ error: "Bestuurder heeft geen adres" });
+    }
+
+    // Concert ophalen via Ticketmaster eventId
+    const tmUrl = `https://app.ticketmaster.com/discovery/v2/events/${listing.eventId}.json?apikey=${apiKey}`;
+    const tmResponse = await fetch(tmUrl);
+    const tmData = await tmResponse.json();
+
+    const venue = tmData._embedded?.venues?.[0];
+    if (!venue) {
+      return res.status(400).json({ error: "Venue niet gevonden bij event" });
+    }
+
+    const concertAddress = `${venue.name}, ${venue.city?.name}, ${venue.country?.name}`;
+
+    // geocode driver
+    const driverCoords = await geocodeAddress(listing.userId.adres);
+
+    // geocode passagiers (allemaal)
+    const passengerCoords = [];
+    for (const passenger of listing.passagiers) {
+      if (passenger?.adres) {
+        const coords = await geocodeAddress(passenger.adres);
+        passengerCoords.push(coords);
+      }
+    }
+
+    // geocode concert
+    const concertCoords = await geocodeAddress(concertAddress);
+
+    // route opbouwen:
+    // driver -> passengers -> concert -> passengers reversed -> driver
+    const coordsArray = [
+      [driverCoords.lon, driverCoords.lat],
+      ...passengerCoords.map(p => [p.lon, p.lat]),
+      [concertCoords.lon, concertCoords.lat],
+      ...passengerCoords.slice().reverse().map(p => [p.lon, p.lat]),
+      [driverCoords.lon, driverCoords.lat]
+    ];
+
+    const distanceKm = await getDistanceVolledig(coordsArray);
+
+    res.json({
+      distanceKm: Math.round(distanceKm * 10) / 10,
+      passengerCount: passengerCoords.length
+    });
+
+  } catch (error) {
+    console.error("DISTANCE TRIP ERROR:", error);
+    res.status(500).json({ error: "Afstand berekenen mislukt" });
+  }
+});
+
+async function getDistanceVolledig(coordinatesArray) {
   const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
 
   const body = {
-    coordinates: [
-      [fromCoords.lon, fromCoords.lat],
-      [toCoords.lon, toCoords.lat]
-    ]
+    coordinates: coordinatesArray
   };
 
   const response = await fetch(url, {
@@ -243,35 +304,18 @@ app.get(`/artist/:artist`, async (req, res) => {
 
         console.error(error);
         res.status(500).json({ error: "API request mislukt" });
-        console.error("SERVER ERROR:", error);
-        res.status(500).json({ error: "Server fout" });
     }
 
 });
 
-// FAVORIET FUNCTIE
 
-app.post("/addToFav", isLoggedIn, async (req, res) =>{
-  try{
-    const userId = req.session.userId;
-    const eventId= req.body.eventId;
-    await userData.findByIdAndUpdate(userId, 
-      {$addToSet: { favorieten: eventId }}
-      )}
-  catch(err){
-    console.log("error")
-    res.status(500).json({error: "Kon niet toevoegen"});
-  }
-
-  // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
-  
-});
-
-// EIND FAVORIET
-
-app.get("/login", (req, res)=>{
+app.get("/login", (req, res)=> {
     res.render('login.ejs');
 });
+
+app.get("/error"), (req, res) => {
+    res.render('error.ejs')
+}
 
 app.get("/user/:id", isLoggedIn, async (req, res) => {
   try {
@@ -280,11 +324,13 @@ app.get("/user/:id", isLoggedIn, async (req, res) => {
 
     const reviews = await reviewData
       .find({ reviewee: req.params.id })
-      .populate("reviewer", "username");
+      .populate("reviewer", "username")
+      .limit(3)
+      
     res.render("user.ejs", { user: profileUser, loggedInUser, reviews });
   } catch (error) {
     console.error(error);
-    res.send("Error loading user");
+    res.render("error.ejs", { error: "Error bij het inloggen." });
   }
 });
 
@@ -292,8 +338,9 @@ app.get("/register", (req, res)=>{
     res.render('register.ejs');
 });
 
-app.get("/accountinfo", isLoggedIn, (req, res)=>{
-  res.render('accountinfo.ejs');
+app.get("/accountinfo", isLoggedIn, async (req, res) => {
+    const user = await userData.findById(req.session.userId);
+    res.render('accountinfo.ejs', { user });
 });
 
 
@@ -325,7 +372,7 @@ app.get("/review/:userId", isLoggedIn, async (req, res) => {
     res.render('review.ejs', { reviewedUser, userId: req.params.userId });
   } catch (error) {
     console.error(error);
-    res.send("Error loading review page");
+    res.render("error.ejs", { error: "Error bij het laden van de review pagina." });
   }
 });
 
@@ -344,10 +391,9 @@ const userScheme = new mongoose.Schema({
     rijbewijs: String,
     auto: String,
     rijden: String,
-    favorieten: {
-      type: [String],
-      default: []},
-    totaalRating: { type: Number, default: 0 },
+    reviewCount: { type: Number, default: 0 },
+    favorieten: [{ type: [String], default: [] }],
+    totaalRating: { type: Number, default: 0},
 });
 
 const carListingSchema = new mongoose.Schema({
@@ -355,7 +401,6 @@ const carListingSchema = new mongoose.Schema({
   listingId: String,
   auto: String,
   hoeveel: Number,
-  rijden: String,
   brandstof: String,
   eventId: String,
   passagiers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userdata" }]
@@ -383,7 +428,8 @@ app.post("/register", async (req, res) => {
       adres: req.body.adres,
       telefoonnummer: req.body.telefoonnummer,
       email: req.body.email,
-      wachtwoord: req.body.wachtwoord
+      wachtwoord: req.body.wachtwoord,
+      reviewCount: 0
     };
 
     const existingUser = await userData.findOne({ username: registerData.username });
@@ -396,7 +442,7 @@ app.post("/register", async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error(err);
-    res.send("Error registering user");
+    res.render("error.ejs", { error: "Error bij het registeren." });
   }
 });
 
@@ -419,12 +465,12 @@ app.post("/login", async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.send("Error logging in");
+    res.render("error.ejs", { error: "Error bij het inloggen." });
   }
 });
 
 // accountinfo werkend maken dmv sessions
-app.post("/accountinfo", async (req, res) =>  {
+app.post("/accountinfo", isLoggedIn, async (req, res) =>  {
     try {
       const accountData = {
       username: req.body.username,
@@ -439,7 +485,7 @@ app.post("/accountinfo", async (req, res) =>  {
     res.redirect("/");
   } catch (error) {
     console.error(error)
-    res.send("Error")
+    res.render("error.ejs", { error: "Error bij het laden van je accountinfo." });
   }
 });
 
@@ -451,7 +497,6 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
       adres: req.body.adres,
       auto: req.body.auto,
       hoeveel: req.body.hoeveel,
-      rijden: req.body.rijden,
       brandstof: req.body.brandstof,
       eventId: req.body.eventId
     };
@@ -459,20 +504,30 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
     res.redirect(`/buddy-zoeken?eventId=${req.body.eventId}`);
   } catch (error) {
     console.error(error);
-    res.send("Error bij opslaan listing");
+    res.render("error.ejs", { error: "Error bij het opslaan van je listing. Probeer het opnieuw!" });
   }
 });
 
 app.get("/buddy-zoeken", isLoggedIn, async (req, res) =>{
   try {
+    const event = {
+        id: req.query.eventId,
+        artist: req.query.name,
+        date: req.query.date,
+        time: req.query.time,
+        venue: req.query.venue,
+        city: req.query.city,
+        country: req.query.country,
+        image: req.query.image
+        }
     const eventId = req.query.eventId; 
     const listings = await carListing
       .find({ eventId })
-      .populate("userId", "voornaam"); // callt de user info voor de ejs pagina.
-    res.render("buddy-zoeken.ejs", { listings });
+      .populate("userId", "voornaam leeftijd totaalRating reviewCount "); // callt de user info voor de ejs pagina.
+    res.render("buddy-zoeken.ejs", { listings, event });
   } catch (error) {
     console.error(error);
-    res.send("Error loading rides");
+    res.render("error.ejs", { error: "Error bij het laden van de listings." });
 }});
 
 app.get("/", async (req, res) => {
@@ -482,11 +537,11 @@ app.get("/", async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.send("Error loading index");
+    res.render("error.ejs", { error: "Error bij het laden van de index." });
   }
 });
 
-
+// https://stackoverflow.com/questions/7342957/how-do-you-round-to-one-decimal-place-in-javascript
 app.post("/review/:userId", isLoggedIn, async (req, res) => {
   try {
     const newReview = {
@@ -499,19 +554,37 @@ app.post("/review/:userId", isLoggedIn, async (req, res) => {
     // average rating vastleggen. ChatGPT heeft de totaal rating som gemaakt.
     const reviews = await reviewData.find({ reviewee: req.params.userId });
     const totaalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
-    const gemiddeldeRating = totaalRating / reviews.length;
-
-    await userData.updateOne( { _id: req.params.userId }, { $set: { totaalRating: gemiddeldeRating } }
+    const gemiddeldeRating = Number((totaalRating / reviews.length).toFixed(1))
+    
+    await userData.updateOne( { _id: req.params.userId }, { $set: { totaalRating: gemiddeldeRating }, $inc: { reviewCount: 1 } }
 )
     res.redirect(`/user/${req.params.userId}`); 
-
-console.log(req.params.userId);
-console.log(req.body);
   } catch (error) {
     console.error(error);
-    res.send("Error saving review");
+    res.render("error.ejs", { error: "Error bij het opslaan van je review." });
   }
 }) 
+
+// FAVORIET FUNCTIE
+
+app.post("/addToFav",isLoggedIn, async (req, res) =>{
+  try{
+    const userId = req.session.userId;
+    const eventId= req.body.eventId;
+    await userData.findByIdAndUpdate(userId, {
+      $addToSet: { favorieten: eventId }
+    });
+  }
+  catch(err){
+    console.log("error")
+    res.status(500).json({error: "Kon niet toevoegen"});
+  }
+
+  // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
+  
+});
+
+// EIND FAVORIET
 
 
 app.get("/listing/:listingId", isLoggedIn, async (req, res) => {
@@ -529,7 +602,7 @@ app.get("/listing/:listingId", isLoggedIn, async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.send("Error loading listing");
+   res.render("error.ejs", { error: "Error bij het laden van de listing." });
   }
 });
 
@@ -541,11 +614,11 @@ app.post("/addToListing", isLoggedIn, async (req, res) => {
     const listing = await carListing.findById(listingId);
 
     if (!listing) {
-      return res.send("Listing not found");
+      return res.render("error.ejs", { error: "Listing niet gevonden." });
     }
 
     if (listing.userId.toString() === userId) {
-      return res.send("You are the owner of this listing");
+      return res.render("error.ejs", { error: "Je bent de owner van deze listing." });
     }
 
     await carListing.findByIdAndUpdate(listingId, {
@@ -556,7 +629,7 @@ app.post("/addToListing", isLoggedIn, async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.send("Error joining listing");
+    res.render("error.ejs", { error: "Error bij het joinen van de listing." });
   }
 });
 

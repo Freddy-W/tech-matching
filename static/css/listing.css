@@ -31,6 +31,10 @@ a {
 
 .passagier {
     display: flex;
+    background-color: var(--accentcolour3);
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
 }
 
 .passagier div {

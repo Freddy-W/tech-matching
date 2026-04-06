@@ -2,6 +2,7 @@
 
 * {
     margin:0;
+    padding:0;
 }
 
 :root {
@@ -74,4 +75,28 @@ footer nav {
     display: flex;
     justify-content: space-between;
     background-color: var(--main-blue);
+}
+
+.happyflow {
+    color: var(--white);
+    background-color: var(--happyflow);
+    border: none;
+    max-width:100%;
+    font-weight: bold;
+    padding: 1rem;
+    border-radius: 10px;
+    align-items: center;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+    text-decoration: none;
+}
+
+.happyflow button {
+    border: none;
+    font-size: 1rem;
+    color: var(--white);
+    background-color: var(--happyflow);
+    font-weight: bold;
 }

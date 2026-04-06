@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/buddy-zoeken.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
     <title>Buddy zoeken</title>
 </head>
@@ -13,8 +14,9 @@
         <%- include('partials/header')%>
     </header>
     <main>
+
         <!-- filtergedeelte -->
-        <h1>Zoek een buddy</h1>
+        <h1>Buddies voor <%= event.artist %></h1>
         <section>
             <input type="search" placeholder="Zoek een buddy..." id="zoekBuddy">
             <button id="filterbutton">Filter</button>
@@ -56,28 +58,22 @@
             <button id="annuleer">Annuleer</button>
             <button>Zoek</button>
         </form>
-
-        <!-- <%# if (listings.length === 0) { %> 
-            <p>Nog geen buddies beschikbaar, wees de eerste!</p>
-        <%# } %> -->
-
-        <!-- <%# listings.forEach(listing => { %>
-            <div class="listing">
-                <a href="/listing/<%#= listing._id %>">
-                    <h2 class="naam"><%#= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
-                    <p class="auto"><%#= listing.auto %></p>
-                    <p class="stad"><%#= listing.stad %></p>
-                </a>
-            </div>
-        <%# }) %> -->
-
+<img src="<%= event.image %>" alt="<%= event.artist %>">
+<p>Venue: <%= event.venue %>, <%= event.city %></p>
+<p>Date: <%= event.date %></p>
         <div id="buddyList">
             <ul class="list">
                 <% listings.forEach(listing => { %>
                 <li>
                     <a href="/listing/<%= listing._id %>">
-                    <h2 class="naam"><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
-                    <p><%= listing.auto %></p>
+                    <img src="../images/pfp.jpg">
+                    <div>
+                        <h2 class="naam"><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
+                        <p><%= listing.userId ? listing.userId.totaalRating : "0" %> ★</p>
+                        <p><%= listing.userId ? listing.userId.leeftijd : "Onbekend" %> jaar oud</p>
+                        <p><%= listing.auto %></p>
+                    </div>
+                    
                     <p class="stad"><%= listing.stad %></p>
                     </a>
                 </li>

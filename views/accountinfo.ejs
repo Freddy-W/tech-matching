@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Account Info</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/login.css">
 </head>
@@ -16,36 +16,36 @@
     <form action="/accountinfo" method="POST">
             <label>
                 <h2>E-mail</h2>
-                <input name="email" type="email" placeholder="user@email.com" >
+                <input name="email" type="email" placeholder="user@email.com" value="<%= user.email || '' %>">
             </label>
             <label>
                 <h2>username</h2>
-                <input name="username" placeholder="username" >
+                <input name="username" placeholder="username" value="<%= user.username || '' %>" >
             </label>
             <div>
                 <label>
                     <h2>Voornaam</h2>
-                    <input name="voornaam" placeholder="Voornaam">
+                    <input name="voornaam" placeholder="Voornaam" value="<%= user.voornaam || '' %>">
                 </label>
                 <label>
                     <h2>Achternaam</h2>
-                    <input name="achternaam" placeholder="Achternaam">
+                    <input name="achternaam" placeholder="Achternaam" value="<%= user.achternaam || '' %>">
                 </label>
             </div>
             <label>
                 <h2>Adres</h2>
-                <input name="adres">
+                <input name="adres" value="<%= user.adres || '' %>">
             </label>
             <label>
                 <h2>Leeftijd</h2> 
-                <input  name="leeftijd" type="number">
+                <input  name="leeftijd" type="number" value="<%= user.leeftijd || '' %>">
             </label>
             <label>
                 <h2>Heb je een rijbewijs?</h2> 
                 <div>
-                    <input class="radio"  id="rijbewijsyes" name="rijbewijs" value="yes" type="radio">
+                    <input <%= user.rijden === 'yes' ? 'checked' : '' %> class="radio"  id="rijbewijsyes" name="rijbewijs" value="yes" type="radio">
                     <label for="rijbewijsyes">Ja</label>
-                    <input class="radio" id="rijbewijsno" name="rijbewijs" value="no" type="radio">
+                    <input <%= user.rijden === 'no' ? 'checked' : '' %> class="radio" id="rijbewijsno" name="rijbewijs" value="no" type="radio">
                     <label for="rijbewijsno">Nee</label>
                 </div>
             </label>
@@ -58,16 +58,7 @@
                     <label for="autono">Nee</label>
                 </div>
             </label>
-            <label>
-                <h2>Wil je rijden?</h2> 
-                <div>  
-                    <input class="radio" id="rijdenyes" name="rijden" value="yes" type="radio">
-                    <label for="rijdenyes">Ja</label>
-                    <input class="radio" id="rijdenno" name="rijden" value="no" type="radio">
-                    <label for="rijdenno">Nee</label>
-                </div>
-            </label>
-            <button type="sumbit"><h2>Klaar</h2></button>
+            <button class="happyflow" type="sumbit"><h2>Klaar</h2></button>
         </form>
     </main>
 
