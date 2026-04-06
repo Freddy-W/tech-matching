@@ -40,8 +40,6 @@ function isLoggedIn(req, res, next) {
   }
 }
 
-<<<<<<< Updated upstream
-=======
 // https://www.youtube.com/watch?v=ZhqOp1Dkuso
 mongoose.connect(process.env.dbPassword);
 const userScheme = new mongoose.Schema({
@@ -83,7 +81,6 @@ const reviewData = mongoose.model("reviewData", reviewScheme)
 const userData = mongoose.model("userdata", userScheme);
 const carListing = mongoose.model("CarListing", carListingSchema);
 
->>>>>>> Stashed changes
 //middleware, als er om een userid gevraagd wordt wordt deze gepakt.
 app.use(async (req, res, next) => {
   if (req.session.userId) {
@@ -114,7 +111,6 @@ async function geocodeAddress(address) {
   return { lon: coords[0], lat: coords[1] };
 }
 
-<<<<<<< Updated upstream
 app.get("/distance-trip/:listingId", isLoggedIn, async (req, res) => {
   try {
     const listing = await carListing.findById(req.params.listingId)
@@ -184,16 +180,6 @@ async function getDistanceVolledig(coordinatesArray) {
 
   const body = {
     coordinates: coordinatesArray
-=======
-async function getDistanceKm(fromCoords, toCoords) {
-  const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
-
-  const body = {
-    coordinates: [
-      [fromCoords.lon, fromCoords.lat],
-      [toCoords.lon, toCoords.lat]
-    ]
->>>>>>> Stashed changes
   };
 
   const response = await fetch(url, {
@@ -439,47 +425,6 @@ app.get("/review/:userId", isLoggedIn, async (req, res) => {
   }
 });
 
-// https://www.youtube.com/watch?v=ZhqOp1Dkuso
-mongoose.connect(process.env.dbPassword);
-const userScheme = new mongoose.Schema({
-    username: String,
-    userId: String,
-    voornaam: String,
-    achternaam: String,
-    adres: String,
-    telefoonnummer: String,
-    email: String,
-    wachtwoord: String,
-    leeftijd: String,
-    rijbewijs: String,
-    auto: String,
-    rijden: String,
-    reviewCount: { type: Number, default: 0 },
-    favorieten: [{ type: String }],
-    totaalRating: { type: Number, default: 0},
-});
-
-const carListingSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
-  listingId: String,
-  auto: String,
-  hoeveel: Number,
-  brandstof: String,
-  eventId: String,
-  passagiers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userdata" }]
-});
-
-const reviewScheme = new mongoose.Schema({
-  reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
-  reviewee: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
-  rating: Number,
-  review: String,
-});
-
-const reviewData = mongoose.model("reviewData", reviewScheme)
-const userData = mongoose.model("userdata", userScheme);
-const carListing = mongoose.model("CarListing", carListingSchema);
-
 //Registeren, checkt of het emailadres al bestaat, encrypt het wachtwoord en stuurt naar de DB
 app.post("/register", async (req, res) => {
   try {
@@ -556,26 +501,22 @@ app.post("/accountinfo", isLoggedIn, async (req, res) =>  {
 app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
   try {
     const listingData = {
-      userId: req.session.ObjectId, // koppelen met user
+      userId: req.session.userId, // koppelen met user
       adres: req.body.adres,
       auto: req.body.auto,
       hoeveel: req.body.hoeveel,
       brandstof: req.body.brandstof,
       eventId: req.body.eventId
     };
-    const event = {
-      id: req.query.eventId,
-      artist: req.query.name,
-      date: req.query.date,
-      time: req.query.time,
-      venue: req.query.venue,
-      city: req.query.city,
-      country: req.query.country,
-      image: req.query.image
-    };
+    const redirectUrl = `/buddy-zoeken?eventId=${encodeURIComponent(req.body.eventId)}&name=${encodeURIComponent(req.body.artist)}&venue=${encodeURIComponent(req.body.venue)}&city=${encodeURIComponent(req.body.city)}&country=${encodeURIComponent(req.body.country)}&date=${encodeURIComponent(req.body.date)}&time=${encodeURIComponent(req.body.time)}&image=${encodeURIComponent(req.body.image)}`;
+
     await carListing.create(listingData);
-    res.redirect(`/buddy-zoeken?eventId=${req.body.eventId}`);
-  } catch (error) {
+    const eventId = req.query.eventId; 
+    const listings = await carListing
+      .find({ eventId })
+      .populate("userId", "voornaam leeftijd totaalRating reviewCount "); // callt de user info voor de ejs pagina.
+    res.redirect(redirectUrl);
+   } catch (error) {
     console.error(error);
     res.render("error.ejs", { error: "Error bij het opslaan van je listing. Probeer het opnieuw!" });
   }
@@ -607,7 +548,6 @@ app.get("/", async (req, res) => {
   try {
     const user = await userData.findById(req.session.userId); 
     res.render("index.ejs", { user });
-
   } catch (error) {
     console.error(error);
     res.render("error.ejs", { error: "Error bij het laden van de index." });

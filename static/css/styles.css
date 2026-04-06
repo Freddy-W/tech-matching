@@ -92,11 +92,3 @@ footer nav {
     margin-top: 0.5rem;
     text-decoration: none;
 }
-
-.happyflow button {
-    border: none;
-    font-size: 1rem;
-    color: var(--white);
-    background-color: var(--happyflow);
-    font-weight: bold;
-}

@@ -14,6 +14,14 @@
     <main>
         <h1>Auto Aanbieden</h1>
         <form action="/autoaanbieden" method="POST">
+            <input type="hidden" name="eventId" value="<%= event.id %>">
+            <input type="hidden" name="name" value="<%= event.artist %>">
+            <input type="hidden" name="venue" value="<%= event.venue %>">
+            <input type="hidden" name="city" value="<%= event.city %>">
+            <input type="hidden" name="country" value="<%= event.country %>">
+            <input type="hidden" name="date" value="<%= event.date %>">
+            <input type="hidden" name="time" value="<%= event.time %>">
+            <input type="hidden" name="image" value="<%= event.image %>">
             <input type="hidden" name="eventId" value="<%= eventId %>">
             <label>
                 <h2>Welke auto heb je?</h2>
@@ -38,9 +46,8 @@
                     <label for="verbruiktelek">Elektrisch</label>
                 </div>
             </label>
-            <button class="autobiedenknop"  type="submit">
-            <a class="happyflow" href="buddy-zoeken?eventId=<%= encodeURIComponent(event.id) %>&name=<%= encodeURIComponent(event.artist) %>&venue=<%= encodeURIComponent(event.venue) %>&city=<%= encodeURIComponent(event.city) %>&country=<%= encodeURIComponent(event.country) %>&date=<%= encodeURIComponent(event.date) %>&time=<%= encodeURIComponent(event.time) %>&image=<%= encodeURIComponent(event.image) %>">Bied aan</a>
-            </button>
+            
+            <button class="happyflow" type="submit">Bied aan</button>
         </form>
     </main>
     <footer>
