@@ -154,3 +154,31 @@ function checkNoResults() {
     if (!Array.from(ul.children).some(li => li.style.display !== "none")) // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
     ul.insertAdjacentHTML("beforeend", '<li id="no-results-msg" style="font-style:italic;text-align:center">Geen resultaten gevonden</li>');
 }
+
+async function favList() {
+  const response = await fetch("/favorieten")
+  const data = await response.json()
+  const list = document.getElementById("favList")
+
+  data.favorieten.forEach(favoriet => {
+    const li = document.createElement("li");
+
+    const title = document.createElement("h3");
+    title.textContent = favoriet.artist;
+
+    const img = document.createElement("img");
+    img.src = favoriet.image || "../images/imagenotfound.png";
+    img.style.width = "150px";
+
+    li.appendChild(title);
+    li.appendChild(img);
+
+    list.appendChild(li);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.getElementById("favList")) {
+    favList();
+  }
+});

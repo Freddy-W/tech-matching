@@ -344,7 +344,9 @@ const userScheme = new mongoose.Schema({
     rijbewijs: String,
     auto: String,
     rijden: String,
-    favorieten: String,
+    favorieten: {
+      type: [String],
+      default: []},
     totaalRating: { type: Number, default: 0 },
 });
 
@@ -558,20 +560,64 @@ app.post("/addToListing", isLoggedIn, async (req, res) => {
   }
 });
 
-app.get("/favConcerts", isLoggedIn, async (req, res) => {
-  const user = await userData.findById(req.session.userId);
-  const events = user.favorieten;
-  try {
-    const listEvents = events.map(event => ({
-      artist: event.name,
-      image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url
-    }))
-    res.send("user", {favs: listEvents});
-  }
-  catch (error) {
-    console.error(error);
-    res.send("Geen concerten gevonden")
-  }
-})
+// app.get("/favConcerts", isLoggedIn, async (req, res) => {
+//   const user = await userData.findById(req.session.userId);
+//   const events = user.favorieten;
+//   try {
+//     const listEvents = events.map(event => ({
+//       artist: event.name,
+//       image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url
+//     }))
+//     res.send("user", {favs: listEvents});
+//   }
+//   catch (error) {
+//     console.error(error);
+//     res.send("Geen concerten gevonden")
+//   }
+// })
 
 // this shit dont work man idk
+
+app.get("/favorieten", isLoggedIn, async (req, res) => {
+  console.log("Session userId:", req.session.userId);
+  
+  const user = await userData.findById(req.session.userId)
+  console.log("User:", user);
+  const favorieten = user.favorieten || []
+
+  console.log(user);
+  console.log("user.favorieten:", user.favorieten);
+  const events = await Promise.all(
+    favorieten.map(async (id) => {
+      id = id.trim();
+      try {
+        const response = await fetch(
+          `https://app.ticketmaster.com/discovery/v2/events/${id}.json?apikey=${apiKey}`
+        );
+        const data = await response.json();
+        const artist = data.name
+        || data._embedded?.attractions?.[0]?.name
+        || "Unknown";
+
+        const image = data.images?.[0]?.url
+        || data._embedded?.attractions?.[0]?.images?.[0]?.url
+        || "../images/imagenotfound.png";
+        
+        return {
+          id: id,
+          artist,
+          image,
+        };
+
+        
+      } catch (err) {
+        console.error("Could not fetch", id);
+        return null;
+      }
+    })
+  );
+  console.log(events);
+  res.json({
+    favorieten: events.filter(e => e !== null)
+  });
+});
