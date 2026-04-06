@@ -1,0 +1,42 @@
+body {
+    background-color: var(--mainblue);
+    color: var(--white);
+
+} 
+main {
+    margin: 1rem;
+}
+
+main .owner img {
+    max-width: 8rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+.owner {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 2rem;
+}
+
+.owner div {
+    margin-left: 1rem;
+}
+
+.passagier img {
+    max-width:6rem;
+}
+
+.passagier {
+    display: flex;
+    background-color: var(--accentcolour3);
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.passagier div {
+    margin-left: 1rem;
+}

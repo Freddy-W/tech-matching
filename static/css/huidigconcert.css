@@ -1,23 +1,88 @@
 body {
-    background-color: #062b32;
-    color: white;
+    background-color: var(--mainblue);
+    color: var(--white);
+}
+
+main {
+    margin: 1rem;
+}
+ 
+h1 {
+    margin-left: 1rem;
 }
 
 main > div:nth-of-type(1) {
     display: flex;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
-main > div section img {
-    margin: 1rem;
-    max-width: 80vw;
+main > section img {
+    max-width: 100%;
     justify-self: center;
 }
 
-main >div:nth-of-type(2) a {
-    padding: 1rem;
-    background-color: white;
-    color: black;
-    border-radius: 8px;
-    text-decoration: 0;
+
+main div:nth-of-type(2) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+#plusButton img {
+    height: 3rem;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--mainblue);
+    border-radius: 100%;
+}
+
+ .autoOpties a {
+    display: flex;
+    padding: 0.5rem;
+    text-decoration: none;
+    margin-top: 1rem;
+    background-color: var(--black);
+    color: var(--white);
+    height: 2rem;
+    font-weight: bold;
+    border-radius: 0.5rem;
+    border: 2px solid var(--accentcolour2);
+    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+ .autoOpties a:nth-of-type(2) {
+    border: none;
+    background-color: var(--happyflow);
+ }
+
+#favButton img {
+    width: 5vh;
+    height: 5vh;
+    padding: 0;
+    filter: invert(1);
+}
+
+#favButton {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.25em;
+    border: none;
+    border-radius: 100px;
+    background-color: var(--accentcolour3);
+    margin: 1em;
+}
+
+#favButton:hover {
+    background-color: var(--accentcolour2);
+    
+}
+
+section form {
+    display: flex;
+    justify-self: end;
+}
+

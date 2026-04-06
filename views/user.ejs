@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User info</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/user.css">
+</head>
+<body>
+    <header>
+        <%- include('partials/header')%>
+    </header>
+    <main>
+        <h1>@<%= user.username %></h1>
+        <div>
+            <img src="../images/pfp.jpg">
+            <div>
+                <p>Naam <%= user.voornaam %> <%= user.achternaam %></p>
+                <p>Rating: <%= user.totaalRating %> (<%= user.reviewCount || 0 %> reviews)</p>
+                <p>Auto: <%= user.auto %></p>
+                <p>Leeftijd: <%= user.leeftijd %></p>
+            </div>
+        </div>
+        <div class="reviews">
+            <h2>Reviews</h2>
+                <% if (reviews.length === 0) { %>
+                <p>Geen reviews</p>
+                <% } %>
+                <% reviews.forEach(review => { %>
+                <div class="review">
+                    <img src="../images/pfp.jpg">
+                    <div>
+                        <p><strong><%= review.reviewer.username %></strong></p>
+                        <p>Rating: <%= review.rating %> ★</p>
+                        <p><%= review.review %></p>
+                    </div>
+                </div>
+                <% }) %>
+            <% if (!loggedInUser || loggedInUser._id.toString() !== user._id.toString()) { %>
+        <a  class="happyflow" href="/review/<%= user._id %>">Laat een review achter!</a>
+    <% } %>
+        </div>
+            <% if (loggedInUser && loggedInUser._id.toString() === user._id.toString()) { %>
+                <form class="happyflow" action="/accountinfo" method="GET">
+                <button type="submit">Wijzig account</button>
+                </form>
+            <% } %>
+        <div>
+            <h2>Concerten</h2>
+            <ul id="favList">
+                
+            </ul>
+        </div>
+    </main>
+    <footer>
+        <%- include('partials/menubalk')%>
+    </footer>
+    <script src="/scripts/script.js"></script>
+</body>
+</html>

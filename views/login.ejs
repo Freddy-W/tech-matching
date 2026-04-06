@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
     <header>
+        <%- include('partials/header')%>
     </header>
     <main>
         <h1>Log in</h1>
@@ -16,13 +17,15 @@
             <label>
                 <h2>Username</h2>
                 <input name="username" placeholder="username" required>
+                <p class="hidden">Verkeerde username, probeer een andere!</p>
             </label>
             <label>
                 <h2>Wachtwoord</h2> 
                 <input  name="wachtwoord" type="password" placeholder="wachtwoord" required>
+                <p class="hidden">Verkeerd wachtwoord, probeer een andere!</p>
             </label>
             <a href="register"><h2>Registreren</h2></a>
-            <button type="sumbit"><h2>Log in</h2></button>
+            <button class="happyflow" type="sumbit"><h2>Log in</h2></button>
         </form>
         <footer>
         </footer>

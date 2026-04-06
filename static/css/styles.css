@@ -2,6 +2,18 @@
 
 * {
     margin:0;
+    padding:0;
+}
+
+:root {
+--accentcolour: #97D8E4;
+--accentcolour2: #1d909f;
+--accentcolour3: #1C5863;
+--darkgray: #1F1F1F;
+--mainblue: #062B32;
+--happyflow: #1DA067;
+--black: #000000;
+--white: #FFFFFF;
 }
 
 a:visited {
@@ -17,9 +29,9 @@ body {
 }
 
 header nav {
+    margin: 1rem;
     display: flex;
     flex-direction:row;
-    width:100%;
     justify-content: space-between;
 }
 
@@ -62,5 +74,29 @@ footer nav {
     display: flex;
     display: flex;
     justify-content: space-between;
-    background-color: #062b32;
+    background-color: var(--main-blue);
+}
+
+.happyflow {
+    color: var(--white);
+    background-color: var(--happyflow);
+    border: none;
+    max-width:100%;
+    font-weight: bold;
+    padding: 1rem;
+    border-radius: 10px;
+    align-items: center;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+    text-decoration: none;
+}
+
+.happyflow button {
+    border: none;
+    font-size: 1rem;
+    color: var(--white);
+    background-color: var(--happyflow);
+    font-weight: bold;
 }
