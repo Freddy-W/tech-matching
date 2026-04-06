@@ -219,6 +219,7 @@ async function favList() {
   const response = await fetch("/favorieten")
   const data = await response.json()
   const list = document.getElementById("favList")
+  list.innerHTML = "";
 
   data.favorieten.forEach(favoriet => {
     const li = document.createElement("li");
@@ -252,7 +253,7 @@ function setStars(value) {
   });
 }
 
-setStars(ratingInput.value);
+// setStars(ratingInput.value);
 
 stars.forEach(star => {
   const val = parseInt(star.dataset.value);
@@ -263,15 +264,15 @@ stars.forEach(star => {
 });
 
 // openen/sluiten
-if (filterBtn) {
-    filterBtn.addEventListener("click", () => {
-        filteropties.classList.add("open");
-    });
-}
+// if (filterBtn) {
+//     filterBtn.addEventListener("click", () => {
+//         filteropties.classList.add("open");
+//     });
+// }
 
-if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-        filteropties.classList.remove("open");
-    });
-}
+// if (closeBtn) {
+//     closeBtn.addEventListener("click", () => {
+//         filteropties.classList.remove("open");
+//     });
+// }
 

@@ -392,7 +392,7 @@ const userScheme = new mongoose.Schema({
     auto: String,
     rijden: String,
     reviewCount: { type: Number, default: 0 },
-    favorieten: [{ type: [String], default: [] }],
+    favorieten: { type: [String], default: [] },
     totaalRating: { type: Number, default: 0},
 });
 
