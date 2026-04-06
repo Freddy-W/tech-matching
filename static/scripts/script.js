@@ -79,6 +79,7 @@ async function loadDefaultEvents() {
 async function afstandBereken() {
     const listingData = document.getElementById("listingData");
     const tripDistance = document.getElementById("tripDistance");
+    const tripCosts = document.getElementById("tripCosts");
   
     if (!listingData || !tripDistance) return;
   
@@ -94,6 +95,8 @@ async function afstandBereken() {
       }
   
       tripDistance.textContent = `Totale afstand: ${data.distanceKm} km`;
+      const bedrag = data.distanceKm*0.5*1.20;
+      tripCosts.textContent = `Totale kosten: €${bedrag}`;
   
     } catch (error) {
       console.error(error);
