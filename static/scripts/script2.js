@@ -7,6 +7,10 @@ const zoekBuddyInput = document.getElementById("zoekBuddy");
 const ul = document.querySelector("#buddyList .list");
 const brandstofCheckboxes = document.querySelectorAll(".brandstof-filter");
 const zoekButton = document.getElementById("zoek");
+document.getElementById("filtergedeelte")?.addEventListener("submit", e => {
+  e.preventDefault();
+  filterAlles();
+});
 
 // List.js opties
 const options = {
