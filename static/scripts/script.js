@@ -2,7 +2,6 @@ window.onload = function() {
   if (document.getElementById("results")) {
     loadDefaultEvents();
   }
-    ladenBeginEvents();
     afstandBereken();
 
 }
