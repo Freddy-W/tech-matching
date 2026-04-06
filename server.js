@@ -160,6 +160,35 @@ async function getDistanceVolledig(coordinatesArray) {
   return meters / 1000;
 }
 
+async function getDistanceKm(fromCoords, toCoords) {
+  const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
+
+  const body = {
+    coordinates: [
+      [fromCoords.lon, fromCoords.lat],
+      [toCoords.lon, toCoords.lat]
+    ]
+  };
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Authorization": orsKey,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  const data = await response.json();
+
+  if (!data.routes || data.routes.length === 0) {
+    throw new Error("Geen route gevonden");
+  }
+
+  const meters = data.routes[0].summary.distance;
+  return meters / 1000;
+}
+
 app.get("/distance", isLoggedIn, async (req, res) => {
   try {
     const venue = req.query.venue;
@@ -493,7 +522,7 @@ app.post("/accountinfo", isLoggedIn, async (req, res) =>  {
 app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
   try {
     const listingData = {
-      userId: req.session.ObjectId, // koppelen met user
+      userId: req.session.userId, // koppelen met user
       adres: req.body.adres,
       auto: req.body.auto,
       hoeveel: req.body.hoeveel,

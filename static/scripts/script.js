@@ -3,6 +3,7 @@ window.onload = function() {
     loadDefaultEvents();
   }
     afstandBereken();
+    afstandConcertBereken();
 
 }
 
@@ -74,35 +75,6 @@ async function loadDefaultEvents() {
     }
 }
 
-async function getDistanceKm(fromCoords, toCoords) {
-    const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
-  
-    const body = {
-      coordinates: [
-        [fromCoords.lon, fromCoords.lat],
-        [toCoords.lon, toCoords.lat]
-      ]
-    };
-  
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Authorization": orsKey,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    });
-  
-    const data = await response.json();
-  
-    if (!data.routes || data.routes.length === 0) {
-      throw new Error("Geen route gevonden");
-    }
-  
-    const meters = data.routes[0].summary.distance;
-    return meters / 1000;
-  }
-
 //Functie voor het berekenen van de afstand tussen de verschillende passagiers
 async function afstandBereken() {
     const listingData = document.getElementById("listingData");
@@ -126,6 +98,33 @@ async function afstandBereken() {
     } catch (error) {
       console.error(error);
       tripDistance.textContent = "Afstand niet beschikbaar";
+    }
+  }
+
+  async function afstandConcertBereken() {
+    const eventData = document.getElementById("eventData");
+    const distanceText = document.getElementById("distanceText");
+  
+    if (!eventData || !distanceText) return;
+  
+    const venue = eventData.dataset.venue;
+    const city = eventData.dataset.city;
+    const country = eventData.dataset.country;
+  
+    try {
+      const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+      const data = await response.json();
+  
+      if (data.error) {
+        distanceText.textContent = "Afstand niet beschikbaar";
+        return;
+      }
+  
+      distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+  
+    } catch (error) {
+      console.error(error);
+      distanceText.textContent = "Afstand niet beschikbaar";
     }
   }
 
