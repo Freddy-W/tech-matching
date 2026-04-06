@@ -562,7 +562,7 @@ app.get("/buddy-zoeken", isLoggedIn, async (req, res) => {
 
     const listings = await carListing
       .find({ eventId })
-      .populate("userId", "voornaam leeftijd totaalRating reviewCount");
+      .populate("userId", "voornaam leeftijd totaalRating reviewCount stad");
 
     res.render("buddy-zoeken.ejs", { listings, event });
 
