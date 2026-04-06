@@ -26,11 +26,6 @@
             <h3>Plaats</h3>
             <input type="search" id="zoekPlaats" placeholder="zoek een plaats">
             <button type="button" id="plaatsButton">Zoek</button>
-            <h3>Wil en mag je rijden?</h3>
-            <input type="checkbox" id="rijden-ja" name="rijden" value="ja">
-            <label for="rijden-ja">Ja</label>
-            <input type="checkbox" id="rijden-nee" name="rijden" value="nee">
-            <label for="rijden-nee">Nee</label>
             <h3>Retour of enkele reis</h3>
             <input type="checkbox" id="retour" name="reis" value="Retour">
             <label for="retour">Retour</label>
@@ -38,6 +33,7 @@
             <label for="heen">Heen</label>
             <input type="checkbox" id="terug" name="reis" value="Terug">
             <label for="terug">Terug</label>
+            <input type="text" name="stad" placeholder="Jouw stad">
             <!-- <h3>Leeftijd</h3>
             <div class="wrapper">
                 <div class="container">
@@ -72,9 +68,8 @@
                         <p><%= listing.userId ? listing.userId.totaalRating : "0" %> ★</p>
                         <p><%= listing.userId ? listing.userId.leeftijd : "Onbekend" %> jaar oud</p>
                         <p><%= listing.auto %></p>
+                        <p class="stad"><%= listing.stad || "Onbekend" %></p>
                     </div>
-                    
-                    <p class="stad"><%= listing.stad %></p>
                     </a>
                 </li>
                 <% }) %>

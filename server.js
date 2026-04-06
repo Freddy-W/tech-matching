@@ -432,6 +432,7 @@ const carListingSchema = new mongoose.Schema({
   hoeveel: Number,
   brandstof: String,
   eventId: String,
+  stad: String,
   passagiers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userdata" }]
 });
 
@@ -527,7 +528,8 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
       auto: req.body.auto,
       hoeveel: req.body.hoeveel,
       brandstof: req.body.brandstof,
-      eventId: req.body.eventId
+      eventId: req.body.eventId,
+      stad: req.body.stad
     };
     await carListing.create(listingData);
     res.redirect(`/buddy-zoeken?eventId=${req.body.eventId}`);
