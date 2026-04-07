@@ -68,14 +68,18 @@ ul {
 li {
   padding:0.5em;
   display:flex;
-  align-items:center;
+  flex-direction: column;
+  align-items:flex-start;
   background-color:var(--accentcolour3);
   border-radius:6px;
 }
 
-li img {
-  height:60px;
-  width:60px;
+li div{
+  padding: 0.5rem
+}
+
+.list img {
+  max-width: 100%;
   border-radius:6px;
   margin-right:1em;
 }
