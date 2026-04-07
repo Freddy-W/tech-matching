@@ -295,27 +295,3 @@ main > section input {
     border-radius: 1rem 0 0 1rem;
     padding: 1rem;
 }
-
-main > section button {
-    border: none;
-    padding-right: 1rem;
-    padding-left: 1rem;
-}
-
-main > section button:nth-of-type(1) {
-    border-radius: 0 1rem 1rem 0;
-    background-color: var(--accentcolour3);
-    color: white;
-    font-weight: bold;
-}
-
-main > section {
-    border-radius: 1rem;
-    background-color: azure;
-}
-
-li a {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
