@@ -40,3 +40,8 @@ a {
 .passagier div {
     margin-left: 1rem;
 }
+
+a, a:visited {
+    color: var(--white);
+    text-decoration: none;
+}
