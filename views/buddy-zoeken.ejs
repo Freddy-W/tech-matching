@@ -26,18 +26,13 @@
             <h3>Plaats</h3>
             <input type="search" id="zoekPlaats" placeholder="zoek een plaats">
             <button type="button" id="plaatsButton">Zoek</button>
-            <h3>Wil en mag je rijden?</h3>
-            <input type="checkbox" id="rijden-ja" name="rijden" value="ja">
-            <label for="rijden-ja">Ja</label>
-            <input type="checkbox" id="rijden-nee" name="rijden" value="nee">
-            <label for="rijden-nee">Nee</label>
-            <h3>Retour of enkele reis</h3>
-            <input type="checkbox" id="retour" name="reis" value="Retour">
-            <label for="retour">Retour</label>
-            <input type="checkbox" id="heen" name="reis" value="Heen">
-            <label for="heen">Heen</label>
-            <input type="checkbox" id="terug" name="reis" value="Terug">
-            <label for="terug">Terug</label>
+            <h3>Brandstof</h3>
+            <input type="checkbox" id="benzine" class="brandstof-filter" value="Benzine">
+            <label for="benzine">Benzine</label>
+            <input type="checkbox" id="diesel" class="brandstof-filter" value="Diesel">
+            <label for="diesel">Diesel</label>
+            <input type="checkbox" id="elektrisch" class="brandstof-filter" value="Elektrisch">
+            <label for="elektrisch">Elektrisch</label>
             <!-- <h3>Leeftijd</h3>
             <div class="wrapper">
                 <div class="container">
@@ -55,39 +50,37 @@
                     </span>
                 </div>
             </div> -->
-            <button id="annuleer">Annuleer</button>
-            <button>Zoek</button>
+            <button type="button" id="annuleer">Annuleer</button>
+            <button type="button" id="zoek">Zoek</button>
         </form>
-        <div class="eventcard">
+        <div class="artistinfo">
             <img src="<%= event.image %>" alt="<%= event.artist %>">
             <div>
-                <h3><%= event.artist %></h3>
-                <p><%= event.venue %>, <%= event.city %></p>
-                <p><%= event.date %></p>
+                <p><%= event.artist %></p>
+                <p>Venue: <%= event.venue %>, <%= event.city %></p>
+                <p>Date: <%= event.date %></p>
             </div>
         </div>
-
+   
         <div id="buddyList">
-             <% if (listings.length === 0) { %>
-            <p>Geen buddy beschikbaar, wees de eerste!</p>
-         <% } else { %>
             <ul class="list">
                 <% listings.forEach(listing => { %>
                 <li>
                     <a href="/listing/<%= listing._id %>">
-                        <img src="../images/pfp.jpg">
-                        <div>
-                            <h2 class="naam"><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
-                            <p><%= listing.userId ? listing.userId.totaalRating : "0" %> ★</p>
-                            <p><%= listing.userId ? listing.userId.leeftijd : "Onbekend" %> jaar oud</p>
-                            <p><%= listing.auto %></p>
-                        </div>
-                        <p class="stad"><%= listing.stad %></p>
+                    <img src="../images/pfp.jpg">
+                    <div>
+                        <h2 class="naam"><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
+                        <p><%= listing.userId ? listing.userId.totaalRating : "0" %> ★</p>
+                        <p><%= listing.userId ? listing.userId.leeftijd : "Onbekend" %> jaar oud</p>
+                        <p><%= listing.auto %></p>
+                        <p class="brandstof"><%= listing.brandstof %></p>
+                        <p class="stad"><%= listing.stad || "Onbekend" %></p>
+                    </div>
                     </a>
                 </li>
                 <% }) %>
             </ul>
-        <% } %>
+        </div>
     </main>
     <footer>
         <%- include('partials/menubalk')%>

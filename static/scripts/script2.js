@@ -5,20 +5,35 @@ const closeBtn = document.getElementById("annuleer");
 const zoekPlaatsInput = document.getElementById("zoekPlaats");
 const zoekBuddyInput = document.getElementById("zoekBuddy");
 const ul = document.querySelector("#buddyList .list");
+const brandstofCheckboxes = document.querySelectorAll(".brandstof-filter");
+const zoekButton = document.getElementById("zoek");
+document.getElementById("filtergedeelte")?.addEventListener("submit", e => {
+  e.preventDefault();
+  filterAlles();
+});
 
 // List.js opties
 const options = {
-  valueNames: ['naam', 'stad']
+  valueNames: ['naam', 'stad', 'brandstof']
 };
 
 // List.js initialiseren
 const userList = new List('buddyList', options);
+
 
 // Eventlisteners
 filterBtn?.addEventListener("click", filterenOpen);
 closeBtn?.addEventListener("click", annuleer);
 zoekPlaatsInput?.addEventListener("input", filterAlles);
 zoekBuddyInput?.addEventListener("input", filterAlles);
+zoekButton?.addEventListener("click", () => {
+  filteropties.classList.remove("open");
+  filterAlles();
+});
+
+brandstofCheckboxes.forEach(cb => 
+  cb.addEventListener("change", filterAlles)
+);
 
 // Functies
 function filterenOpen() {
@@ -29,6 +44,7 @@ function annuleer() {
   filteropties.classList.remove("open");
   zoekPlaatsInput.value = ""; // lege input bij annuleren
   zoekBuddyInput.value = "";  // lege input bij annuleren
+  brandstofCheckboxes.forEach(cb => cb.checked = false);
   filterAlles();
 }
 
@@ -39,14 +55,29 @@ function filterAlles() {
   const zoekNaam = zoekBuddyInput.value.toLowerCase();
   const plaats = zoekPlaatsInput.value.toLowerCase();
 
+  // geselecteerde brandstoffen ophalen
+  const geselecteerdeBrandstof = Array.from(brandstofCheckboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value.toLowerCase());
+
   userList.filter(item => {
-    const naam = item.values().naam.toLowerCase();
-    const stad = item.values().stad.toLowerCase();
+    const values = item.values();
 
-    const naamMatch = !zoekNaam || zoekNaam.length < 2 || naam.includes(zoekNaam);
-    const plaatsMatch = !plaats || stad.includes(plaats);
+    const naam = values.naam.toLowerCase();
+    const stad = values.stad.toLowerCase();
+    const brandstof = values.brandstof.toLowerCase();
 
-    return naamMatch && plaatsMatch;
+    const naamMatch =
+      !zoekNaam || zoekNaam.length < 2 || naam.includes(zoekNaam);
+
+    const plaatsMatch =
+      !plaats || stad.includes(plaats);
+
+    const brandstofMatch =
+      geselecteerdeBrandstof.length === 0 ||
+      geselecteerdeBrandstof.includes(brandstof);
+
+    return naamMatch && plaatsMatch && brandstofMatch;
   });
 
   checkNoResults();

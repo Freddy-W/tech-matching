@@ -40,47 +40,6 @@ function isLoggedIn(req, res, next) {
   }
 }
 
-// https://www.youtube.com/watch?v=ZhqOp1Dkuso
-mongoose.connect(process.env.dbPassword);
-const userScheme = new mongoose.Schema({
-    username: String,
-    userId: String,
-    voornaam: String,
-    achternaam: String,
-    adres: String,
-    telefoonnummer: String,
-    email: String,
-    wachtwoord: String,
-    leeftijd: String,
-    rijbewijs: String,
-    auto: String,
-    rijden: String,
-    reviewCount: { type: Number, default: 0 },
-    favorieten: [{ type: String }],
-    totaalRating: { type: Number, default: 0},
-});
-
-const carListingSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
-  listingId: String,
-  auto: String,
-  hoeveel: Number,
-  brandstof: String,
-  eventId: String,
-  passagiers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userdata" }]
-});
-
-const reviewScheme = new mongoose.Schema({
-  reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
-  reviewee: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
-  rating: Number,
-  review: String,
-});
-
-const reviewData = mongoose.model("reviewData", reviewScheme)
-const userData = mongoose.model("userdata", userScheme);
-const carListing = mongoose.model("CarListing", carListingSchema);
-
 //middleware, als er om een userid gevraagd wordt wordt deze gepakt.
 app.use(async (req, res, next) => {
   if (req.session.userId) {
@@ -180,6 +139,35 @@ async function getDistanceVolledig(coordinatesArray) {
 
   const body = {
     coordinates: coordinatesArray
+  };
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Authorization": orsKey,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  const data = await response.json();
+
+  if (!data.routes || data.routes.length === 0) {
+    throw new Error("Geen route gevonden");
+  }
+
+  const meters = data.routes[0].summary.distance;
+  return meters / 1000;
+}
+
+async function getDistanceKm(fromCoords, toCoords) {
+  const url = `https://api.openrouteservice.org/v2/directions/driving-car`;
+
+  const body = {
+    coordinates: [
+      [fromCoords.lon, fromCoords.lat],
+      [toCoords.lon, toCoords.lat]
+    ]
   };
 
   const response = await fetch(url, {
@@ -384,6 +372,7 @@ app.get("/accountinfo", isLoggedIn, async (req, res) => {
     res.render('accountinfo.ejs', { user });
 });
 
+
 app.get("/gekozen-concert", (req, res)=>{
         const event = {
         id: req.query.id,
@@ -400,19 +389,10 @@ app.get("/gekozen-concert", (req, res)=>{
 
 
 app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
-  const event = {
-        id: req.query.eventId,
-        artist: req.query.name,
-        date: req.query.date,
-        time: req.query.time,
-        venue: req.query.venue,
-        city: req.query.city,
-        country: req.query.country,
-        image: req.query.image
-        }
   const eventId = req.query.eventId;
-  res.render('auto-aanbieden.ejs', { event, eventId });
+  res.render('auto-aanbieden.ejs', { eventId });
 });
+
 
 app.get("/review/:userId", isLoggedIn, async (req, res) => {
   try {
@@ -424,6 +404,48 @@ app.get("/review/:userId", isLoggedIn, async (req, res) => {
     res.render("error.ejs", { error: "Error bij het laden van de review pagina." });
   }
 });
+
+// https://www.youtube.com/watch?v=ZhqOp1Dkuso
+mongoose.connect(process.env.dbPassword);
+const userScheme = new mongoose.Schema({
+    username: String,
+    userId: String,
+    voornaam: String,
+    achternaam: String,
+    adres: String,
+    telefoonnummer: String,
+    email: String,
+    wachtwoord: String,
+    leeftijd: String,
+    rijbewijs: String,
+    auto: String,
+    rijden: String,
+    reviewCount: { type: Number, default: 0 },
+    favorieten: { type: [String], default: [] },
+    totaalRating: { type: Number, default: 0},
+});
+
+const carListingSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+  listingId: String,
+  auto: String,
+  hoeveel: Number,
+  brandstof: String,
+  eventId: String,
+  stad: String,
+  passagiers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userdata" }]
+});
+
+const reviewScheme = new mongoose.Schema({
+  reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+  reviewee: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+  rating: Number,
+  review: String,
+});
+
+const reviewData = mongoose.model("reviewData", reviewScheme)
+const userData = mongoose.model("userdata", userScheme);
+const carListing = mongoose.model("CarListing", carListingSchema);
 
 //Registeren, checkt of het emailadres al bestaat, encrypt het wachtwoord en stuurt naar de DB
 app.post("/register", async (req, res) => {
@@ -506,48 +528,55 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
       auto: req.body.auto,
       hoeveel: req.body.hoeveel,
       brandstof: req.body.brandstof,
-      eventId: req.body.eventId
+      eventId: req.body.eventId,
+      stad: req.body.stad
     };
-    const redirectUrl = `/buddy-zoeken?eventId=${encodeURIComponent(req.body.eventId)}&name=${encodeURIComponent(req.body.artist)}&venue=${encodeURIComponent(req.body.venue)}&city=${encodeURIComponent(req.body.city)}&country=${encodeURIComponent(req.body.country)}&date=${encodeURIComponent(req.body.date)}&time=${encodeURIComponent(req.body.time)}&image=${encodeURIComponent(req.body.image)}`;
-
     await carListing.create(listingData);
-    const eventId = req.query.eventId; 
-    const listings = await carListing
-      .find({ eventId })
-      .populate("userId", "voornaam leeftijd totaalRating reviewCount "); // callt de user info voor de ejs pagina.
-    res.redirect(redirectUrl);
-   } catch (error) {
+    res.redirect(`/buddy-zoeken?eventId=${req.body.eventId}`);
+  } catch (error) {
     console.error(error);
     res.render("error.ejs", { error: "Error bij het opslaan van je listing. Probeer het opnieuw!" });
   }
 });
 
-app.get("/buddy-zoeken", isLoggedIn, async (req, res) =>{
+app.get("/buddy-zoeken", isLoggedIn, async (req, res) => {
   try {
+    const eventId = req.query.eventId;
+
+    const response = await fetch(
+      `https://app.ticketmaster.com/discovery/v2/events/${eventId}.json?apikey=${apiKey}`
+    );
+
+    const data = await response.json();
+
     const event = {
-        id: req.query.eventId,
-        artist: req.query.name,
-        date: req.query.date,
-        time: req.query.time,
-        venue: req.query.venue,
-        city: req.query.city,
-        country: req.query.country,
-        image: req.query.image
-        }
-    const eventId = req.query.eventId; 
+      id: data.id,
+      artist: data.name,
+      date: data.dates?.start?.localDate || "Onbekend",
+      time: data.dates?.start?.localTime || "Onbekend",
+      venue: data._embedded?.venues?.[0]?.name || "Onbekend",
+      city: data._embedded?.venues?.[0]?.city?.name || "",
+      country: data._embedded?.venues?.[0]?.country?.name || "",
+      image: data.images?.[0]?.url || ""
+    };
+
     const listings = await carListing
       .find({ eventId })
-      .populate("userId", "voornaam leeftijd totaalRating reviewCount "); // callt de user info voor de ejs pagina.
+      .populate("userId", "voornaam leeftijd totaalRating reviewCount stad");
+
     res.render("buddy-zoeken.ejs", { listings, event });
+
   } catch (error) {
     console.error(error);
     res.render("error.ejs", { error: "Error bij het laden van de listings." });
-}});
+  }
+});
 
 app.get("/", async (req, res) => {
   try {
     const user = await userData.findById(req.session.userId); 
     res.render("index.ejs", { user });
+
   } catch (error) {
     console.error(error);
     res.render("error.ejs", { error: "Error bij het laden van de index." });
@@ -646,20 +675,46 @@ app.post("/addToListing", isLoggedIn, async (req, res) => {
   }
 });
 
-app.get("/favConcerts", isLoggedIn, async (req, res) => {
-  const user = await userData.findById(req.session.userId);
-  const events = user.favorieten;
-  try {
-    const listEvents = events.map(event => ({
-      artist: event.name,
-      image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url
-    }))
-    res.send("user", {favs: listEvents});
-  }
-  catch (error) {
-    console.error(error);
-    res.send("Geen concerten gevonden")
-  }
-})
+app.get("/favorieten", isLoggedIn, async (req, res) => {
+  console.log("Session userId:", req.session.userId);
+  
+  const user = await userData.findById(req.session.userId)
+  console.log("User:", user);
+  const favorieten = user.favorieten || []
 
-// this shit dont work man idk
+  console.log(user);
+  console.log("user.favorieten:", user.favorieten);
+  const events = await Promise.all(
+    favorieten.map(async (id) => {
+      id = id.trim();
+      try {
+        const response = await fetch(
+          `https://app.ticketmaster.com/discovery/v2/events/${id}.json?apikey=${apiKey}`
+        );
+        const data = await response.json();
+        const artist = data.name
+        || data._embedded?.attractions?.[0]?.name
+        || "Unknown";
+
+        const image = data.images?.[0]?.url
+        || data._embedded?.attractions?.[0]?.images?.[0]?.url
+        || "../images/imagenotfound.png";
+        
+        return {
+          id: id,
+          artist,
+          image,
+        };
+
+        
+      } catch (err) {
+        console.error("Could not fetch", id);
+        return null;
+      }
+    })
+  );
+  console.log(events);
+  res.json({
+    favorieten: events.filter(e => e !== null)
+  });
+});

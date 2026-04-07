@@ -31,3 +31,46 @@ body {
 .review img {
     width: 5rem;
 }
+
+#favList {
+    display: flex;
+    flex-direction: row-reverse;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+#favList li {
+    display: grid;
+    grid-template-rows: 2fr, 1fr;
+    background-color: var(--accentcolour3);
+    margin: 0.5rem;
+    padding: 0.5rem;
+    scroll-snap-align: start;
+}
+
+#favList li h3 {
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+
+#favList li img {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+#favList::-webkit-scrollbar {
+    height: 6px;
+   
+}
+
+#favList::-webkit-scrollbar-track {
+    background-color: var(--black);
+}
+
+#favList::-webkit-scrollbar-thumb {
+    background-color: var(--accentcolour3);
+}

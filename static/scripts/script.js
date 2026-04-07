@@ -3,6 +3,7 @@ window.onload = function() {
     loadDefaultEvents();
   }
     afstandBereken();
+    afstandConcertBereken();
 
 }
 
@@ -78,6 +79,7 @@ async function loadDefaultEvents() {
 async function afstandBereken() {
     const listingData = document.getElementById("listingData");
     const tripDistance = document.getElementById("tripDistance");
+    const tripCosts = document.getElementById("tripCosts");
   
     if (!listingData || !tripDistance) return;
   
@@ -92,10 +94,41 @@ async function afstandBereken() {
         return;
       }
   
+      const aantalPassagiers = data.passengerCount;
       tripDistance.textContent = `Totale afstand: ${data.distanceKm} km`;
+      const bedrag = ((((data.distanceKm/15)*2.59)*1.50)/aantalPassagiers).toFixed(2);
+      tripCosts.textContent = `Totale kosten: €${bedrag}`;
+  
     } catch (error) {
       console.error(error);
       tripDistance.textContent = "Afstand niet beschikbaar";
+    }
+  }
+
+  async function afstandConcertBereken() {
+    const eventData = document.getElementById("eventData");
+    const distanceText = document.getElementById("distanceText");
+  
+    if (!eventData || !distanceText) return;
+  
+    const venue = eventData.dataset.venue;
+    const city = eventData.dataset.city;
+    const country = eventData.dataset.country;
+  
+    try {
+      const response = await fetch(`/distance?venue=${encodeURIComponent(venue)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+      const data = await response.json();
+  
+      if (data.error) {
+        distanceText.textContent = "Afstand niet beschikbaar";
+        return;
+      }
+  
+      distanceText.textContent = `Afstand: ${data.distanceKm} km`;
+  
+    } catch (error) {
+      console.error(error);
+      distanceText.textContent = "Afstand niet beschikbaar";
     }
   }
 
@@ -114,9 +147,8 @@ function renderEvents(data) {
       <div>
         <h3 class="artist">${event.artist}</h3>
         <p class="genre">${event.genre}</p>
-        <p class="city">${event.city}</p>
-        <p class="venue">${event.venue}</p>
-        <p class="date">${event.date} - ${event.venue} (${event.city})</p>
+        <p class="city">${event.venue}, ${event.city}</p>
+        <p class="date">${event.date}</p>
       </div>
     `;
     li.addEventListener("click", () => {
@@ -131,6 +163,7 @@ function renderEvents(data) {
     });
     results.appendChild(li);
   });
+
   initializeList();
   checkNoResults();
 }
@@ -184,7 +217,34 @@ function checkNoResults() {
     ul.insertAdjacentHTML("beforeend", '<li id="no-results-msg" style="font-style:italic;text-align:center">Geen resultaten gevonden</li>');
 }
 
-if (stars.length > 0 && ratingInput) {setStars}
+async function favList() {
+  const response = await fetch("/favorieten")
+  const data = await response.json()
+  const list = document.getElementById("favList")
+  list.innerHTML = "";
+
+  data.favorieten.forEach(favoriet => {
+    const li = document.createElement("li");
+
+    const title = document.createElement("h3");
+    title.textContent = favoriet.artist;
+
+    const img = document.createElement("img");
+    img.src = favoriet.image || "../images/imagenotfound.png";
+    img.style.width = "150px";
+
+    li.appendChild(title);
+    li.appendChild(img);
+
+    list.appendChild(li);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.getElementById("favList")) {
+    favList();
+  }
+});
 
 function setStars(value) {
   stars.forEach(star => {
@@ -195,6 +255,8 @@ function setStars(value) {
   });
 }
 
+// setStars(ratingInput.value);
+
 stars.forEach(star => {
   const val = parseInt(star.dataset.value);
   star.addEventListener('click', () => {
@@ -204,15 +266,15 @@ stars.forEach(star => {
 });
 
 // openen/sluiten
-if (filterBtn) {
-    filterBtn.addEventListener("click", () => {
-        filteropties.classList.add("open");
-    });
-}
+// if (filterBtn) {
+//     filterBtn.addEventListener("click", () => {
+//         filteropties.classList.add("open");
+//     });
+// }
 
-if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-        filteropties.classList.remove("open");
-    });
-}
+// if (closeBtn) {
+//     closeBtn.addEventListener("click", () => {
+//         filteropties.classList.remove("open");
+//     });
+// }
 
