@@ -62,6 +62,17 @@ header p {
     gap: 0.5em;
 }
 
+main {
+    padding-bottom: 5em;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
 footer nav img {
     filter: invert(1); 
     height: 3rem;
@@ -73,8 +84,8 @@ footer nav {
     width: 100%;
     display: flex;
     display: flex;
-    justify-content: space-between;
-    background-color: var(--main-blue);
+    justify-content: space-around;
+    background-color: var(--mainblue);
 }
 
 .happyflow {
@@ -91,4 +102,12 @@ footer nav {
     justify-content: center;
     margin-top: 0.5rem;
     text-decoration: none;
+}
+
+.happyflow button {
+    border: none;
+    font-size: 1rem;
+    color: var(--white);
+    background-color: var(--happyflow);
+    font-weight: bold;
 }
