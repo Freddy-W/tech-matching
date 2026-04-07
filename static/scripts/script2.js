@@ -24,10 +24,7 @@ filterBtn?.addEventListener("click", filterenOpen);
 closeBtn?.addEventListener("click", annuleer);
 zoekPlaatsInput?.addEventListener("input", filterAlles);
 zoekBuddyInput?.addEventListener("input", filterAlles);
-zoekButton?.addEventListener("click", () => {
-  filteropties.classList.remove("open");
-  filterAlles();
-});
+zoekButton?.addEventListener("click", pasToe);
 
 brandstofCheckboxes.forEach(cb => 
   cb.addEventListener("change", filterAlles)
@@ -42,6 +39,11 @@ function annuleer() {
   zoekPlaatsInput.value = ""; // lege input bij annuleren
   zoekBuddyInput.value = "";  // lege input bij annuleren
   brandstofCheckboxes.forEach(cb => cb.checked = false);
+  filterAlles();
+}
+
+function pasToe() {
+  filteropties.classList.remove("open");
   filterAlles();
 }
 
