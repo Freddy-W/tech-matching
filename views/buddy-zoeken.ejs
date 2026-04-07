@@ -24,8 +24,10 @@
         <form id="filtergedeelte"> 
             <h2>Filters</h2>
             <h3>Plaats</h3>
-            <input type="search" id="zoekPlaats" placeholder="zoek een plaats">
-            <button type="button" id="plaatsButton">Zoek</button>
+            <div>
+                <input type="search" id="zoekPlaats" placeholder="zoek een plaats">
+                <button type="button" id="plaatsButton">Zoek</button>
+            </div>
             <h3>Brandstof</h3>
             <input type="checkbox" id="benzine" class="brandstof-filter" value="Benzine">
             <label for="benzine">Benzine</label>
@@ -33,25 +35,10 @@
             <label for="diesel">Diesel</label>
             <input type="checkbox" id="elektrisch" class="brandstof-filter" value="Elektrisch">
             <label for="elektrisch">Elektrisch</label>
-            <!-- <h3>Leeftijd</h3>
-            <div class="wrapper">
-                <div class="container">
-                    <div class="slider-track"></div>
-                    <input type="range" min="0" max="100" value="30" id="slider-1" oninput="slideOne()">
-                    <input type="range" min="0" max="100" value="70" id="slider-2" oninput="slideTwo()">
-                </div>
-                <div class="values">
-                    <span id="range1">
-                        0
-                    </span>
-                    <span> - </span>
-                    <span id="range2">
-                        100
-                    </span>
-                </div>
-            </div> -->
-            <button type="button" id="annuleer">Annuleer</button>
-            <button type="button" id="zoek">Zoek</button>
+            <div>
+                <button type="button" id="annuleer">Annuleer</button>
+                <button type="button" id="zoek">Zoek</button>
+            </div>
         </form>
         <div class="artistinfo">
             <img src="<%= event.image %>" alt="<%= event.artist %>">
