@@ -163,6 +163,7 @@ li a {
   text-decoration: none;
   color: inherit;
 }
+
 body {
     background-color: var(--mainblue);
     color: var(--white)  
@@ -228,14 +229,13 @@ ul {
 li {
   padding:0.5em;
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   background-color:var(--accentcolour3);
   border-radius:6px;
 }
 
 li img {
-  height:60px;
-  width:60px;
+  max-width: 100%;
   border-radius:6px;
   margin-right:1em;
 }
