@@ -25,26 +25,61 @@ section:nth-of-type(1) input[type="search"] {
   padding: 0.5em;
 }
 
-#filtergedeelte {
+form {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-
     background-color: var(--black);
     z-index: 1000;
-
     padding: 1em;
     overflow-y: auto;
-
-    transform: translateY(100%); /* start onder het scherm */
+    transform: translateY(100%);
     opacity: 0;
-
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
 }
 
-#filtergedeelte.open {
+form button {
+    padding: 0.5rem;
+    text-decoration: none;
+    background-color: var(--black);
+    color: var(--white);
+    font-weight: bold;
+    border-radius: 0.5rem;
+    border: 2px solid var(--accentcolour2);
+    align-items: center;
+    justify-content: center;
+}
+
+form div {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+  height: 1.5em;
+  margin: 1em;
+  margin-left: 0;
+  justify-content: flex-start;
+}
+
+#zoekPlaats {
+  height: 2em;
+}
+
+form h2 {
+    margin-top: .5em;
+}
+
+form h3 {
+    margin-top: .5em;
+}
+
+form > div:last-child button:last-child {
+    border: none;
+    background-color: var(--happyflow);
+}
+
+form.open {
   transform: translateY(0);
   opacity: 1;
 }
@@ -53,9 +88,6 @@ a, a:visited {
     color: var(--white);
     text-decoration: none;
 }
-
-/* ================= */
-/* styles.css grid/list styling */
 
 ul {
   margin:0;
@@ -83,29 +115,6 @@ li div{
   border-radius:6px;
   margin-right:1em;
 }
-
-/* bolletjes */
-input[type="range"]::-webkit-slider-thumb {
-    appearance: none;
-    height: 1.5em;
-    width: 1.5em;
-    background: var(--accentcolour2);
-    border-radius: 50%;
-    cursor: pointer;
-    pointer-events: auto;
-    margin-top: -1em;
-}
-
-/* waarde onder slider */
-/* .values {
-    background: var(--accentcolour2);
-    width: 32%;
-    margin: 2em auto 0;
-    padding: 8px;
-    border-radius: .5em;
-    text-align: center;
-    color: var(--white);
-} */
 
 .event {
     display: flex;
@@ -162,136 +171,4 @@ li a {
   display: block;
   text-decoration: none;
   color: inherit;
-}
-
-body {
-    background-color: var(--mainblue);
-    color: var(--white)  
-}
-
-#filtergedeelte.open {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-section:nth-of-type(1) {
-  display: flex;
-  margin:0;
-  gap: 0.5em;
-  margin-bottom: 1em;
-}
-
-section:nth-of-type(1) input[type="search"] {
-  flex: 1;
-  padding: 0.5em;
-}
-
-#filtergedeelte {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-
-    background-color: var(--black);
-    z-index: 1000;
-
-    padding: 1em;
-    overflow-y: auto;
-
-    transform: translateY(100%); /* start onder het scherm */
-    opacity: 0;
-
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
-}
-
-#filtergedeelte.open {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-a, a:visited {
-    color: var(--white);
-    text-decoration: none;
-}
-
-/* ================= */
-/* styles.css grid/list styling */
-
-ul {
-  margin:0;
-  padding:0;
-  list-style:none;
-  display:grid;
-  grid-gap:1em;
-}
-
-li {
-  padding:0.5em;
-  display:flex;
-  align-items:flex-start;
-  background-color:var(--accentcolour3);
-  border-radius:6px;
-}
-
-li img {
-  max-width: 100%;
-  border-radius:6px;
-  margin-right:1em;
-}
-
-/* bolletjes */
-input[type="range"]::-webkit-slider-thumb {
-    appearance: none;
-    height: 1.5em;
-    width: 1.5em;
-    background: var(--accentcolour2);
-    border-radius: 50%;
-    cursor: pointer;
-    pointer-events: auto;
-    margin-top: -1em;
-}
-
-/* waarde onder slider */
-/* .values {
-    background: var(--accentcolour2);
-    width: 32%;
-    margin: 2em auto 0;
-    padding: 8px;
-    border-radius: .5em;
-    text-align: center;
-    color: var(--white);
-} */
-
-.event {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-    border-radius: 0.5rem;
-    background-color: #1C5863;
-    max-width: 450px;
-}
-
-.eventinfo {
-    margin: 0.5rem 1rem 1rem 1rem;
-}
-
-.event:first-of-type {
-    margin-top: 1rem;
-}
-
-.event img {
-    border-radius: 0.5rem 0.5rem 0 0;
-}
-
-main {
-  margin: 1em;  
-}
-
-main > section input {
-    width: 100%;
-    border: none;
-    height: 3rem;
-    border-radius: 1rem 0 0 1rem;
-    padding: 1rem;
 }
