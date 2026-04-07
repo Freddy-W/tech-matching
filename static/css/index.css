@@ -162,6 +162,7 @@ li a {
   display: block;
   text-decoration: none;
   color: inherit;
+}
 body {
     background-color: var(--mainblue);
     color: var(--white)  
