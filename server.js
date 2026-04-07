@@ -539,27 +539,38 @@ app.post("/autoaanbieden", isLoggedIn, async (req, res) => {
   }
 });
 
-app.get("/buddy-zoeken", isLoggedIn, async (req, res) =>{
+app.get("/buddy-zoeken", isLoggedIn, async (req, res) => {
   try {
+    const eventId = req.query.eventId;
+
+    const response = await fetch(
+      `https://app.ticketmaster.com/discovery/v2/events/${eventId}.json?apikey=${apiKey}`
+    );
+
+    const data = await response.json();
+
     const event = {
-        id: req.query.eventId,
-        artist: req.query.name,
-        date: req.query.date,
-        time: req.query.time,
-        venue: req.query.venue,
-        city: req.query.city,
-        country: req.query.country,
-        image: req.query.image
-        }
-    const eventId = req.query.eventId; 
+      id: data.id,
+      artist: data.name,
+      date: data.dates?.start?.localDate || "Onbekend",
+      time: data.dates?.start?.localTime || "Onbekend",
+      venue: data._embedded?.venues?.[0]?.name || "Onbekend",
+      city: data._embedded?.venues?.[0]?.city?.name || "",
+      country: data._embedded?.venues?.[0]?.country?.name || "",
+      image: data.images?.[0]?.url || ""
+    };
+
     const listings = await carListing
       .find({ eventId })
-      .populate("userId", "voornaam leeftijd totaalRating reviewCount "); // callt de user info voor de ejs pagina.
+      .populate("userId", "voornaam leeftijd totaalRating reviewCount stad");
+
     res.render("buddy-zoeken.ejs", { listings, event });
+
   } catch (error) {
     console.error(error);
     res.render("error.ejs", { error: "Error bij het laden van de listings." });
-}});
+  }
+});
 
 app.get("/", async (req, res) => {
   try {
@@ -663,24 +674,6 @@ app.post("/addToListing", isLoggedIn, async (req, res) => {
     res.render("error.ejs", { error: "Error bij het joinen van de listing." });
   }
 });
-
-// app.get("/favConcerts", isLoggedIn, async (req, res) => {
-//   const user = await userData.findById(req.session.userId);
-//   const events = user.favorieten;
-//   try {
-//     const listEvents = events.map(event => ({
-//       artist: event.name,
-//       image: event.images?.find(img => img.ratio === "16_9" && img.width > 1000)?.url
-//     }))
-//     res.send("user", {favs: listEvents});
-//   }
-//   catch (error) {
-//     console.error(error);
-//     res.send("Geen concerten gevonden")
-//   }
-// })
-
-// this shit dont work man idk
 
 app.get("/favorieten", isLoggedIn, async (req, res) => {
   console.log("Session userId:", req.session.userId);

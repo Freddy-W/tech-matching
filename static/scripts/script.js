@@ -94,8 +94,9 @@ async function afstandBereken() {
         return;
       }
   
+      const aantalPassagiers = data.passengerCount;
       tripDistance.textContent = `Totale afstand: ${data.distanceKm} km`;
-      const bedrag = data.distanceKm*0.5*1.20;
+      const bedrag = ((((data.distanceKm/15)*2.59)*1.50)/aantalPassagiers).toFixed(2);
       tripCosts.textContent = `Totale kosten: €${bedrag}`;
   
     } catch (error) {
@@ -146,9 +147,8 @@ function renderEvents(data) {
       <div>
         <h3 class="artist">${event.artist}</h3>
         <p class="genre">${event.genre}</p>
-        <p class="city">${event.city}</p>
-        <p class="venue">${event.venue}</p>
-        <p class="date">${event.date} - ${event.venue} (${event.city})</p>
+        <p class="city">${event.venue}, ${event.city}</p>
+        <p class="date">${event.date}</p>
       </div>
     `;
     li.addEventListener("click", () => {
