@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function() { //onload gebruiken zodat berekeningen direct worden gedaan en er geen error komt 
   if (document.getElementById("results")) {
     loadDefaultEvents();
   }
@@ -60,7 +60,7 @@ function pasToe() {
 function annuleer() {
   filterGedeelte.classList.remove("open");
   genreCheckboxes.forEach(cb => cb.checked = false);
-  filterAlles(); // herberekent alles netjes
+  filterAlles();
   checkNoResults();
 }
 
@@ -75,7 +75,7 @@ async function loadDefaultEvents() {
     }
 }
 
-//Functie voor het berekenen van de afstand tussen de verschillende passagiers
+//functie voor het berekenen van de afstand tussen de verschillende passagiers
 async function afstandBereken() {
     const listingData = document.getElementById("listingData");
     const tripDistance = document.getElementById("tripDistance");
@@ -93,7 +93,8 @@ async function afstandBereken() {
         tripDistance.textContent = "Afstand niet beschikbaar";
         return;
       }
-  
+      
+      //formule om de kosten te berekenen, afhankelijk van de route en het aantal passagiers
       const aantalPassagiers = data.passengerCount;
       tripDistance.textContent = `Totale afstand: ${data.distanceKm} km`;
       const bedrag = ((((data.distanceKm/15)*2.59)*1.50)/aantalPassagiers).toFixed(2);
@@ -105,6 +106,7 @@ async function afstandBereken() {
     }
   }
 
+  //afstand tot het concert berekenen vanaf de driver, ook als de gebruiker niet de driver is
   async function afstandConcertBereken() {
     const eventData = document.getElementById("eventData");
     const distanceText = document.getElementById("distanceText");
