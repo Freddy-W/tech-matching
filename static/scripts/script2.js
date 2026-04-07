@@ -20,8 +20,6 @@ const options = {
 // List.js initialiseren
 const userList = new List('buddyList', options);
 
-
-// Eventlisteners
 filterBtn?.addEventListener("click", filterenOpen);
 closeBtn?.addEventListener("click", annuleer);
 zoekPlaatsInput?.addEventListener("input", filterAlles);
@@ -35,7 +33,6 @@ brandstofCheckboxes.forEach(cb =>
   cb.addEventListener("change", filterAlles)
 );
 
-// Functies
 function filterenOpen() {
   filteropties.classList.add("open");
 }
@@ -48,14 +45,12 @@ function annuleer() {
   filterAlles();
 }
 
-// Filterfunctie: naam en plaats
 function filterAlles() {
   if (!userList) return;
 
   const zoekNaam = zoekBuddyInput.value.toLowerCase();
   const plaats = zoekPlaatsInput.value.toLowerCase();
 
-  // geselecteerde brandstoffen ophalen
   const geselecteerdeBrandstof = Array.from(brandstofCheckboxes)
     .filter(cb => cb.checked)
     .map(cb => cb.value.toLowerCase());
