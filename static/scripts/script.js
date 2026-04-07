@@ -149,9 +149,8 @@ function renderEvents(data) {
       <div>
         <h3 class="artist">${event.artist}</h3>
         <p class="genre">${event.genre}</p>
-        <p class="city">${event.city}</p>
-        <p class="venue">${event.venue}</p>
-        <p class="date">${event.date} - ${event.venue} (${event.city})</p>
+        <p class="city">${event.venue}, ${event.city}</p>
+        <p class="date">${event.date}</p>
       </div>
     `;
     li.addEventListener("click", () => {
