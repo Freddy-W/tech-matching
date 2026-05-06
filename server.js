@@ -6,7 +6,15 @@ dotenv.config();
 const bcrypt = require("bcryptjs");
 const session = require('express-session');
 const MongoStore = require('connect-mongo').default;
+const multer = require('multer');
 const app = express();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024 }
+});
+
+
 const port = 2020;
 const apiKey = process.env.APIKEY;
 const orsKey = process.env.ORSKEY;
@@ -338,6 +346,17 @@ app.get(`/artist/:artist`, async (req, res) => {
 });
 
 
+app.get("/pfp/:userId", async (req, res) => {
+  try {
+    const user = await userData.findById(req.params.userId);
+    if (!user || !user.profielfoto?.data) return res.redirect('/images/pfp.jpg');
+    res.set('Content-Type', user.profielfoto.contentType);
+    res.send(user.profielfoto.data);
+  } catch {
+    res.redirect('/images/pfp.jpg');
+  }
+});
+
 app.get("/login", (req, res)=> {
     res.render('login.ejs');
 });
@@ -364,12 +383,12 @@ app.get("/user/:id", isLoggedIn, async (req, res) => {
 });
 
 app.get("/register", (req, res)=>{
-    res.render('register.ejs');
+    res.render('register.ejs', { error: '' });
 });
 
 app.get("/accountinfo", isLoggedIn, async (req, res) => {
     const user = await userData.findById(req.session.userId);
-    res.render('accountinfo.ejs', { user });
+    res.render('accountinfo.ejs', { user, error: '' });
 });
 
 
@@ -388,9 +407,10 @@ app.get("/gekozen-concert", (req, res)=>{
 });
 
 
-app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
+app.get("/auto-aanbieden", isLoggedIn, async (req, res)=>{
   const eventId = req.query.eventId;
-  res.render('auto-aanbieden.ejs', { eventId });
+  const user = await userData.findById(req.session.userId);
+  res.render('auto-aanbieden.ejs', { eventId, user });
 });
 
 
@@ -413,6 +433,7 @@ const userScheme = new mongoose.Schema({
     voornaam: String,
     achternaam: String,
     adres: String,
+    plaats: String,
     telefoonnummer: String,
     email: String,
     wachtwoord: String,
@@ -420,6 +441,7 @@ const userScheme = new mongoose.Schema({
     rijbewijs: String,
     auto: String,
     rijden: String,
+    profielfoto: { data: Buffer, contentType: String },
     reviewCount: { type: Number, default: 0 },
     favorieten: { type: [String], default: [] },
     totaalRating: { type: Number, default: 0},
@@ -448,7 +470,7 @@ const userData = mongoose.model("userdata", userScheme);
 const carListing = mongoose.model("CarListing", carListingSchema);
 
 //Registeren, checkt of het emailadres al bestaat, encrypt het wachtwoord en stuurt naar de DB
-app.post("/register", async (req, res) => {
+app.post("/register", upload.single('profielfoto'), async (req, res) => {
   try {
     const registerData = {
       username: req.body.username,
@@ -456,14 +478,21 @@ app.post("/register", async (req, res) => {
       voornaam: req.body.voornaam,
       achternaam: req.body.achternaam,
       adres: req.body.adres,
+      plaats: req.body.plaats,
+      leeftijd: req.body.leeftijd,
       telefoonnummer: req.body.telefoonnummer,
       email: req.body.email,
       wachtwoord: req.body.wachtwoord,
+      profielfoto: req.file ? { data: req.file.buffer, contentType: req.file.mimetype } : undefined,
+      rijbewijs: req.body.rijbewijs,
+      auto: req.body.auto,
       reviewCount: 0
     };
 
-    const existingUser = await userData.findOne({ username: registerData.username });
-    if (existingUser) return res.send("Username is already registered!");
+    if (await userData.findOne({ username: registerData.username }))
+      return res.render('register.ejs', { error: 'Gebruikersnaam wordt al gebruikt! Probeer een andere.' });
+    if (await userData.findOne({ email: registerData.email }))
+      return res.render('register.ejs', { error: 'E-mail wordt al gebruikt! Probeer een andere.' });
 
     const hashedPassword = await bcrypt.hash(registerData.wachtwoord, 10);
     registerData.wachtwoord = hashedPassword;
@@ -472,7 +501,7 @@ app.post("/register", async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error(err);
-    res.render("error.ejs", { error: "Error bij het registeren." });
+    res.render('register.ejs', { error: 'Er ging iets mis, probeer opnieuw.' });
   }
 });
 
@@ -500,17 +529,27 @@ app.post("/login", async (req, res) => {
 });
 
 // accountinfo werkend maken dmv sessions
-app.post("/accountinfo", isLoggedIn, async (req, res) =>  {
+app.post("/accountinfo", isLoggedIn, upload.single('profielfoto'), async (req, res) =>  {
     try {
       const accountData = {
       username: req.body.username,
       adres: req.body.adres,
+      plaats: req.body.plaats,
       leeftijd: req.body.leeftijd,
       rijbewijs: req.body.rijbewijs,
       auto: req.body.auto,
       rijden: req.body.rijden,
     };
-        // user sessionID vinden en dorosturen
+    if (req.file) {
+      accountData.profielfoto = { data: req.file.buffer, contentType: req.file.mimetype };
+    }
+
+    const user = await userData.findById(req.session.userId);
+    if (accountData.username !== user.username && await userData.findOne({ username: accountData.username }))
+      return res.render('accountinfo.ejs', { user, error: 'Gebruikersnaam wordt al gebruikt! Probeer een andere.' });
+    if (req.body.email !== user.email && await userData.findOne({ email: req.body.email }))
+      return res.render('accountinfo.ejs', { user, error: 'E-mail wordt al gebruikt! Probeer een andere.' });
+
     await userData.findByIdAndUpdate(req.session.userId, accountData, { new: true });
     res.redirect("/");
   } catch (error) {

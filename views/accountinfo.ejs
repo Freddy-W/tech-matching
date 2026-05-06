@@ -13,7 +13,7 @@
     </header>
     <main>
         <h1>Accountgegevens</h1>
-    <form action="/accountinfo" method="POST">
+    <form action="/accountinfo" method="POST" enctype="multipart/form-data">
             <label>
                 <h2>E-mail</h2>
                 <input name="email" type="email" placeholder="user@email.com" value="<%= user.email || '' %>">
@@ -45,25 +45,53 @@
                 <input  name="leeftijd" type="number" value="<%= user.leeftijd || '' %>">
             </label>
             <label>
-                <h2>Heb je een rijbewijs?</h2> 
+                <h2>Heb je een rijbewijs?</h2>
                 <div>
-                    <input <%= user.rijden === 'yes' ? 'checked' : '' %> class="radio"  id="rijbewijsyes" name="rijbewijs" value="yes" type="radio">
+                    <input <%= user.rijbewijs === 'yes' ? 'checked' : '' %> class="radio" id="rijbewijsyes" name="rijbewijs" value="yes" type="radio">
                     <label for="rijbewijsyes">Ja</label>
-                    <input <%= user.rijden === 'no' ? 'checked' : '' %> class="radio" id="rijbewijsno" name="rijbewijs" value="no" type="radio">
+                    <input <%= user.rijbewijs === 'no' ? 'checked' : '' %> class="radio" id="rijbewijsno" name="rijbewijs" value="no" type="radio">
                     <label for="rijbewijsno">Nee</label>
                 </div>
             </label>
-            <label>
+            <label id="autoVraag" class="<%= user.rijbewijs === 'yes' ? '' : 'hidden' %>">
                 <h2>Heb je een eigen auto?</h2>
                 <div>
-                    <input class="radio" id="autoyes" name="auto" value="yes" type="radio">
+                    <input <%= user.auto ? 'checked' : '' %> class="radio" id="autoyes" type="radio">
                     <label for="autoyes">Ja</label>
-                    <input class="radio" id="autono" name="auto" value="no" type="radio">
+                    <input <%= !user.auto ? 'checked' : '' %> class="radio" id="autono" type="radio">
                     <label for="autono">Nee</label>
                 </div>
             </label>
+            <label id="autoNaamVraag" class="<%= user.auto ? '' : 'hidden' %>">
+                <h2>Welke auto heb je?</h2>
+                <input name="auto" placeholder="Honda Civic" value="<%= user.auto || '' %>">
+            </label>
+            <label>
+                <h2>Profielfoto</h2>
+                <input name="profielfoto" type="file" accept="image/*">
+            </label>
+            <% if (error) { %><p class="fout"><%= error %></p><% } %>
             <button class="happyflow" type="sumbit"><h2>Klaar</h2></button>
         </form>
+        <script>
+            document.querySelectorAll('input[name="rijbewijs"]').forEach(el => {
+                el.addEventListener('change', () => {
+                    const heeftRijbewijs = document.getElementById('rijbewijsyes').checked;
+                    document.getElementById('autoVraag').classList.toggle('hidden', !heeftRijbewijs);
+                    if (!heeftRijbewijs) {
+                        document.getElementById('autoNaamVraag').classList.add('hidden');
+                        document.getElementById('autoyes').checked = false;
+                        document.getElementById('autono').checked = false;
+                    }
+                });
+            });
+            document.getElementById('autoyes').addEventListener('change', () => {
+                document.getElementById('autoNaamVraag').classList.toggle('hidden', !document.getElementById('autoyes').checked);
+            });
+            document.getElementById('autono').addEventListener('change', () => {
+                document.getElementById('autoNaamVraag').classList.add('hidden');
+            });
+        </script>
     </main>
 
 </body>
