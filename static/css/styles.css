@@ -28,6 +28,11 @@ body {
     display: none;
 }
 
+.fout {
+    color: #ff4d4d;
+    font-size: small;
+}
+
 header nav {
     margin: 1rem;
     display: flex;

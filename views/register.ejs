@@ -13,7 +13,7 @@
         <h1>Registreren</h1>
     </header>
     <main>
-        <form action="/register" method="POST">
+        <form action="/register" method="POST" enctype="multipart/form-data">
             <label>
                 <h2>E-mail</h2>
                 <input name="email" type="email" placeholder="user@email.com" required>
@@ -41,6 +41,10 @@
                 <input name="plaats" placeholder="Plaats" required>
             </label>
             <label>
+                <h2>Leeftijd</h2>
+                <input name="leeftijd" type="number" placeholder="23" required>
+            </label>
+            <label>
                 <h2>Telefoonnummer</h2>
                 <input name="telefoonnummer" type="tel" pattern="^\+?[0-9\s\-]{7,15}$" required placeholder="+31 6 12345678">
             </label>
@@ -48,9 +52,55 @@
                 <h2>Wachtwoord</h2> 
                 <input  name="wachtwoord" type="password" placeholder="wachtwoord" required>
             </label>
+            <label>
+                <h2>Profielfoto</h2>
+                <input name="profielfoto" type="file" accept="image/*">
+            </label>
+            <label>
+                <h2>Heb je een rijbewijs?</h2>
+                <div>
+                    <input class="radio" id="rijbewijsyes" name="rijbewijs" value="yes" type="radio">
+                    <label for="rijbewijsyes">Ja</label>
+                    <input class="radio" id="rijbewijsno" name="rijbewijs" value="no" type="radio">
+                    <label for="rijbewijsno">Nee</label>
+                </div>
+            </label>
+            <label id="autoVraag" class="hidden">
+                <h2>Heb je een eigen auto?</h2>
+                <div>
+                    <input class="radio" id="autoyes" type="radio">
+                    <label for="autoyes">Ja</label>
+                    <input class="radio" id="autono" type="radio">
+                    <label for="autono">Nee</label>
+                </div>
+            </label>
+            <label id="autoNaamVraag" class="hidden">
+                <h2>Welke auto heb je?</h2>
+                <input name="auto" placeholder="Honda Civic">
+            </label>
+            <% if (error) { %><p class="fout"><%= error %></p><% } %>
             <a href="login"><h2>Ik heb al een account</h2></a>
             <button class="happyflow" type="sumbit"><h2>Registreer</h2></button>
         </form>
+        <script>
+            document.querySelectorAll('input[name="rijbewijs"]').forEach(el => {
+                el.addEventListener('change', () => {
+                    const heeftRijbewijs = document.getElementById('rijbewijsyes').checked;
+                    document.getElementById('autoVraag').classList.toggle('hidden', !heeftRijbewijs);
+                    if (!heeftRijbewijs) {
+                        document.getElementById('autoNaamVraag').classList.add('hidden');
+                        document.getElementById('autoyes').checked = false;
+                        document.getElementById('autono').checked = false;
+                    }
+                });
+            });
+            document.getElementById('autoyes').addEventListener('change', () => {
+                document.getElementById('autoNaamVraag').classList.toggle('hidden', !document.getElementById('autoyes').checked);
+            });
+            document.getElementById('autono').addEventListener('change', () => {
+                document.getElementById('autoNaamVraag').classList.add('hidden');
+            });
+        </script>
         <footer>
 
         </footer>

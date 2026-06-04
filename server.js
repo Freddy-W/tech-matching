@@ -6,7 +6,15 @@ dotenv.config();
 const bcrypt = require("bcryptjs");
 const session = require('express-session');
 const MongoStore = require('connect-mongo').default;
+const multer = require('multer');
 const app = express();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024 }
+});
+
+
 const port = 2020;
 const apiKey = process.env.APIKEY;
 const orsKey = process.env.ORSKEY;
@@ -56,6 +64,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
+//functie voor geocode adressen
 async function geocodeAddress(address) {
   const url = `https://api.openrouteservice.org/geocode/search?api_key=${orsKey}&text=${encodeURIComponent(address)}`;
 
@@ -84,7 +93,7 @@ app.get("/distance-trip/:listingId", isLoggedIn, async (req, res) => {
       return res.status(400).json({ error: "Bestuurder heeft geen adres" });
     }
 
-    // Concert ophalen via Ticketmaster eventId
+    //eventId ophalen via Ticektmaster API
     const tmUrl = `https://app.ticketmaster.com/discovery/v2/events/${listing.eventId}.json?apikey=${apiKey}`;
     const tmResponse = await fetch(tmUrl);
     const tmData = await tmResponse.json();
@@ -96,10 +105,10 @@ app.get("/distance-trip/:listingId", isLoggedIn, async (req, res) => {
 
     const concertAddress = `${venue.name}, ${venue.city?.name}, ${venue.country?.name}`;
 
-    // geocode driver
+    //geocode driver
     const driverCoords = await geocodeAddress(listing.userId.adres);
 
-    // geocode passagiers (allemaal)
+    //geocode passagiers (allemaal)
     const passengerCoords = [];
     for (const passenger of listing.passagiers) {
       if (passenger?.adres) {
@@ -108,11 +117,10 @@ app.get("/distance-trip/:listingId", isLoggedIn, async (req, res) => {
       }
     }
 
-    // geocode concert
+    //geocode concert
     const concertCoords = await geocodeAddress(concertAddress);
 
-    // route opbouwen:
-    // driver -> passengers -> concert -> passengers reversed -> driver
+    //route bestaat uit: driver -> passengers -> concert -> passengers omgekeerd -> driver
     const coordsArray = [
       [driverCoords.lon, driverCoords.lat],
       ...passengerCoords.map(p => [p.lon, p.lat]),
@@ -170,6 +178,7 @@ async function getDistanceKm(fromCoords, toCoords) {
     ]
   };
 
+  //afstand berekening a.d.h.v. de ORS url (gevraagd aan ChatGPT)
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -189,6 +198,7 @@ async function getDistanceKm(fromCoords, toCoords) {
   return meters / 1000;
 }
 
+//functie om afstanden te berekenen die nodig zijn voor de kostenberekening
 app.get("/distance", isLoggedIn, async (req, res) => {
   try {
     const venue = req.query.venue;
@@ -199,7 +209,7 @@ app.get("/distance", isLoggedIn, async (req, res) => {
       return res.status(400).json({ error: "Venue/city/country ontbreekt" });
     }
 
-    // gebruiker ophalen
+    //gebruiker ophalen
     const user = await userData.findById(req.session.userId);
     if (!user || !user.adres) {
       return res.status(400).json({ error: "Gebruiker heeft geen adres ingevuld" });
@@ -208,11 +218,11 @@ app.get("/distance", isLoggedIn, async (req, res) => {
     const userAddress = user.adres;
     const eventAddress = `${venue}, ${city}, ${country}`;
 
-    // geocode beide adressen
+    //geocode beide adressen
     const fromCoords = await geocodeAddress(userAddress);
     const toCoords = await geocodeAddress(eventAddress);
 
-    // afstand berekenen
+    //afstand berekenen
     const distanceKm = await getDistanceKm(fromCoords, toCoords);
 
     res.json({
@@ -229,6 +239,7 @@ app.get("/distance", isLoggedIn, async (req, res) => {
   }
 });
 
+//events renderen die binnenkort in Nederland te zien zijn zodat deze op de index pagina weergeven kunnen worden
 app.get("/events", async (req, res) => {
 
   //30 aankomende events in NL
@@ -252,7 +263,8 @@ app.get("/events", async (req, res) => {
       const filteredEvents = events.filter(event => {
         const isMusic = event.classifications?.some(c => c.segment?.name.toLowerCase() === "music");
       
-        const unwanted = ["parking", "permit", "parking permit", "seats", "comfort seats"];
+        //data filteren zodat er geen parking permits tussen staan als events
+        const unwanted = ["parking", "permit", "parking permit"];
         const nameLower = event.name.toLowerCase();
         const isValidName = !unwanted.some(word => nameLower.includes(word));
       
@@ -282,6 +294,7 @@ app.get("/events", async (req, res) => {
   }
 });
 
+//zoeken op artiest in zoekbalk en deze weergeven op een andere endpoint
 app.get(`/artist/:artist`, async (req, res) => {
 
     const artist = req.params.artist;
@@ -291,9 +304,9 @@ app.get(`/artist/:artist`, async (req, res) => {
         const response = await fetch(url);
         const data = await response.json();
 
-        if (data.fault) {
+        if (data.fault) { //fout afhandeling als API niks teruggeeft
             console.error("API ERROR:", data.fault);
-            return res.status(400).json({ error: "API key werkt niet of geen toegang" });
+            return res.status(400).json({ error: "API key werkt niet/geen toegang" });
         }
 
         if (!data._embedded || !data._embedded.events) {
@@ -302,6 +315,7 @@ app.get(`/artist/:artist`, async (req, res) => {
 
         const events = data._embedded.events;
         
+        //data filteren zodat er geen parking permits tussen staan als events
         const filteredEvents = events.filter(event => {
           const isMusic = event.classifications?.some(c => c.segment?.name.toLowerCase() === "music");
         
@@ -312,6 +326,7 @@ app.get(`/artist/:artist`, async (req, res) => {
           return isMusic && isValidName;
         });
 
+          //de info die uit de API gehaald wordt opslaan als standaard info
       const infoEvents = filteredEvents.map(event => ({
           id: event.id,
           artist: event.name,
@@ -337,6 +352,17 @@ app.get(`/artist/:artist`, async (req, res) => {
 
 });
 
+
+app.get("/pfp/:userId", async (req, res) => {
+  try {
+    const user = await userData.findById(req.params.userId);
+    if (!user || !user.profielfoto?.data) return res.redirect('/images/pfp.jpg');
+    res.set('Content-Type', user.profielfoto.contentType);
+    res.send(user.profielfoto.data);
+  } catch {
+    res.redirect('/images/pfp.jpg');
+  }
+});
 
 app.get("/login", (req, res)=> {
     res.render('login.ejs');
@@ -364,15 +390,15 @@ app.get("/user/:id", isLoggedIn, async (req, res) => {
 });
 
 app.get("/register", (req, res)=>{
-    res.render('register.ejs');
+    res.render('register.ejs', { error: '' });
 });
 
 app.get("/accountinfo", isLoggedIn, async (req, res) => {
     const user = await userData.findById(req.session.userId);
-    res.render('accountinfo.ejs', { user });
+    res.render('accountinfo.ejs', { user, error: '' });
 });
 
-
+//informatie uit API halen voor gekozen concert
 app.get("/gekozen-concert", (req, res)=>{
         const event = {
         id: req.query.id,
@@ -388,9 +414,10 @@ app.get("/gekozen-concert", (req, res)=>{
 });
 
 
-app.get("/auto-aanbieden", isLoggedIn, (req, res)=>{
+app.get("/auto-aanbieden", isLoggedIn, async (req, res)=>{
   const eventId = req.query.eventId;
-  res.render('auto-aanbieden.ejs', { eventId });
+  const user = await userData.findById(req.session.userId);
+  res.render('auto-aanbieden.ejs', { eventId, user });
 });
 
 
@@ -413,6 +440,7 @@ const userScheme = new mongoose.Schema({
     voornaam: String,
     achternaam: String,
     adres: String,
+    plaats: String,
     telefoonnummer: String,
     email: String,
     wachtwoord: String,
@@ -420,6 +448,7 @@ const userScheme = new mongoose.Schema({
     rijbewijs: String,
     auto: String,
     rijden: String,
+    profielfoto: { data: Buffer, contentType: String },
     reviewCount: { type: Number, default: 0 },
     favorieten: { type: [String], default: [] },
     totaalRating: { type: Number, default: 0},
@@ -448,7 +477,7 @@ const userData = mongoose.model("userdata", userScheme);
 const carListing = mongoose.model("CarListing", carListingSchema);
 
 //Registeren, checkt of het emailadres al bestaat, encrypt het wachtwoord en stuurt naar de DB
-app.post("/register", async (req, res) => {
+app.post("/register", upload.single('profielfoto'), async (req, res) => {
   try {
     const registerData = {
       username: req.body.username,
@@ -456,14 +485,21 @@ app.post("/register", async (req, res) => {
       voornaam: req.body.voornaam,
       achternaam: req.body.achternaam,
       adres: req.body.adres,
+      plaats: req.body.plaats,
+      leeftijd: req.body.leeftijd,
       telefoonnummer: req.body.telefoonnummer,
       email: req.body.email,
       wachtwoord: req.body.wachtwoord,
+      profielfoto: req.file ? { data: req.file.buffer, contentType: req.file.mimetype } : undefined,
+      rijbewijs: req.body.rijbewijs,
+      auto: req.body.auto,
       reviewCount: 0
     };
 
-    const existingUser = await userData.findOne({ username: registerData.username });
-    if (existingUser) return res.send("Username is already registered!");
+    if (await userData.findOne({ username: registerData.username }))
+      return res.render('register.ejs', { error: 'Gebruikersnaam wordt al gebruikt! Probeer een andere.' });
+    if (await userData.findOne({ email: registerData.email }))
+      return res.render('register.ejs', { error: 'E-mail wordt al gebruikt! Probeer een andere.' });
 
     const hashedPassword = await bcrypt.hash(registerData.wachtwoord, 10);
     registerData.wachtwoord = hashedPassword;
@@ -472,7 +508,7 @@ app.post("/register", async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error(err);
-    res.render("error.ejs", { error: "Error bij het registeren." });
+    res.render('register.ejs', { error: 'Er ging iets mis, probeer opnieuw.' });
   }
 });
 
@@ -500,17 +536,27 @@ app.post("/login", async (req, res) => {
 });
 
 // accountinfo werkend maken dmv sessions
-app.post("/accountinfo", isLoggedIn, async (req, res) =>  {
+app.post("/accountinfo", isLoggedIn, upload.single('profielfoto'), async (req, res) =>  {
     try {
       const accountData = {
       username: req.body.username,
       adres: req.body.adres,
+      plaats: req.body.plaats,
       leeftijd: req.body.leeftijd,
       rijbewijs: req.body.rijbewijs,
       auto: req.body.auto,
       rijden: req.body.rijden,
     };
-        // user sessionID vinden en dorosturen
+    if (req.file) {
+      accountData.profielfoto = { data: req.file.buffer, contentType: req.file.mimetype };
+    }
+
+    const user = await userData.findById(req.session.userId);
+    if (accountData.username !== user.username && await userData.findOne({ username: accountData.username }))
+      return res.render('accountinfo.ejs', { user, error: 'Gebruikersnaam wordt al gebruikt! Probeer een andere.' });
+    if (req.body.email !== user.email && await userData.findOne({ email: req.body.email }))
+      return res.render('accountinfo.ejs', { user, error: 'E-mail wordt al gebruikt! Probeer een andere.' });
+
     await userData.findByIdAndUpdate(req.session.userId, accountData, { new: true });
     res.redirect("/");
   } catch (error) {

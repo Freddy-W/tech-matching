@@ -17,11 +17,11 @@
         <input type="hidden" name="eventId" value="<%= eventId %>">
             <label>
                 <h2>Welke auto heb je?</h2>
-                <input name="auto" placeholder="Honda Civic" required>
+                <input name="auto" placeholder="Honda Civic" value="<%= user.auto || '' %>" required>
             </label>
             <label>
                 <h2>Hoe oud ben je?</h2>
-                <input name="leeftijd" placeholder="23" required>
+                <input name="leeftijd" placeholder="23" value="<%= user.leeftijd || '' %>" required>
             </label>
             <label>
                 <h2>Hoeveel passen er in je auto?</h2>
@@ -29,7 +29,7 @@
             </label>
             <label>
                 <h2>Vanuit welke stad ga je rijden?</h2>
-                <input name="stad" placeholder="Amsterdam" required>
+                <input name="stad" placeholder="Amsterdam" value="<%= user.plaats || '' %>" required>
             </label>
             <label>
                 <h2>Wat voor brandstof verbruikt je auto?</h2> 
