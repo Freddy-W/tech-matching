@@ -12,6 +12,6 @@
         </div>
     </div>
       <a href="<%= loggedInUser ? `/user/${loggedInUser._id}` : '/login' %>">
-    <img src="<%= loggedInUser ? `/pfp/${loggedInUser._id}` : '/images/pfp.jpg' %>" alt="profielfoto">
+    <img class="pfp" src="<%= loggedInUser ? `/pfp/${loggedInUser._id}` : '/images/pfp.jpg' %>" alt="profielfoto">
 </a>
 </nav>
