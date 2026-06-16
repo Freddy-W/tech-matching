@@ -1,0 +1,76 @@
+main {
+    padding:1rem
+}
+
+h1 {
+    margin-bottom: 0.5rem;
+}
+main div img {
+    width: 8rem;
+    margin-right: 1rem;
+}
+
+main > div:nth-of-type(1) {
+    display: flex;
+    
+}
+
+body {
+    background-color: var(--mainblue);
+    color: var(--white)  
+}
+
+.review {
+    background-color: var(--accentcolour3);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+}
+
+.review img {
+    width: 5rem;
+}
+
+#favList {
+    display: flex;
+    flex-direction: row-reverse;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+#favList li {
+    display: grid;
+    grid-template-rows: 2fr, 1fr;
+    background-color: var(--accentcolour3);
+    margin: 0.5rem;
+    padding: 0.5rem;
+    scroll-snap-align: start;
+}
+
+#favList li h3 {
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+
+#favList li img {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+#favList::-webkit-scrollbar {
+    height: 6px;
+   
+}
+
+#favList::-webkit-scrollbar-track {
+    background-color: var(--black);
+}
+
+#favList::-webkit-scrollbar-thumb {
+    background-color: var(--accentcolour3);
+}

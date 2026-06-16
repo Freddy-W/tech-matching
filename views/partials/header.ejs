@@ -1,8 +1,17 @@
 <!DOCTYPE html>
-
-<img src="..." alt="Logo">
-<img src="..." alt="Logotext">
-<p>@username</p>
-<img src="..." alt="profielfoto">
-
-<!-- plaatsen met grid -->
+<nav>
+    <div>
+        <img src="/images/logo-1color.svg" alt="Logo">
+        <div>
+        <a href="/"><img src="/images/app-name.svg" alt="Logotext"></a>
+       <% if (loggedInUser) { %>
+            <p>@<%= loggedInUser.username %></p>
+            <% } else { %>
+                <p>Gast</p>
+            <% } %>
+        </div>
+    </div>
+      <a href="<%= loggedInUser ? `/user/${loggedInUser._id}` : '/login' %>">
+    <img src="<%= loggedInUser ? `/pfp/${loggedInUser._id}` : '/images/pfp.jpg' %>" alt="profielfoto">
+</a>
+</nav>

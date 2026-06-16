@@ -3,84 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registreren</title>
+    <title>Account Info</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
     <header>
         <%- include('partials/header')%>
-        <h1>Registreren</h1>
     </header>
     <main>
-        <form action="/register" method="POST" enctype="multipart/form-data">
+        <h1>Accountgegevens</h1>
+    <form action="/accountinfo" method="POST" enctype="multipart/form-data">
             <label>
                 <h2>E-mail</h2>
-                <input name="email" type="email" placeholder="user@email.com" required>
+                <input name="email" type="email" placeholder="user@email.com" value="<%= user.email || '' %>">
             </label>
             <label>
                 <h2>username</h2>
-                <input name="username" placeholder="username" required>
+                <input name="username" placeholder="username" value="<%= user.username || '' %>" >
             </label>
             <div>
                 <label>
                     <h2>Voornaam</h2>
-                    <input name="voornaam" placeholder="Voornaam" required>
+                    <input name="voornaam" placeholder="Voornaam" value="<%= user.voornaam || '' %>">
                 </label>
                 <label>
                     <h2>Achternaam</h2>
-                    <input name="achternaam" placeholder="Achternaam" required>
+                    <input name="achternaam" placeholder="Achternaam" value="<%= user.achternaam || '' %>">
                 </label>
             </div>
             <label>
                 <h2>Adres</h2>
-                <input name="adres" placeholder="Adres">
+                <input name="adres" value="<%= user.adres || '' %>">
             </label>
             <label>
                 <h2>Plaats</h2>
-                <input name="plaats" placeholder="Plaats" required>
+                <input name="plaats" value="<%= user.plaats || '' %>">
             </label>
             <label>
-                <h2>Leeftijd</h2>
-                <input name="leeftijd" type="number" placeholder="23" required>
+                <h2>Leeftijd</h2> 
+                <input  name="leeftijd" type="number" value="<%= user.leeftijd || '' %>">
             </label>
             <label>
-                <h2>Telefoonnummer</h2>
-                <input name="telefoonnummer" type="tel" pattern="^\+?[0-9\s\-]{7,15}$" required placeholder="+31 6 12345678">
+                <h2>Heb je een rijbewijs?</h2>
+                <div>
+                    <input <%= user.rijbewijs === 'yes' ? 'checked' : '' %> class="radio" id="rijbewijsyes" name="rijbewijs" value="yes" type="radio">
+                    <label for="rijbewijsyes">Ja</label>
+                    <input <%= user.rijbewijs === 'no' ? 'checked' : '' %> class="radio" id="rijbewijsno" name="rijbewijs" value="no" type="radio">
+                    <label for="rijbewijsno">Nee</label>
+                </div>
             </label>
-            <label>
-                <h2>Wachtwoord</h2> 
-                <input  name="wachtwoord" type="password" placeholder="wachtwoord" required>
+            <label id="autoVraag" class="<%= user.rijbewijs === 'yes' ? '' : 'hidden' %>">
+                <h2>Heb je een eigen auto?</h2>
+                <div>
+                    <input <%= user.auto ? 'checked' : '' %> class="radio" id="autoyes" type="radio">
+                    <label for="autoyes">Ja</label>
+                    <input <%= !user.auto ? 'checked' : '' %> class="radio" id="autono" type="radio">
+                    <label for="autono">Nee</label>
+                </div>
+            </label>
+            <label id="autoNaamVraag" class="<%= user.auto ? '' : 'hidden' %>">
+                <h2>Welke auto heb je?</h2>
+                <input name="auto" placeholder="Honda Civic" value="<%= user.auto || '' %>">
             </label>
             <label>
                 <h2>Profielfoto</h2>
                 <input name="profielfoto" type="file" accept="image/*">
             </label>
-            <label>
-                <h2>Heb je een rijbewijs?</h2>
-                <div>
-                    <input class="radio" id="rijbewijsyes" name="rijbewijs" value="yes" type="radio">
-                    <label for="rijbewijsyes">Ja</label>
-                    <input class="radio" id="rijbewijsno" name="rijbewijs" value="no" type="radio">
-                    <label for="rijbewijsno">Nee</label>
-                </div>
-            </label>
-            <label id="autoVraag" class="hidden">
-                <h2>Heb je een eigen auto?</h2>
-                <div>
-                    <input class="radio" id="autoyes" type="radio">
-                    <label for="autoyes">Ja</label>
-                    <input class="radio" id="autono" type="radio">
-                    <label for="autono">Nee</label>
-                </div>
-            </label>
-            <label id="autoNaamVraag" class="hidden">
-                <h2>Welke auto heb je?</h2>
-                <input name="auto" placeholder="Honda Civic">
-            </label>
             <% if (error) { %><p class="fout"><%= error %></p><% } %>
-            <a href="login"><h2>Ik heb al een account</h2></a>
-            <button class="happyflow" type="sumbit"><h2>Registreer</h2></button>
+            <button class="happyflow" type="sumbit"><h2>Klaar</h2></button>
         </form>
         <script>
             document.querySelectorAll('input[name="rijbewijs"]').forEach(el => {
@@ -101,9 +92,7 @@
                 document.getElementById('autoNaamVraag').classList.add('hidden');
             });
         </script>
-        <footer>
-
-        </footer>
     </main>
+
 </body>
 </html>
