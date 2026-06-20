@@ -242,33 +242,56 @@ app.get("/distance", isLoggedIn, async (req, res) => {
 //events renderen die binnenkort in Nederland te zien zijn zodat deze op de index pagina weergeven kunnen worden
 app.get("/events", async (req, res) => {
 
-  //30 aankomende events in NL
-  const url = `https://app.ticketmaster.com/discovery/v2/events.json?size=100&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
+  //alle aankomende muziekevents in NL ophalen, ook die verder in de toekomst liggen
+  const pageSize = 200;     // maximaal aantal events per pagina bij Ticketmaster
+  const maxResults = 1000;  // Ticketmaster staat maximaal 1000 resultaten toe via paging
+  const baseUrl = `https://app.ticketmaster.com/discovery/v2/events.json?size=${pageSize}&sort=date,asc&classificationName=music&countryCode=NL&apikey=${apiKey}`;
 
   try {
-      const response = await fetch(url);
-      const data = await response.json();
+      let events = [];
+      let pageNumber = 0;
+      let totalPages = 1;
 
-      if (data.fault) {
-          console.error("API ERROR:", data.fault);
-          return res.status(400).json({ error: "API key werkt niet of geen toegang" });
-      }
+      //alle beschikbare pagina's doorlopen tot de limiet van de API
+      do {
+          const response = await fetch(`${baseUrl}&page=${pageNumber}`);
+          const data = await response.json();
 
-      if (!data._embedded || !data._embedded.events) {
+          if (data.fault) {
+              console.error("API ERROR:", data.fault);
+              return res.status(400).json({ error: "API key werkt niet of geen toegang" });
+          }
+
+          if (!data._embedded || !data._embedded.events) {
+              break;
+          }
+
+          events = events.concat(data._embedded.events);
+          totalPages = data.page?.totalPages || 1;
+          pageNumber++;
+      } while (pageNumber < totalPages && pageNumber * pageSize < maxResults);
+
+      if (events.length === 0) {
           return res.json([]);
       }
 
-      const events = data._embedded.events;
+      //huidige datum (lokale tijd) als YYYY-MM-DD om concerten uit het verleden te verbergen
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
       const filteredEvents = events.filter(event => {
         const isMusic = event.classifications?.some(c => c.segment?.name.toLowerCase() === "music");
-      
+
         //data filteren zodat er geen parking permits tussen staan als events
         const unwanted = ["parking", "permit", "parking permit"];
         const nameLower = event.name.toLowerCase();
         const isValidName = !unwanted.some(word => nameLower.includes(word));
-      
-        return isMusic && isValidName;
+
+        //concerten van gisteren of eerder niet meer tonen (alleen vandaag en in de toekomst)
+        const localDate = event.dates?.start?.localDate;
+        const isUpcoming = !localDate || localDate >= today;
+
+        return isMusic && isValidName && isUpcoming;
       });
 
       const infoEvents = filteredEvents.map(event => ({
