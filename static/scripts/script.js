@@ -23,7 +23,26 @@ const nextPageButton = document.getElementById("nextPage");
 const stars = document.querySelectorAll('.star-rating span');
 const ratingInput = document.getElementById('rating');
 
+window.addEventListener("DOMContentLoaded", async () => {
+  const response = await fetch("/filters-home");
+  const filters = await response.json();
 
+  if (filters.search) {
+    searchInput.value = filters.search;
+  }
+
+  if (filters.plaats) {
+    zoekPlaats.value = filters.plaats;
+  }
+
+  if (filters.genres) {
+    genreCheckboxes.forEach(cb => {
+      cb.checked = filters.genres.includes(cb.value);
+    });
+  }
+
+  filterAlles();
+});
 
 // Zodra een checkbox verandert, wordt de filterfunctie aangeroepen
 document.querySelectorAll(".genre-filter").forEach(cb => cb.addEventListener("change", filterAlles));
@@ -85,6 +104,24 @@ function annuleer() {
   genreCheckboxes.forEach(cb => cb.checked = false);
   filterAlles();
   checkNoResults();
+}
+
+async function slaHomeFiltersOp() {
+  const filters = {
+    search: searchInput.value,
+    plaats: zoekPlaats.value,
+    genres: Array.from(genreCheckboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value)
+  };
+
+  await fetch("/filters-home", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ filters })
+  });
 }
 
 //"default" events ophalen die standaard op de home pagina staan bij openen
@@ -236,6 +273,7 @@ function filterAlles() {
   });
 
   checkNoResults();
+  slaHomeFiltersOp();
 }
 
 // bericht tonen als er niks meer zichtbaar is na filteren https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML

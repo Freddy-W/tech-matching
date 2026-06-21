@@ -12,6 +12,27 @@ document.getElementById("filtergedeelte")?.addEventListener("submit", e => {
   filterAlles();
 });
 
+window.addEventListener("DOMContentLoaded", async () => {
+  const response = await fetch("/filters");
+  const filters = await response.json();
+
+  if (filters.zoekNaam) {
+    zoekBuddyInput.value = filters.zoekNaam;
+  }
+
+  if (filters.plaats) {
+    zoekPlaatsInput.value = filters.plaats;
+  }
+
+  if (filters.brandstof) {
+    brandstofCheckboxes.forEach(cb => {
+      cb.checked = filters.brandstof.includes(cb.value);
+    });
+  }
+
+  filterAlles();
+});
+
 // List.js opties
 const options = {
   valueNames: ['naam', 'stad', 'brandstof']
@@ -45,6 +66,25 @@ function annuleer() {
 function pasToe() {
   filteropties.classList.remove("open");
   filterAlles();
+  slaFiltersOp();
+}
+
+async function slaFiltersOp() {
+  const filters = {
+    zoekNaam: zoekBuddyInput.value,
+    plaats: zoekPlaatsInput.value,
+    brandstof: Array.from(brandstofCheckboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value)
+  };
+
+  await fetch("/filters", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ filters })
+  });
 }
 
 function filterAlles() {
@@ -78,6 +118,7 @@ function filterAlles() {
   });
 
   checkNoResults();
+  slaFiltersOp();
 }
 
 // Geen resultaten bericht

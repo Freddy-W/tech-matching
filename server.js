@@ -33,6 +33,27 @@ app.use(session({
 // ingelogde gebruiker beschikbaar maken in alle views
 app.use(loadUser);
 
+app.post("/filters", (req, res) => {
+  req.session.filters = req.body.filters;
+
+  res.json({
+    success: true
+  });
+});
+
+app.get("/filters", (req, res) => {
+  res.json(req.session.filters || {});
+});
+
+app.post("/filters-home", (req, res) => {
+  req.session.homeFilters = req.body.filters;
+  res.json({ success: true });
+});
+
+app.get("/filters-home", (req, res) => {
+  res.json(req.session.homeFilters || {});
+});
+
 app.post("/toggleFav", isLoggedIn, async (req, res) => {
   const userId = req.session.userId;
   const eventId = req.body.eventId?.trim();
