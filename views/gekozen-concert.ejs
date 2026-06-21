@@ -20,7 +20,7 @@
         <section>
             <h2><%= event.artist %></h2>
             <img src="<%= event.image %>" alt="<%= event.artist %>" style="border-radius: 8px;">
-            <form method="post" action="/addToFav">
+            <form method="post" action="/toggleFav">
                 <input type="hidden" name="eventId" id="idinput" value="<%= event.id %>">
                 <button id="favButton" type="submit">
                     <img src="/images/plus.svg" alt="plus">

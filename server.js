@@ -32,6 +32,64 @@ app.use(session({
 // ingelogde gebruiker beschikbaar maken in alle views
 app.use(loadUser);
 
+app.post("/toggleFav", isLoggedIn, async (req, res) => {
+  const userId = req.session.userId;
+  const eventId = req.body.eventId;
+
+  const user = await userData.findById(userId);
+
+  if (user.favorieten.includes(eventId)) {
+    await userData.findByIdAndUpdate(userId, {
+      $pull: { favorieten: eventId }
+    });
+
+    // res.json({ favoriet: false })
+    // res.redirect('/gekozen-concert?id=' + eventId);
+  } else {
+    await userData.findByIdAndUpdate(userId, {
+      $addToSet: { favorieten: eventId }
+    });
+
+    // res.json({ favoriet: true })
+    // res.redirect('/gekozen-concert?id=' + eventId);
+  }
+});
+
+// app.post("/addToFav",isLoggedIn, async (req, res) =>{
+//   try{
+//     const userId = req.session.userId;
+//     const eventId= req.body.eventId;
+//     await userData.findByIdAndUpdate(userId, {
+//       $addToSet: { favorieten: eventId }
+//     });
+//   }
+//   catch(err){
+//     console.log("error")
+//     res.status(500).json({error: "Kon niet toevoegen"});
+//   }
+
+//   // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
+  
+// });
+
+// app.post("/removeFromFav", isLoggedIn, async (req, res) => {
+//   try {
+//     const userId = req.session.userId;
+//     const eventId = req.body.eventId;
+
+//     await userData.findByIdAndUpdate(userId, {
+//       $pull: { favorieten: eventId }
+//     });
+
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Kon niet verwijderen" });
+//   }
+// });
+
+// EIND FAVORIET
+
 // routes per onderwerp
 app.use(require("./routes/pages"));
 app.use(require("./routes/auth"));
