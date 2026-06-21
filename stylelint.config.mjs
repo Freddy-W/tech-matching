@@ -6,5 +6,9 @@ export default {
     "selector-class-pattern": null,
     "color-hex-length": null,
     "declaration-block-no-redundant-longhand-properties": null,
+    "color-function-notation": null,
+    "color-function-alias-notation": null,
+    "alpha-value-notation": null,
+    "no-descending-specificity": null,
   },
 };

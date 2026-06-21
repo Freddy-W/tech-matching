@@ -24,7 +24,7 @@ router.get("/user/:id", isLoggedIn, async (req, res) => {
     const reviews = await reviewData
       .find({ reviewee: req.params.id })
       .populate("reviewer", "username")
-      .limit(3)
+      .limit(3);
 
     res.render("user.ejs", { user: profileUser, loggedInUser, reviews });
   } catch (error) {
@@ -63,7 +63,7 @@ router.post("/accountinfo", isLoggedIn, upload.single('profielfoto'), async (req
     await userData.findByIdAndUpdate(req.session.userId, accountData, { new: true });
     res.redirect("/");
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.render("error.ejs", { error: "Error bij het laden van je accountinfo." });
   }
 });

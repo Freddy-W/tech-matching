@@ -28,15 +28,15 @@ router.post("/review/:userId", isLoggedIn, async (req, res) => {
     // average rating vastleggen. ChatGPT heeft de totaal rating som gemaakt.
     const reviews = await reviewData.find({ reviewee: req.params.userId });
     const totaalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
-    const gemiddeldeRating = Number((totaalRating / reviews.length).toFixed(1))
+    const gemiddeldeRating = Number((totaalRating / reviews.length).toFixed(1));
 
     await userData.updateOne( { _id: req.params.userId }, { $set: { totaalRating: gemiddeldeRating }, $inc: { reviewCount: 1 } }
-)
+);
     res.redirect(`/user/${req.params.userId}`);
   } catch (error) {
     console.error(error);
     res.render("error.ejs", { error: "Error bij het opslaan van je review." });
   }
-})
+});
 
 module.exports = router;

@@ -40,6 +40,9 @@ body {
 .pfp {
     aspect-ratio: 1 / 1;
     object-fit: cover;
+    max-width: 7rem;
+    width: 100%;
+    border-radius: 0.5rem;
 }
 
 header nav {
@@ -60,13 +63,6 @@ header .pfp  {
     width: 100%;
     border-radius: 0.5rem;
 }
-
- .pfp  {
-    max-width: 7rem;
-    width: 100%;
-    border-radius: 0.5rem;
-}
-
 
 .logo {
     max-width: 3rem;

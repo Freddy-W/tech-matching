@@ -186,36 +186,14 @@ main > section input {
     padding: 1rem;
 }
 
-main > section button {
-    border: none;
-    padding-right: 1rem;
-    padding-left: 1rem;
-}
-
-main > section button:nth-of-type(1) {
-    border-radius: 0 1rem 1rem 0;
-    background-color: var(--accentcolour3);
-    color: white;
-    font-weight: bold;
-}
-
-main > section {
-    border-radius: 1rem;
-    background-color: azure;
-}
-
-li a {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
 #concertList li {
   flex: 1 1 20rem;
   width: auto;
   width: 100%
 }
+
 /* paginaselector onderaan de concertenlijst */
+
 /* rij met pijl - paginanummers - pijl */
 .pagination-controls {
   display: flex;
