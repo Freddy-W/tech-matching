@@ -16,7 +16,7 @@
         <div class="listing">
     <div>
         <a class="owner" href="/user/<%=listing.userId._id%>">
-            <img src="/pfp/<%= listing.userId._id %>">
+            <img class="pfp" src="/pfp/<%= listing.userId._id %>">
             <div>
                 <p><%= listing.userId.voornaam %></p>
                 <p>Auto: <%= listing.auto %></p>
@@ -32,7 +32,7 @@
             <h4>Passagiers:</h4>
             <% listing.passagiers.forEach(passagier => { %>
                 <a class="passagier" href="/user/<%=passagier._id%>">
-                    <img src="/pfp/<%= passagier._id %>">
+                    <img class="pfp" src="/pfp/<%= passagier._id %>">
                     <div>
                         <p><%= passagier.voornaam %></p>
                         <p><%= passagier.leeftijd %> jaar oud</p>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <nav>
     <div>
-        <img src="/images/logo-1color.svg" alt="Logo">
+        <img src="/images/logo-1color.svg" alt="Logo" class="logo">
         <div>
-        <a href="/"><img src="/images/app-name.svg" alt="Logotext"></a>
+        <a href="/"><img src="/images/app-name.svg" class="logotext" alt="Logotext"></a>
        <% if (loggedInUser) { %>
             <p>@<%= loggedInUser.username %></p>
             <% } else { %>
@@ -12,6 +12,6 @@
         </div>
     </div>
       <a href="<%= loggedInUser ? `/user/${loggedInUser._id}` : '/login' %>">
-    <img src="<%= loggedInUser ? `/pfp/${loggedInUser._id}` : '/images/pfp.jpg' %>" alt="profielfoto">
+    <img class="pfp" src="<%= loggedInUser ? `/pfp/${loggedInUser._id}` : '/images/pfp.jpg' %>" alt="profielfoto">
 </a>
 </nav>
