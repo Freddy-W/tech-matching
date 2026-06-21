@@ -37,6 +37,11 @@ body {
     font-size: small;
 }
 
+.pfp {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
 header nav {
     margin: 1rem;
     display: flex;
