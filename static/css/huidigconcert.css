@@ -80,7 +80,7 @@ main div:nth-of-type(2) {
 }
 
 #favButton.fav-actief {
-    background-color: #e91e63;
+    background-color: var(--happyflow);
 }
 
 #favButton:active {
