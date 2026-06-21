@@ -14,10 +14,12 @@ const annuleerButton = document.getElementById("annuleer");
 const searchInput = document.getElementById("zoekConcert");
 const results = document.getElementById("results");
 const genreCheckboxes = document.querySelectorAll(".genre-filter");
-const options = { valueNames: ['artist', 'genre', 'date', 'city'] };
+const options = { valueNames: ['artist', 'genre', 'date', 'city'], page: 20, pagination: { innerWindow: 2, outerWindow: 0 } };
 const ul = document.getElementById("results");
 const plaatsButton = document.getElementById("plaatsButton");
 const zoekPlaats = document.getElementById("zoekPlaats");
+const prevPageButton = document.getElementById("prevPage");
+const nextPageButton = document.getElementById("nextPage");
 const stars = document.querySelectorAll('.star-rating span');
 const ratingInput = document.getElementById('rating');
 
@@ -33,7 +35,29 @@ sluitButton?.addEventListener("click", pasToe);
 annuleerButton?.addEventListener("click", annuleer);
 plaatsButton?.addEventListener("click", pasToe);
 
+prevPageButton?.addEventListener("click", () => stapPagina(-1));
+nextPageButton?.addEventListener("click", () => stapPagina(1));
+
 zoekPlaats?.addEventListener("keydown", plaatsSubmit);
+
+// een pagina vooruit (richting +1) of achteruit (richting -1) binnen de huidige (gefilterde) lijst
+function stapPagina(richting) {
+  if (!userList) return;
+  const totaalPaginas = Math.ceil(userList.matchingItems.length / userList.page);
+  const huidigePagina = Math.ceil(userList.i / userList.page);
+  const doelPagina = Math.min(Math.max(huidigePagina + richting, 1), totaalPaginas);
+  userList.show((doelPagina - 1) * userList.page + 1, userList.page);
+  updatePaginaPijlen();
+}
+
+// pijlen uitschakelen op de eerste/laatste pagina
+function updatePaginaPijlen() {
+  if (!userList || !prevPageButton || !nextPageButton) return;
+  const totaalPaginas = Math.ceil(userList.matchingItems.length / userList.page);
+  const huidigePagina = Math.ceil(userList.i / userList.page);
+  prevPageButton.disabled = huidigePagina <= 1;
+  nextPageButton.disabled = huidigePagina >= totaalPaginas;
+}
   
 function plaatsSubmit(event) {
   if (event.key === "Enter") {
@@ -48,7 +72,7 @@ function formatGenre(genre) {
 }
 
 function filterenOpen() {
-  filterGedeelte.classList.add("open");
+  filterGedeelte?.classList.add("open");
 }
 
 function pasToe() {
@@ -172,7 +196,10 @@ function renderEvents(data) {
 // https://listjs.com/docs/
 function initializeList() {
   userList = new List('concertList', options);
-};
+  // pijlen bijwerken bij elke wijziging (paginanummer klikken, filteren, etc.)
+  userList.on('updated', updatePaginaPijlen);
+  updatePaginaPijlen();
+}
 
 // https://www.w3schools.com/jsref/jsref_filter.asp
 function filterAlles() {
@@ -254,6 +281,40 @@ function setStars(value) {
       star.classList.add('selected');
     }
   });
+}
+
+const favButton = document.getElementById("favButton");
+const favToast = document.getElementById("favToast");
+
+favButton?.addEventListener("click", async () => {
+  const eventId = favButton.dataset.eventId;
+  try {
+    const response = await fetch("/toggleFav", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventId })
+    });
+
+    if (response.redirected) {
+      window.location.href = "/login";
+      return;
+    }
+
+    const data = await response.json();
+    favButton.dataset.favoriet = data.favoriet;
+    document.getElementById("favIcon").src = data.favoriet ? "/images/check.svg" : "/images/plus.svg";
+    favButton.classList.toggle("fav-actief", data.favoriet);
+    toonToast(data.favoriet ? "Toegevoegd aan favorieten!" : "Verwijderd uit favorieten");
+  } catch (err) {
+    toonToast("Er ging iets mis...");
+  }
+});
+
+function toonToast(bericht) {
+  if (!favToast) return;
+  favToast.textContent = bericht;
+  favToast.classList.add("zichtbaar");
+  setTimeout(() => favToast.classList.remove("zichtbaar"), 2500);
 }
 
 // setStars(ratingInput.value);

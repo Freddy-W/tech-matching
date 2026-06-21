@@ -3,6 +3,10 @@ body {
     color: var(--white)  
 }
 
+h1 {
+  margin-bottom: .5rem;
+}
+
 #filtergedeelte.open {
   transform: translateY(0);
   opacity: 1;
@@ -27,7 +31,7 @@ section:nth-of-type(1) {
 
 section:nth-of-type(1) input[type="search"] {
   flex: 1;
-  padding: 0.5em;
+  padding: 1em;
 }
 
 form {
@@ -121,9 +125,12 @@ ul {
   margin:0;
   padding:0;
   list-style:none;
-  display:grid;
+  display:flex;
+  flex-wrap:wrap;
   gap:1em;
+  width:100%;
 }
+
 
 li {
   padding:0.5em;
@@ -131,7 +138,9 @@ li {
   flex-direction: column;
   align-items:flex-start;
   background-color:var(--accentcolour3);
-  border-radius:6px;
+  border-radius: 0.5rem;
+  max-width: 30rem;
+  width:100%
 }
 
 li div{
@@ -140,7 +149,7 @@ li div{
 
 .list img {
   max-width: 100%;
-  border-radius:6px;
+  border-radius: 0.5rem;
   margin-right:1em;
 }
 
@@ -175,4 +184,97 @@ main > section input {
     height: 3rem;
     border-radius: 1rem 0 0 1rem;
     padding: 1rem;
+}
+
+main > section button {
+    border: none;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+main > section button:nth-of-type(1) {
+    border-radius: 0 1rem 1rem 0;
+    background-color: var(--accentcolour3);
+    color: white;
+    font-weight: bold;
+}
+
+main > section {
+    border-radius: 1rem;
+    background-color: azure;
+}
+
+li a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+#concertList li {
+  flex: 1 1 20rem;
+  width: auto;
+  width: 100%
+}
+/* paginaselector onderaan de concertenlijst */
+/* rij met pijl - paginanummers - pijl */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+}
+
+.page-arrow {
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  background-color: azure;
+  color: var(--accentcolour3);
+  font-weight: bold;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.page-arrow:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination li {
+  cursor: pointer;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+/* de "..." (dots) tussen de paginanummers verbergen */
+.pagination li.disabled {
+  display: none;
+}
+
+.pagination li .page {
+  display: block;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  background-color: azure;
+  color: var(--accentcolour3);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.pagination li.active .page {
+  background-color: var(--accentcolour3);
+  color: azure;
 }

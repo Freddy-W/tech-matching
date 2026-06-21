@@ -53,15 +53,30 @@ header nav > div:nth-of-type(1) {
     display: flex;
 }
 
-header img {
-    max-height: 3em;
-    width: auto;
-    border-radius: 8px;
+
+
+header .pfp  {
+    max-width: 3rem;
+    width: 100%;
+    border-radius: 0.5rem;
 }
 
-header > img {
-    margin-right: 1rem;
+ .pfp  {
+    max-width: 7rem;
+    width: 100%;
+    border-radius: 0.5rem;
+}
 
+
+.logo {
+    max-width: 3rem;
+    margin-right: 1rem;
+    width: 100%
+}
+
+.logotext {
+    max-width: 5rem;
+    width: 100%;
 }
 
 header p {
