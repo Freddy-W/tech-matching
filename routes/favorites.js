@@ -15,7 +15,7 @@ router.post("/addToFav", isLoggedIn, async (req, res) =>{
       $addToSet: { favorieten: eventId }
     });
   }
-  catch(err){
+  catch{
     console.log("error");
     res.status(500).json({error: "Kon niet toevoegen"});
   }
@@ -58,7 +58,7 @@ router.get("/favorieten", isLoggedIn, async (req, res) => {
         };
 
 
-      } catch (err) {
+      } catch {
         console.error("Could not fetch", id);
         return null;
       }

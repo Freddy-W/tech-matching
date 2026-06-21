@@ -42,7 +42,9 @@ router.get("/gekozen-concert", async (req, res) => {
         try {
             const user = await userData.findById(req.session.userId);
             isFavoriet = (user?.favorieten || []).map(f => f.trim()).includes(event.id?.trim());
-        } catch (e) {}
+        } catch {
+            isFavoriet = false;
+        }
     }
     res.render('gekozen-concert.ejs', { event, isFavoriet });
 });

@@ -343,7 +343,7 @@ favButton?.addEventListener("click", async () => {
     document.getElementById("favIcon").src = data.favoriet ? "/images/check.svg" : "/images/plus.svg";
     favButton.classList.toggle("fav-actief", data.favoriet);
     toonToast(data.favoriet ? "Toegevoegd aan favorieten!" : "Verwijderd uit favorieten");
-  } catch (err) {
+  } catch {
     toonToast("Er ging iets mis...");
   }
 });
