@@ -655,22 +655,61 @@ app.post("/review/:userId", isLoggedIn, async (req, res) => {
 
 // FAVORIET FUNCTIE
 
-app.post("/addToFav",isLoggedIn, async (req, res) =>{
-  try{
-    const userId = req.session.userId;
-    const eventId= req.body.eventId;
+app.post("/toggleFav", isLoggedIn, async (req, res) => {
+  const userId = req.session.userId;
+  const eventId = req.body.eventId;
+
+  const user = await userData.findById(userId);
+
+  if (user.favorieten.includes(eventId)) {
+    await userData.findByIdAndUpdate(userId, {
+      $pull: { favorieten: eventId }
+    });
+
+    // res.json({ favoriet: false })
+    // res.redirect('/gekozen-concert?id=' + eventId);
+  } else {
     await userData.findByIdAndUpdate(userId, {
       $addToSet: { favorieten: eventId }
     });
-  }
-  catch(err){
-    console.log("error")
-    res.status(500).json({error: "Kon niet toevoegen"});
-  }
 
-  // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
-  
+    // res.json({ favoriet: true })
+    // res.redirect('/gekozen-concert?id=' + eventId);
+  }
 });
+
+// app.post("/addToFav",isLoggedIn, async (req, res) =>{
+//   try{
+//     const userId = req.session.userId;
+//     const eventId= req.body.eventId;
+//     await userData.findByIdAndUpdate(userId, {
+//       $addToSet: { favorieten: eventId }
+//     });
+//   }
+//   catch(err){
+//     console.log("error")
+//     res.status(500).json({error: "Kon niet toevoegen"});
+//   }
+
+//   // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
+  
+// });
+
+// app.post("/removeFromFav", isLoggedIn, async (req, res) => {
+//   try {
+//     const userId = req.session.userId;
+//     const eventId = req.body.eventId;
+
+//     await userData.findByIdAndUpdate(userId, {
+//       $pull: { favorieten: eventId }
+//     });
+
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Kon niet verwijderen" });
+//   }
+// });
 
 // EIND FAVORIET
 
@@ -746,10 +785,35 @@ app.get("/favorieten", isLoggedIn, async (req, res) => {
         || data._embedded?.attractions?.[0]?.images?.[0]?.url
         || "../images/imagenotfound.png";
         
+        const time = data.time
+        || data.dates?.start?.localTime
+        || "Unknown";
+
+        const date = data.date
+        || data.dates?.start?.localDate
+        || "Unknown";
+
+        const venue = data.venue
+        || data._embedded?.venues?.[0]?.name
+        || "Unknown";
+
+        const city = data.city
+        || data._embedded?.venues?.[0]?.city?.name
+        || "Unknown";
+
+        const country = data.country
+        || data._embedded?.venues?.[0]?.country?.name
+        || "Unknown";
+
         return {
           id: id,
           artist,
           image,
+          time,
+          date,
+          venue,
+          city,
+          country,
         };
 
         
