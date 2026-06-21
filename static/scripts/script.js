@@ -4,8 +4,7 @@ window.onload = function() { //onload gebruiken zodat berekeningen direct worden
   }
     afstandBereken();
     afstandConcertBereken();
-
-}
+};
 
 let userList;
 const filterButton = document.querySelector("section button"); // de filter knop in de header, met vraagteken omdat deze niet op elke pagina staat
@@ -173,7 +172,7 @@ function renderEvents(data) {
 // https://listjs.com/docs/
 function initializeList() {
   userList = new List('concertList', options);
-}
+};
 
 // https://www.w3schools.com/jsref/jsref_filter.asp
 function filterAlles() {
@@ -220,9 +219,9 @@ function checkNoResults() {
 }
 
 async function favList() {
-  const response = await fetch("/favorieten")
-  const data = await response.json()
-  const list = document.getElementById("favList")
+  const response = await fetch("/favorieten");
+  const data = await response.json();
+  const list = document.getElementById("favList");
   list.innerHTML = "";
 
   data.favorieten.forEach(favoriet => {

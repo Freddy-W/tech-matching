@@ -5,6 +5,7 @@ main {
 h1 {
     margin-bottom: 0.5rem;
 }
+
 main div img {
     width: 8rem;
     margin-right: 1rem;
@@ -42,7 +43,7 @@ body {
 
 #favList li {
     display: grid;
-    grid-template-rows: 2fr, 1fr;
+    grid-template-rows: 2fr 1fr;
     background-color: var(--accentcolour3);
     margin: 0.5rem;
     padding: 0.5rem;

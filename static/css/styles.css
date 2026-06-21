@@ -16,12 +16,16 @@
 --white: #FFFFFF;
 }
 
+header a {
+    justify-content: flex-end;
+}
+
 a:visited {
     color: inherit;
 }
 
 body {
-    font-family: 'Alexandria';
+    font-family: Alexandria, sans-serif;
 }
 
 .hidden {
@@ -55,10 +59,6 @@ header > img {
 
 }
 
-header a {
-    justify-content: flex-end;
-}
-
 header p {
     grid-row: 2;
     grid-column: 2;
@@ -88,7 +88,6 @@ footer nav img {
 
 footer nav {
     width: 100%;
-    display: flex;
     display: flex;
     justify-content: space-around;
     background-color: var(--mainblue);

@@ -41,7 +41,7 @@ form button {
 
 form textarea {
   margin-top: 0.5rem;
-  font-family: Alexandria;
+  font-family: Alexandria, sans-serif;
   height: 5rem;
   border: none;
   border-radius: 0.5rem;

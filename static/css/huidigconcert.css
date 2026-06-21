@@ -48,7 +48,6 @@ main div:nth-of-type(2) {
     font-weight: bold;
     border-radius: 0.5rem;
     border: 2px solid var(--accentcolour2);
-    margin-top: 1rem;
     align-items: center;
     justify-content: center;
 }
@@ -66,10 +65,7 @@ main div:nth-of-type(2) {
 }
 
 #favButton {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    padding-top: 0.5em;
-    padding-bottom: 0.25em;
+    padding: 0.5em 0.25em;
     border: none;
     border-radius: 100px;
     background-color: var(--accentcolour3);

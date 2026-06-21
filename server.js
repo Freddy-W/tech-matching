@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoClient = require("mongodb");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -18,7 +17,6 @@ const upload = multer({
 const port = 2020;
 const apiKey = process.env.APIKEY;
 const orsKey = process.env.ORSKEY;
-const sessionKey = process.env.SESSIONKEY
 
 app.use(express.static("static"));
 app.set('view engine', 'ejs');
@@ -369,8 +367,8 @@ app.get("/login", (req, res)=> {
 });
 
 app.get("/error"), (req, res) => {
-    res.render('error.ejs')
-}
+    res.render('error.ejs');
+};
 
 app.get("/user/:id", isLoggedIn, async (req, res) => {
   try {
@@ -380,7 +378,7 @@ app.get("/user/:id", isLoggedIn, async (req, res) => {
     const reviews = await reviewData
       .find({ reviewee: req.params.id })
       .populate("reviewer", "username")
-      .limit(3)
+      .limit(3);
       
     res.render("user.ejs", { user: profileUser, loggedInUser, reviews });
   } catch (error) {
@@ -409,7 +407,7 @@ app.get("/gekozen-concert", (req, res)=>{
         city: req.query.city,
         country: req.query.country,
         image: req.query.image
-        }
+        };
         res.render('gekozen-concert.ejs', {event});
 });
 
@@ -472,7 +470,7 @@ const reviewScheme = new mongoose.Schema({
   review: String,
 });
 
-const reviewData = mongoose.model("reviewData", reviewScheme)
+const reviewData = mongoose.model("reviewData", reviewScheme);
 const userData = mongoose.model("userdata", userScheme);
 const carListing = mongoose.model("CarListing", carListingSchema);
 
@@ -560,7 +558,7 @@ app.post("/accountinfo", isLoggedIn, upload.single('profielfoto'), async (req, r
     await userData.findByIdAndUpdate(req.session.userId, accountData, { new: true });
     res.redirect("/");
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.render("error.ejs", { error: "Error bij het laden van je accountinfo." });
   }
 });
@@ -642,16 +640,16 @@ app.post("/review/:userId", isLoggedIn, async (req, res) => {
     // average rating vastleggen. ChatGPT heeft de totaal rating som gemaakt.
     const reviews = await reviewData.find({ reviewee: req.params.userId });
     const totaalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
-    const gemiddeldeRating = Number((totaalRating / reviews.length).toFixed(1))
+    const gemiddeldeRating = Number((totaalRating / reviews.length).toFixed(1));
     
     await userData.updateOne( { _id: req.params.userId }, { $set: { totaalRating: gemiddeldeRating }, $inc: { reviewCount: 1 } }
-)
+);
     res.redirect(`/user/${req.params.userId}`); 
   } catch (error) {
     console.error(error);
     res.render("error.ejs", { error: "Error bij het opslaan van je review." });
   }
-}) 
+});
 
 // FAVORIET FUNCTIE
 
@@ -664,7 +662,7 @@ app.post("/addToFav",isLoggedIn, async (req, res) =>{
     });
   }
   catch(err){
-    console.log("error")
+    console.log("error");
     res.status(500).json({error: "Kon niet toevoegen"});
   }
 
@@ -724,9 +722,9 @@ app.post("/addToListing", isLoggedIn, async (req, res) => {
 app.get("/favorieten", isLoggedIn, async (req, res) => {
   console.log("Session userId:", req.session.userId);
   
-  const user = await userData.findById(req.session.userId)
+  const user = await userData.findById(req.session.userId);
   console.log("User:", user);
-  const favorieten = user.favorieten || []
+  const favorieten = user.favorieten || [];
 
   console.log(user);
   console.log("user.favorieten:", user.favorieten);
