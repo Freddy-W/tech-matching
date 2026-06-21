@@ -14,9 +14,7 @@
         <%- include('partials/header')%>
     </header>
     <main>
-
-        <!-- filtergedeelte -->
-        <h1>Buddies voor <%= event.artist %></h1>
+        <h1>Alle buddies</h1>
         <section>
             <input type="search" placeholder="Zoek een buddy..." id="zoekBuddy">
             <button id="filterbutton">Filter</button>
@@ -40,7 +38,9 @@
                 <button type="button" id="zoek">Zoek</button>
             </div>
         </form>
-        <div class="artistinfo">
+        <!-- filtergedeelte -->
+        
+                <div class="artistinfo">
             <img src="<%= event.image %>" alt="<%= event.artist %>">
             <div>
                 <p><%= event.artist %></p>
@@ -48,13 +48,14 @@
                 <p>Date: <%= event.date %></p>
             </div>
         </div>
+        
    
         <div id="buddyList">
             <ul class="list">
                 <% listings.forEach(listing => { %>
                 <li>
                     <a href="/listing/<%= listing._id %>">
-                    <img src="<%= listing.userId ? `/pfp/${listing.userId._id}` : '/images/pfp.jpg' %>">
+                    <img class="pfp" src="<%= listing.userId ? `/pfp/${listing.userId._id}` : '/images/pfp.jpg' %>">
                     <div>
                         <h2 class="naam"><%= listing.userId ? listing.userId.voornaam : "Onbekend" %></h2>
                         <p><%= listing.userId ? listing.userId.totaalRating : "0" %> ★</p>

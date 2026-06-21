@@ -16,12 +16,16 @@
 --white: #FFFFFF;
 }
 
+header a {
+    justify-content: flex-end;
+}
+
 a:visited {
     color: inherit;
 }
 
 body {
-    font-family: 'Alexandria';
+    font-family: Alexandria, sans-serif;
 }
 
 .hidden {
@@ -31,6 +35,14 @@ body {
 .fout {
     color: #ff4d4d;
     font-size: small;
+}
+
+.pfp {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    max-width: 7rem;
+    width: 100%;
+    border-radius: 0.5rem;
 }
 
 header nav {
@@ -44,19 +56,23 @@ header nav > div:nth-of-type(1) {
     display: flex;
 }
 
-header img {
-    max-height: 3em;
-    width: auto;
-    border-radius: 8px;
+
+
+header .pfp  {
+    max-width: 3rem;
+    width: 100%;
+    border-radius: 0.5rem;
 }
 
-header > img {
+.logo {
+    max-width: 3rem;
     margin-right: 1rem;
-
+    width: 100%
 }
 
-header a {
-    justify-content: flex-end;
+.logotext {
+    max-width: 5rem;
+    width: 100%;
 }
 
 header p {
@@ -88,7 +104,6 @@ footer nav img {
 
 footer nav {
     width: 100%;
-    display: flex;
     display: flex;
     justify-content: space-around;
     background-color: var(--mainblue);

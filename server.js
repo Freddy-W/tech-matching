@@ -7,7 +7,8 @@ const MongoStore = require('connect-mongo').default;
 // database verbinding opzetten
 require("./config/db");
 
-const { loadUser } = require("./middleware/auth");
+const { loadUser, isLoggedIn } = require("./middleware/auth");
+const userData = require("./models/User");
 
 const app = express();
 const port = 2020;
@@ -31,6 +32,78 @@ app.use(session({
 
 // ingelogde gebruiker beschikbaar maken in alle views
 app.use(loadUser);
+
+app.post("/filters", (req, res) => {
+  req.session.filters = req.body.filters;
+
+  res.json({
+    success: true
+  });
+});
+
+app.get("/filters", (req, res) => {
+  res.json(req.session.filters || {});
+});
+
+app.post("/filters-home", (req, res) => {
+  req.session.homeFilters = req.body.filters;
+  res.json({ success: true });
+});
+
+app.get("/filters-home", (req, res) => {
+  res.json(req.session.homeFilters || {});
+});
+
+app.post("/toggleFav", isLoggedIn, async (req, res) => {
+  const userId = req.session.userId;
+  const eventId = req.body.eventId?.trim();
+
+  const user = await userData.findById(userId);
+  const favs = (user.favorieten || []).map(f => f.trim());
+
+  if (favs.includes(eventId)) {
+    await userData.findByIdAndUpdate(userId, { $pull: { favorieten: eventId } });
+    res.json({ favoriet: false });
+  } else {
+    await userData.findByIdAndUpdate(userId, { $addToSet: { favorieten: eventId } });
+    res.json({ favoriet: true });
+  }
+});
+
+// app.post("/addToFav",isLoggedIn, async (req, res) =>{
+//   try{
+//     const userId = req.session.userId;
+//     const eventId= req.body.eventId;
+//     await userData.findByIdAndUpdate(userId, {
+//       $addToSet: { favorieten: eventId }
+//     });
+//   }
+//   catch(err){
+//     console.log("error")
+//     res.status(500).json({error: "Kon niet toevoegen"});
+//   }
+
+//   // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
+  
+// });
+
+// app.post("/removeFromFav", isLoggedIn, async (req, res) => {
+//   try {
+//     const userId = req.session.userId;
+//     const eventId = req.body.eventId;
+
+//     await userData.findByIdAndUpdate(userId, {
+//       $pull: { favorieten: eventId }
+//     });
+
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Kon niet verwijderen" });
+//   }
+// });
+
+// EIND FAVORIET
 
 // routes per onderwerp
 app.use(require("./routes/pages"));

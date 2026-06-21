@@ -15,8 +15,8 @@ router.post("/addToFav", isLoggedIn, async (req, res) =>{
       $addToSet: { favorieten: eventId }
     });
   }
-  catch(err){
-    console.log("error")
+  catch{
+    console.log("error");
     res.status(500).json({error: "Kon niet toevoegen"});
   }
 
@@ -29,9 +29,9 @@ router.post("/addToFav", isLoggedIn, async (req, res) =>{
 router.get("/favorieten", isLoggedIn, async (req, res) => {
   console.log("Session userId:", req.session.userId);
 
-  const user = await userData.findById(req.session.userId)
+  const user = await userData.findById(req.session.userId);
   console.log("User:", user);
-  const favorieten = user.favorieten || []
+  const favorieten = user.favorieten || [];
 
   console.log(user);
   console.log("user.favorieten:", user.favorieten);
@@ -58,7 +58,7 @@ router.get("/favorieten", isLoggedIn, async (req, res) => {
         };
 
 
-      } catch (err) {
+      } catch {
         console.error("Could not fetch", id);
         return null;
       }

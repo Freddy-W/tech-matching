@@ -20,17 +20,27 @@
         <section>
             <h2><%= event.artist %></h2>
             <img src="<%= event.image %>" alt="<%= event.artist %>" style="border-radius: 8px;">
-            <form method="post" action="/addToFav">
-                <input type="hidden" name="eventId" id="idinput" value="<%= event.id %>">
-                <button id="favButton" type="submit">
-                    <img src="/images/plus.svg" alt="plus">
-                </button>
-            </form>
+            <div id="favToast"></div>
             
-            <p><%= event.city %>, <%= event.country %></p>
-            <p><%= event.date %></p>
-            <p><%= event.venue %></p>
+            <div class="eventinfo">
+                <div>
+                    <p><%= event.city %>, <%= event.country %></p>
+                    <p><%= event.date %></p>
+                    <p><%= event.venue %></p>
+                </div>
+                <div>
+                    <button id="favButton" type="button"
+                        data-event-id="<%= event.id %>"
+                        data-favoriet="<%= isFavoriet %>"
+                        class="<%= isFavoriet ? 'fav-actief' : '' %>">
+                    <img id="favIcon" src="/images/<%= isFavoriet ? 'check.svg' : 'plus.svg' %>" alt="favoriet">
+                </button>
+                </div>
+            </div>
+            
             <p id="distanceText">Afstand berekenen...</p>
+
+            
         </section>
         
         <div id="eventData"

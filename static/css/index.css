@@ -3,6 +3,10 @@ body {
     color: var(--white)  
 }
 
+h1 {
+  margin-bottom: .5rem;
+}
+
 #filtergedeelte.open {
   transform: translateY(0);
   opacity: 1;
@@ -11,6 +15,11 @@ body {
 header, footer {
   text-align: center;
   margin-bottom: 1em;
+}
+
+main > section {
+    border-radius: 1rem;
+    background-color: azure;
 }
 
 section:nth-of-type(1) {
@@ -22,7 +31,7 @@ section:nth-of-type(1) {
 
 section:nth-of-type(1) input[type="search"] {
   flex: 1;
-  padding: 0.5em;
+  padding: 1em;
 }
 
 form {
@@ -74,6 +83,19 @@ form h3 {
     margin-top: .5em;
 }
 
+main > section button {
+    border: none;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+main > section button:nth-of-type(1) {
+    border-radius: 0 1rem 1rem 0;
+    background-color: var(--accentcolour3);
+    color: white;
+    font-weight: bold;
+}
+
 form > div:last-child button:last-child {
     border: none;
     background-color: var(--happyflow);
@@ -84,18 +106,31 @@ form.open {
   opacity: 1;
 }
 
-a, a:visited {
-    color: var(--white);
-    text-decoration: none;
+a {
+  color: var(--white);
+  text-decoration: none;
+}
+
+li a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+a:visited {
+  color: var(--white);
 }
 
 ul {
   margin:0;
   padding:0;
   list-style:none;
-  display:grid;
-  grid-gap:1em;
+  display:flex;
+  flex-wrap:wrap;
+  gap:1em;
+  width:100%;
 }
+
 
 li {
   padding:0.5em;
@@ -103,7 +138,9 @@ li {
   flex-direction: column;
   align-items:flex-start;
   background-color:var(--accentcolour3);
-  border-radius:6px;
+  border-radius: 0.5rem;
+  max-width: 30rem;
+  width:100%
 }
 
 li div{
@@ -112,7 +149,7 @@ li div{
 
 .list img {
   max-width: 100%;
-  border-radius:6px;
+  border-radius: 0.5rem;
   margin-right:1em;
 }
 
@@ -126,7 +163,7 @@ li div{
 }
 
 .eventinfo {
-    margin: 0.5rem 1rem 1rem 1rem;
+    margin: 0.5rem 1rem 1rem;
 }
 
 .event:first-of-type {
@@ -149,31 +186,14 @@ main > section input {
     padding: 1rem;
 }
 
-main > section button {
-    border: none;
-    padding-right: 1rem;
-    padding-left: 1rem;
-}
-
-main > section button:nth-of-type(1) {
-    border-radius: 0 1rem 1rem 0;
-    background-color: var(--accentcolour3);
-    color: white;
-    font-weight: bold;
-}
-
-main > section {
-    border-radius: 1rem;
-    background-color: azure;
-}
-
-li a {
-  display: block;
-  text-decoration: none;
-  color: inherit;
+#concertList li {
+  flex: 1 1 20rem;
+  width: auto;
+  width: 100%
 }
 
 /* paginaselector onderaan de concertenlijst */
+
 /* rij met pijl - paginanummers - pijl */
 .pagination-controls {
   display: flex;
