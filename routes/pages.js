@@ -26,8 +26,8 @@ router.get("/error", (req, res) => {
 });
 
 //informatie uit API halen voor gekozen concert
-router.get("/gekozen-concert", (req, res)=>{
-        const event = {
+router.get("/gekozen-concert", async (req, res) => {
+    const event = {
         id: req.query.id,
         artist: req.query.name,
         date: req.query.date,
@@ -36,8 +36,15 @@ router.get("/gekozen-concert", (req, res)=>{
         city: req.query.city,
         country: req.query.country,
         image: req.query.image
-        }
-        res.render('gekozen-concert.ejs', {event});
+    };
+    let isFavoriet = false;
+    if (req.session.userId) {
+        try {
+            const user = await userData.findById(req.session.userId);
+            isFavoriet = (user?.favorieten || []).map(f => f.trim()).includes(event.id?.trim());
+        } catch (e) {}
+    }
+    res.render('gekozen-concert.ejs', { event, isFavoriet });
 });
 
 module.exports = router;

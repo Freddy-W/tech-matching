@@ -7,7 +7,8 @@ const MongoStore = require('connect-mongo').default;
 // database verbinding opzetten
 require("./config/db");
 
-const { loadUser } = require("./middleware/auth");
+const { loadUser, isLoggedIn } = require("./middleware/auth");
+const userData = require("./models/User");
 
 const app = express();
 const port = 2020;
@@ -34,24 +35,17 @@ app.use(loadUser);
 
 app.post("/toggleFav", isLoggedIn, async (req, res) => {
   const userId = req.session.userId;
-  const eventId = req.body.eventId;
+  const eventId = req.body.eventId?.trim();
 
   const user = await userData.findById(userId);
+  const favs = (user.favorieten || []).map(f => f.trim());
 
-  if (user.favorieten.includes(eventId)) {
-    await userData.findByIdAndUpdate(userId, {
-      $pull: { favorieten: eventId }
-    });
-
-    // res.json({ favoriet: false })
-    // res.redirect('/gekozen-concert?id=' + eventId);
+  if (favs.includes(eventId)) {
+    await userData.findByIdAndUpdate(userId, { $pull: { favorieten: eventId } });
+    res.json({ favoriet: false });
   } else {
-    await userData.findByIdAndUpdate(userId, {
-      $addToSet: { favorieten: eventId }
-    });
-
-    // res.json({ favoriet: true })
-    // res.redirect('/gekozen-concert?id=' + eventId);
+    await userData.findByIdAndUpdate(userId, { $addToSet: { favorieten: eventId } });
+    res.json({ favoriet: true });
   }
 });
 

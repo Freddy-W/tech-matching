@@ -73,7 +73,7 @@ function formatGenre(genre) {
 }
 
 function filterenOpen() {
-  filterGedeelte.classList.add("open");
+  filterGedeelte?.classList.add("open");
 }
 
 function pasToe() {
@@ -282,6 +282,40 @@ function setStars(value) {
       star.classList.add('selected');
     }
   });
+}
+
+const favButton = document.getElementById("favButton");
+const favToast = document.getElementById("favToast");
+
+favButton?.addEventListener("click", async () => {
+  const eventId = favButton.dataset.eventId;
+  try {
+    const response = await fetch("/toggleFav", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventId })
+    });
+
+    if (response.redirected) {
+      window.location.href = "/login";
+      return;
+    }
+
+    const data = await response.json();
+    favButton.dataset.favoriet = data.favoriet;
+    document.getElementById("favIcon").src = data.favoriet ? "/images/check.svg" : "/images/plus.svg";
+    favButton.classList.toggle("fav-actief", data.favoriet);
+    toonToast(data.favoriet ? "Toegevoegd aan favorieten!" : "Verwijderd uit favorieten");
+  } catch (err) {
+    toonToast("Er ging iets mis...");
+  }
+});
+
+function toonToast(bericht) {
+  if (!favToast) return;
+  favToast.textContent = bericht;
+  favToast.classList.add("zichtbaar");
+  setTimeout(() => favToast.classList.remove("zichtbaar"), 2500);
 }
 
 // setStars(ratingInput.value);
