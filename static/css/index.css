@@ -183,3 +183,66 @@ li a {
   width: auto;
   width: 100%
 }
+/* paginaselector onderaan de concertenlijst */
+/* rij met pijl - paginanummers - pijl */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+}
+
+.page-arrow {
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  background-color: azure;
+  color: var(--accentcolour3);
+  font-weight: bold;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.page-arrow:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination li {
+  cursor: pointer;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+/* de "..." (dots) tussen de paginanummers verbergen */
+.pagination li.disabled {
+  display: none;
+}
+
+.pagination li .page {
+  display: block;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  background-color: azure;
+  color: var(--accentcolour3);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.pagination li.active .page {
+  background-color: var(--accentcolour3);
+  color: azure;
+}
