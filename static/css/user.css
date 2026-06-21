@@ -74,3 +74,15 @@ body {
 #favList::-webkit-scrollbar-thumb {
     background-color: var(--accentcolour3);
 }
+
+.user {
+    margin-bottom: 4rem;
+}
+
+.reviews {
+    margin-bottom: 2rem;
+}
+
+.happyflow {
+    margin-bottom: 2rem;
+}

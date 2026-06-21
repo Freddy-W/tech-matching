@@ -477,7 +477,10 @@ const userData = mongoose.model("userdata", userScheme);
 const carListing = mongoose.model("CarListing", carListingSchema);
 
 //Registeren, checkt of het emailadres al bestaat, encrypt het wachtwoord en stuurt naar de DB
-app.post("/register", upload.single('profielfoto'), async (req, res) => {
+app.post("/register", (req, res) => {
+  upload.single('profielfoto')(req, res, async (err) => {
+    if (err && err.code === 'LIMIT_FILE_SIZE')
+      return res.render('register.ejs', { error: 'Profielfoto is te groot. Maximaal 2MB.' });
   try {
     const registerData = {
       username: req.body.username,
@@ -510,6 +513,7 @@ app.post("/register", upload.single('profielfoto'), async (req, res) => {
     console.error(err);
     res.render('register.ejs', { error: 'Er ging iets mis, probeer opnieuw.' });
   }
+  });
 });
 
 //login, checkt of het wachtwoord & email al bestaat en stuurt op basis daarvan door.
@@ -536,7 +540,12 @@ app.post("/login", async (req, res) => {
 });
 
 // accountinfo werkend maken dmv sessions
-app.post("/accountinfo", isLoggedIn, upload.single('profielfoto'), async (req, res) =>  {
+app.post("/accountinfo", isLoggedIn, (req, res) => {
+  upload.single('profielfoto')(req, res, async (err) => {
+    if (err && err.code === 'LIMIT_FILE_SIZE') {
+      const user = await userData.findById(req.session.userId);
+      return res.render('accountinfo.ejs', { user, error: 'Profielfoto is te groot. Maximaal 2MB.' });
+    }
     try {
       const accountData = {
       username: req.body.username,
@@ -563,6 +572,7 @@ app.post("/accountinfo", isLoggedIn, upload.single('profielfoto'), async (req, r
     console.error(error)
     res.render("error.ejs", { error: "Error bij het laden van je accountinfo." });
   }
+  });
 });
 
 
