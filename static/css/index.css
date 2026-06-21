@@ -17,6 +17,11 @@ header, footer {
   margin-bottom: 1em;
 }
 
+main > section {
+    border-radius: 1rem;
+    background-color: azure;
+}
+
 section:nth-of-type(1) {
   display: flex;
   margin:0;
@@ -78,6 +83,19 @@ form h3 {
     margin-top: .5em;
 }
 
+main > section button {
+    border: none;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+main > section button:nth-of-type(1) {
+    border-radius: 0 1rem 1rem 0;
+    background-color: var(--accentcolour3);
+    color: white;
+    font-weight: bold;
+}
+
 form > div:last-child button:last-child {
     border: none;
     background-color: var(--happyflow);
@@ -88,9 +106,19 @@ form.open {
   opacity: 1;
 }
 
-a, a:visited {
-    color: var(--white);
-    text-decoration: none;
+a {
+  color: var(--white);
+  text-decoration: none;
+}
+
+li a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+a:visited {
+  color: var(--white);
 }
 
 ul {
@@ -135,7 +163,7 @@ li div{
 }
 
 .eventinfo {
-    margin: 0.5rem 1rem 1rem 1rem;
+    margin: 0.5rem 1rem 1rem;
 }
 
 .event:first-of-type {

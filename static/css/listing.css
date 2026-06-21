@@ -2,9 +2,14 @@ body {
     background-color: var(--mainblue);
     color: var(--white);
 
-} 
+}
+
 main {
     margin: 1rem;
+}
+
+.passagier img {
+    max-width:6rem;
 }
 
 main .owner img {
@@ -23,10 +28,6 @@ a {
 
 .owner div {
     margin-left: 1rem;
-}
-
-.passagier img {
-    max-width:6rem;
 }
 
 .passagier {

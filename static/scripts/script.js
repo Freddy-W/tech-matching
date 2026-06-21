@@ -4,8 +4,7 @@ window.onload = function() { //onload gebruiken zodat berekeningen direct worden
   }
     afstandBereken();
     afstandConcertBereken();
-
-}
+};
 
 let userList;
 const filterButton = document.querySelector("section button"); // de filter knop in de header, met vraagteken omdat deze niet op elke pagina staat
@@ -247,9 +246,9 @@ function checkNoResults() {
 }
 
 async function favList() {
-  const response = await fetch("/favorieten")
-  const data = await response.json()
-  const list = document.getElementById("favList")
+  const response = await fetch("/favorieten");
+  const data = await response.json();
+  const list = document.getElementById("favList");
   list.innerHTML = "";
 
   data.favorieten.forEach(favoriet => {
