@@ -1,30 +1,19 @@
 const express = require("express");
-const mongoClient = require("mongodb");
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
-const bcrypt = require("bcryptjs");
 const session = require('express-session');
 const MongoStore = require('connect-mongo').default;
-const multer = require('multer');
+
+// database verbinding opzetten
+require("./config/db");
+
+const { loadUser } = require("./middleware/auth");
+
 const app = express();
-
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 2 * 1024 * 1024 }
-});
-
-
 const port = 2020;
-const apiKey = process.env.APIKEY;
-const orsKey = process.env.ORSKEY;
-const sessionKey = process.env.SESSIONKEY
 
 app.use(express.static("static"));
 app.set('view engine', 'ejs');
-app.listen(port, () => {
-    console.log(`Server draait op http://localhost:${port}`);
-});
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -40,13 +29,8 @@ app.use(session({
   }
 }));
 
-function isLoggedIn(req, res, next) {
-  if (req.session.userId) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-}
+// ingelogde gebruiker beschikbaar maken in alle views
+app.use(loadUser);
 
 //middleware, als er om een userid gevraagd wordt wordt deze gepakt.
 app.use(async (req, res, next) => {
@@ -826,5 +810,18 @@ app.get("/favorieten", isLoggedIn, async (req, res) => {
   console.log(events);
   res.json({
     favorieten: events.filter(e => e !== null)
-  });
+  });});
+
+
+// routes per onderwerp
+app.use(require("./routes/pages"));
+app.use(require("./routes/auth"));
+app.use(require("./routes/users"));
+app.use(require("./routes/events"));
+app.use(require("./routes/listings"));
+app.use(require("./routes/reviews"));
+app.use(require("./routes/favorites"));
+
+app.listen(port, () => {
+    console.log(`Server draait op http://localhost:${port}`);
 });
