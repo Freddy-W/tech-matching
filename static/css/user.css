@@ -39,6 +39,7 @@ body {
     list-style: none;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    margin-bottom: 7vh;
 }
 
 #favList li {
@@ -47,6 +48,8 @@ body {
     background-color: var(--accentcolour3);
     margin: 0.5rem;
     padding: 0.5rem;
+    height: 20vh;
+    width: 50vw;
     scroll-snap-align: start;
 }
 
@@ -55,9 +58,17 @@ body {
     grid-row-end: 3;
 }
 
+#favList a {
+    text-decoration: none;
+    color: white;
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+}
+
 #favList li img {
-    height: 100%;
-    width: 100%;
+    height: 15vh;
+    width: 45vw;
+    overflow: hidden;
     margin: 0;
     grid-row-start: 1;
     grid-row-end: 2;
