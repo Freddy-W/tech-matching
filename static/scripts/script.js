@@ -292,6 +292,9 @@ async function favList() {
   data.favorieten.forEach(favoriet => {
     const li = document.createElement("li");
 
+    const link = document.createElement("a");
+    link.href = `/gekozen-concert/${favoriet.id}`;
+
     const title = document.createElement("h3");
     title.textContent = favoriet.artist;
 
@@ -299,9 +302,10 @@ async function favList() {
     img.src = favoriet.image || "../images/imagenotfound.png";
     img.style.width = "150px";
 
-    li.appendChild(title);
-    li.appendChild(img);
+    link.appendChild(title);
+    link.appendChild(img);
 
+    li.appendChild(link);
     list.appendChild(li);
   });
 }

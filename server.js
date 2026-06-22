@@ -55,11 +55,12 @@ app.get("/filters-home", (req, res) => {
 });
 
 app.post("/toggleFav", isLoggedIn, async (req, res) => {
+  console.log("toggleFav called");
   const userId = req.session.userId;
-  const eventId = req.body.eventId?.trim();
+  const eventId = req.body.eventId;
 
   const user = await userData.findById(userId);
-  const favs = (user.favorieten || []).map(f => f.trim());
+  const favs = user.favorieten || [];
 
   if (favs.includes(eventId)) {
     await userData.findByIdAndUpdate(userId, { $pull: { favorieten: eventId } });
