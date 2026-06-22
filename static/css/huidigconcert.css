@@ -60,6 +60,8 @@ main div:nth-of-type(2) {
  }
 
 #favButton {
+    max-width: 3rem;
+    max-height: 3rem;
     padding: 0.5em 0.25em;
     border: none;
     border-radius: 50%;
