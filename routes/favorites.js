@@ -7,19 +7,18 @@ const apiKey = process.env.APIKEY;
 
 // FAVORIET FUNCTIE
 
-// router.post("/addToFav", isLoggedIn, async (req, res) =>{
-//   console.log("addToFav called");
-//   try{
-//     const userId = req.session.userId;
-//     const eventId= req.body.eventId;
-//     await userData.findByIdAndUpdate(userId, {
-//       $addToSet: { favorieten: eventId }
-//     });
-//   }
-//   catch{
-//     console.log("error");
-//     res.status(500).json({error: "Kon niet toevoegen"});
-//   }
+router.post("/addToFav", isLoggedIn, async (req, res) =>{
+  try{
+    const userId = req.session.userId;
+    const eventId= req.body.eventId;
+    await userData.findByIdAndUpdate(userId, {
+      $addToSet: { favorieten: eventId }
+    });
+  }
+  catch{
+    console.log("error");
+    res.status(500).json({error: "Kon niet toevoegen"});
+  }
 
 //   // https://www.geeksforgeeks.org/mongodb/mongodb-addtoset-operator/"The $addToSet operator in MongoDB is used to add a value to an array and if the value already exists in the array then this operator will do nothing."
 

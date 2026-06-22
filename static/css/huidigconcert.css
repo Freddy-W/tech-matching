@@ -85,10 +85,8 @@ main div:nth-of-type(2) {
 }
 
 #favButton img {
-    aspect-ratio: 1;
-    width: 50px;
-    padding-left: 5px;
-    padding-right: 5px;
+    width: 100%;
+    height: 100%;
     filter: invert(1);
 }
 
